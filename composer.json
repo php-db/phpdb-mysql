@@ -46,13 +46,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Laminas\\Db\\Mysql": "src/"
+            "Laminas\\Db\\Mysql\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LaminasTest\\Db\\Mysql": "test/unit/",
-            "LaminasIntegrationTest\\Db\\Mysql": "test/integration/"
+            "LaminasTest\\Db\\Mysql\\": "test/unit/",
+            "LaminasIntegrationTest\\Db\\Mysql\\": "test/integration/"
         }
     },
     "scripts": {
