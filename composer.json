@@ -9,7 +9,7 @@
     ],
     "homepage": "https://github.com/axleus/laminas-db-mysql/discussions",
     "support": {
-        "issues": "https://github.com/alxeus/laminas-db/issues",
+        "issues": "https://github.com/alxeus/laminas-db-mysql/issues",
         "source": "https://github.com/axleus/laminas-db-mysql",
         "forum": "https://github.com/axleus/laminas-db-mysql/discussions"
     },
@@ -24,8 +24,8 @@
     },
     "extra": {
         "laminas": {
-            "component": "Laminas\\Db",
-            "config-provider": "Laminas\\Db\\ConfigProvider"
+            "component": "Laminas\\Db\\Mysql",
+            "config-provider": "Laminas\\Db\\Mysql\\ConfigProvider"
         }
     },
     "require": {
