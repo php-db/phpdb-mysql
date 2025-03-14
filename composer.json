@@ -13,6 +13,8 @@
         "source": "https://github.com/axleus/laminas-db-mysql",
         "forum": "https://github.com/axleus/laminas-db-mysql/discussions"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "config": {
         "sort-packages": true,
         "platform": {
@@ -65,6 +67,7 @@
         "test": "phpunit --colors=always --testsuite \"unit test\"",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
+        "static-analysis": "psalm --shepherd --stats",
         "upload-coverage": "coveralls -v"
     },
     "conflict": {
