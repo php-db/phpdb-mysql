@@ -35,6 +35,8 @@
         "axleus/laminas-db": "dev-3.0.x"
     },
     "require-dev": {
+        "ext-mysqli": "*",
+        "ext-pdo_mysql": "*",
         "laminas/laminas-coding-standard": "^3.0.1",
         "laminas/laminas-eventmanager": "^3.6.0",
         "laminas/laminas-hydrator": "^4.7",
@@ -44,6 +46,8 @@
         "vimeo/psalm": "^6.8.8"
     },
     "suggest": {
+        "ext-mysqli": "Required for MySQLi support",
+        "ext-pdo_mysql": "Required for PDO MySQL support",
         "laminas/laminas-servicemanager": "Laminas\\ServiceManager component"
     },
     "autoload": {
