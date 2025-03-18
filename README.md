@@ -1,2 +1,3 @@
 # axleus-repo-template
-Template repo for starting all new repo's
+
+This package provides MySQL support for Laminas Db.
