@@ -1,6 +1,6 @@
 <?php
 
-namespace Laminas\Db\Sql\Platform\Mysql\Ddl;
+namespace Laminas\Db\Mysql\Sql\Platform\Ddl;
 
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Sql\Ddl\AlterTable;

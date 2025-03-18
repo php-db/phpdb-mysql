@@ -1,6 +1,6 @@
 <?php
 
-namespace Laminas\Db\Adapter\Driver\Mysqli;
+namespace Laminas\Db\Mysql\Driver\Mysqli;
 
 use Iterator;
 use Laminas\Db\Adapter\Driver\ResultInterface;

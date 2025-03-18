@@ -1,6 +1,6 @@
 <?php
 
-namespace Laminas\Db\Adapter\Driver\Mysqli;
+namespace Laminas\Db\Mysql\Driver\Mysqli;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Exception;
@@ -12,7 +12,7 @@ use function array_merge;
 use function extension_loaded;
 use function is_string;
 
-class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
+class Driver implements DriverInterface, Profiler\ProfilerAwareInterface
 {
     /** @var Connection */
     protected $connection;

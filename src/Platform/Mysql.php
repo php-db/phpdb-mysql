@@ -1,6 +1,6 @@
 <?php
 
-namespace Laminas\Db\Adapter\Platform;
+namespace Laminas\Db\Mysql\Platform;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Driver\Mysqli;
@@ -67,6 +67,7 @@ class Mysql extends AbstractPlatform
     }
 
     /**
+     * todo: if needed return Backed Enum
      * {@inheritDoc}
      */
     public function getName()
