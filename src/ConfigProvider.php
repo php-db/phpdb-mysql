@@ -2,6 +2,8 @@
 
 namespace Laminas\Db\Mysql;
 
+use Laminas\Db\Adapter\AbstractAdapterServiceFactory;
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -18,14 +20,14 @@ readonly class ConfigProvider
     public function getDependencies(): array
     {
         return [
-            'aliases'   => [
-                DriverInterface::class   => Driver\Mysqli\Driver::class,
+            'aliases' => [
                 PlatformInterface::class => Platform\Mysql::class,
             ],
             'factories' => [
-                Adapter::class        => AdapterServiceFactory::class,
-                Driver\Mysqli\Driver::class => Driver\
-                Platform\Mysql::class => InvokableFactory::class,
+                AdapterInterface::class => AdapterServiceFactory::class,
+                //DriverInterface::class => Driver\Mysqli\DriverFactory::class,
+                DriverInterface::class   => Driver\Pdo\DriverFactory::class,
+                Platform\Mysql::class    => InvokableFactory::class,
             ],
         ];
     }
