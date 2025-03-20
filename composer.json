@@ -1,5 +1,5 @@
 {
-    "name": "axleus/laminas-db-mysql",
+    "name": "laminas/laminas-db-mysql-adapter",
     "description": "MySQL support for laminas-db",
     "license": "BSD-3-Clause",
     "keywords": [
@@ -32,7 +32,7 @@
     },
     "require": {
         "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
-        "axleus/laminas-db": "*"
+        "laminas/laminas-db": "3.0.x"
     },
     "require-dev": {
         "ext-mysqli": "*",
