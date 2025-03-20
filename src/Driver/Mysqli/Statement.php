@@ -1,6 +1,6 @@
 <?php
 
-namespace Laminas\Db\Adapter\Driver\Mysqli;
+namespace Laminas\Db\Mysql\Driver\Mysqli;
 
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Adapter\Exception;

@@ -1,12 +1,13 @@
 <?php
 
-namespace Laminas\Db\Adapter\Platform;
+namespace Laminas\Db\Mysql\Platform;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\Mysqli;
-use Laminas\Db\Adapter\Driver\Pdo;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\Exception\InvalidArgumentException;
+use Laminas\Db\Adapter\Platform\AbstractPlatform;
+use Laminas\Db\Mysql\Driver\Mysqli\Driver as Mysqli;
+use Laminas\Db\Mysql\Driver\Pdo\Driver as Pdo;
 
 use function implode;
 use function str_replace;
@@ -33,10 +34,7 @@ class Mysql extends AbstractPlatform
      */
     protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
-    /**
-     * @param null|\Laminas\Db\Adapter\Driver\Mysqli\Mysqli|\Laminas\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
-     */
-    public function __construct($driver = null)
+    public function __construct(?PlatformInterface $driver = null)
     {
         if ($driver) {
             $this->setDriver($driver);
@@ -67,6 +65,7 @@ class Mysql extends AbstractPlatform
     }
 
     /**
+     * todo: if needed return Backed Enum
      * {@inheritDoc}
      */
     public function getName()
