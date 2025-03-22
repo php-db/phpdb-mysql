@@ -5,6 +5,8 @@
     "keywords": [
         "laminas",
         "mysql",
+        "mysqli",
+        "pdo",
         "db"
     ],
     "homepage": "https://github.com/axleus/laminas-db-mysql/discussions",
@@ -26,13 +28,18 @@
     },
     "extra": {
         "laminas": {
-            "component": "Laminas\\Db\\Mysql",
+            "component": "Laminas\\Db\\Mysql\\Adapter",
             "config-provider": "Laminas\\Db\\Mysql\\ConfigProvider"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/axleus/laminas-db"
+        }
+    ],
     "require": {
-        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
-        "laminas/laminas-db": "3.0.x"
+        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
     },
     "require-dev": {
         "ext-mysqli": "*",
@@ -73,8 +80,5 @@
         "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
         "static-analysis": "psalm --shepherd --stats",
         "upload-coverage": "coveralls -v"
-    },
-    "conflict": {
-        "laminas/laminas-db": "*"
     }
 }
