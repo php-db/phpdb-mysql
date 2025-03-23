@@ -9,8 +9,8 @@ COPY --from=composer:2.8.6 /usr/bin/composer /usr/bin/
 # dependencies, and any other tools that are required for the environment to be
 # used fully and completely.
 RUN apt-get update \
-    && apt-get install -y git libpq-dev libsqlite3-dev \
-    && docker-php-ext-install mysqli pdo pdo_mysql pdo_pgsql pdo_sqlite pgsql \
+    && apt-get install -y git \
+    && docker-php-ext-install mysqli pdo pdo_mysql \
     && apt-get clean
 
 # Allow the www-data login so that it can run Composer instead of using root

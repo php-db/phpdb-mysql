@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Mysql\Platform;
+namespace Laminas\Db\Mysql;
 
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -12,6 +12,6 @@ final class PlatformFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PlatformInterface
     {
-        return new Mysql();
+        return new Platform();
     }
 }

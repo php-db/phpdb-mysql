@@ -21,13 +21,13 @@ readonly class ConfigProvider
     {
         return [
             'aliases' => [
-                PlatformInterface::class => Platform\Mysql::class,
+                PlatformInterface::class => Platform::class,
             ],
             'factories' => [
                 AdapterInterface::class => AdapterServiceFactory::class,
                 //DriverInterface::class => Driver\Mysqli\DriverFactory::class,
-                DriverInterface::class   => Driver\Pdo\DriverFactory::class,
-                Platform\Mysql::class    => InvokableFactory::class,
+                DriverInterface::class => Driver\Pdo\DriverFactory::class,
+                Platform::class        => InvokableFactory::class,
             ],
         ];
     }

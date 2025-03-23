@@ -1,6 +1,6 @@
 <?php
 
-namespace Laminas\Db\Mysql\Platform;
+namespace Laminas\Db\Mysql;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Exception;
@@ -12,7 +12,7 @@ use Laminas\Db\Mysql\Driver\Pdo\Driver as Pdo;
 use function implode;
 use function str_replace;
 
-class Mysql extends AbstractPlatform
+class Platform extends AbstractPlatform
 {
     /**
      * {@inheritDoc}
@@ -34,7 +34,7 @@ class Mysql extends AbstractPlatform
      */
     protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
-    public function __construct(?PlatformInterface $driver = null)
+    public function __construct(?DriverInterface $driver = null)
     {
         if ($driver) {
             $this->setDriver($driver);
@@ -42,16 +42,16 @@ class Mysql extends AbstractPlatform
     }
 
     /**
-     * @param \Laminas\Db\Adapter\Driver\Mysqli\Mysqli|\Laminas\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
+     * @param DriverInterface|\mysqli|\PDO $driver
      * @return $this Provides a fluent interface
      * @throws InvalidArgumentException
      */
-    public function setDriver($driver)
+    public function setDriver(DriverInterface|\mysqli|\PDO $driver): self
     {
         // handle Laminas\Db drivers
         if (
-            $driver instanceof Mysqli\Mysqli
-            || ($driver instanceof Pdo\Pdo && $driver->getDatabasePlatformName() === 'Mysql')
+            $driver instanceof Mysqli
+            || ($driver instanceof Pdo && $driver->getDatabasePlatformName() === 'Mysql')
             || $driver instanceof \mysqli
             || ($driver instanceof \PDO && $driver->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'mysql')
         ) {

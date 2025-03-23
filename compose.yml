@@ -9,7 +9,6 @@ services:
       - ./:/var/www/html
     depends_on:
       - mysql
-      - postgresql
 
   mysql:
     build:

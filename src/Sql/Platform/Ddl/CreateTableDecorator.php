@@ -38,7 +38,7 @@ class CreateTableDecorator extends CreateTable implements PlatformDecoratorInter
      * @param CreateTable $subject
      * @return $this Provides a fluent interface
      */
-    public function setSubject($subject)
+    public function setSubject($subject): self
     {
         $this->subject = $subject;
 
@@ -49,7 +49,7 @@ class CreateTableDecorator extends CreateTable implements PlatformDecoratorInter
      * @param string $sql
      * @return array
      */
-    protected function getSqlInsertOffsets($sql)
+    protected function getSqlInsertOffsets(string $sql): array
     {
         $sqlLength   = strlen($sql);
         $insertStart = [];
@@ -82,10 +82,10 @@ class CreateTableDecorator extends CreateTable implements PlatformDecoratorInter
     /**
      * {@inheritDoc}
      */
-    protected function processColumns(?PlatformInterface $platform = null)
+    protected function processColumns(?PlatformInterface $platform = null): ?array
     {
         if (! $this->columns) {
-            return;
+            return null;
         }
 
         $sqls = [];

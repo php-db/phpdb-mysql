@@ -37,20 +37,15 @@ class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterfa
 
     /**
      * @param AlterTable $subject
-     * @return $this Provides a fluent interface
      */
-    public function setSubject($subject)
+    public function setSubject($subject): self
     {
         $this->subject = $subject;
 
         return $this;
     }
 
-    /**
-     * @param string $sql
-     * @return array
-     */
-    protected function getSqlInsertOffsets($sql)
+    protected function getSqlInsertOffsets(string $sql): array
     {
         $sqlLength   = strlen($sql);
         $insertStart = [];
@@ -80,10 +75,7 @@ class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterfa
         return $insertStart;
     }
 
-    /**
-     * @return array
-     */
-    protected function processAddColumns(?PlatformInterface $adapterPlatform = null)
+    protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
     {
         $sqls = [];
 
@@ -148,10 +140,7 @@ class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterfa
         return [$sqls];
     }
 
-    /**
-     * @return array
-     */
-    protected function processChangeColumns(?PlatformInterface $adapterPlatform = null)
+    protected function processChangeColumns(?PlatformInterface $adapterPlatform = null): array
     {
         $sqls = [];
         foreach ($this->changeColumns as $name => $column) {
@@ -216,22 +205,13 @@ class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterfa
         return [$sqls];
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    private function normalizeColumnOption($name)
+    private function normalizeColumnOption(string $name): string
     {
         return strtolower(str_replace(['-', '_', ' '], '', $name));
     }
 
-    /**
-     * @param string $columnA
-     * @param string $columnB
-     * @return int
-     */
     // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod
-    private function compareColumnOptions($columnA, $columnB)
+    private function compareColumnOptions(string $columnA, string $columnB): int
     {
         $columnA = $this->normalizeColumnOption($columnA);
         $columnA = $this->columnOptionSortOrder[$columnA] ?? count($this->columnOptionSortOrder);
