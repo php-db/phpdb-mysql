@@ -2,6 +2,7 @@
 
 namespace LaminasIntegrationTest\Db\Mysql\Driver\Pdo;
 
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Mysql\Adapter;
 use Laminas\Db\Mysql\Driver\Pdo\Driver;
@@ -9,21 +10,24 @@ use Laminas\Db\Mysql\Platform;
 
 use function getenv;
 
+/** @psalm-suppress MissingConstructor */
 trait AdapterTrait
 {
-    protected ?Adapter $adapter;
+    protected AdapterInterface&Adapter $adapter;
 
     protected function setUp(): void
     {
         $dbConfig = [
             'driver'   => Driver::class,
             'database' => getenv('TESTS_LAMINAS_DB_MYSQL_ADAPTER_DATABASE'),
-            'hostname' => getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME'),
-            'username' => getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_USERNAME'),
-            'password' => getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_PASSWORD'),
+            'hostname' => getenv('TESTS_LAMINAS_DB_MYSQL_ADAPTER_HOSTNAME'),
+            'username' => getenv('TESTS_LAMINAS_DB_MYSQL_ADAPTER_USERNAME'),
+            'password' => getenv('TESTS_LAMINAS_DB_MYSQL_ADAPTER_PASSWORD'),
+            'port'     => getenv('TESTS_LAMINAS_DB_MYSQL_ADAPTER_PORT'),
         ];
+
         /** @var DriverInterface */
-        $driver  = $this->getDriverFactory()($dbConfig);
+        $driver        = $this->getDriverFactory()($dbConfig);
         $this->adapter = new Adapter(
             $dbConfig,
             $driver,
@@ -31,7 +35,7 @@ trait AdapterTrait
         );
     }
 
-    protected function getHostname(): ?string
+    protected function getHostname(): array|string|false
     {
         return getenv('TESTS_LAMINAS_DB_MYSQL_ADAPTER_HOSTNAME');
     }

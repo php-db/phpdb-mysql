@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasIntegrationTest\Db\Mysql\Extension;
 
 use LaminasIntegrationTest\Db\Mysql\Platform\FixtureLoader;
 use PHPUnit\Event\TestSuite\Finished;
 use PHPUnit\Event\TestSuite\FinishedSubscriber;
-
-use function printf;
 
 final class IntegrationTestStoppedListener implements FinishedSubscriber
 {
@@ -22,7 +22,7 @@ final class IntegrationTestStoppedListener implements FinishedSubscriber
             return;
         }
 
-        printf("\nIntegration test ended.\n");
+        print "\nIntegration test ended.\n";
 
         foreach ($this->fixtureLoaders as $fixtureLoader) {
             $fixtureLoader->dropDatabase();

@@ -44,12 +44,12 @@
     "require-dev": {
         "ext-mysqli": "*",
         "ext-pdo_mysql": "*",
-        "laminas/laminas-db": "dev-phpunit-test",
         "laminas/laminas-coding-standard": "^3.0.1",
+        "laminas/laminas-db": "dev-phpunit-test",
         "laminas/laminas-eventmanager": "^3.6.0",
         "laminas/laminas-hydrator": "^4.7",
         "laminas/laminas-servicemanager": "^3.19.0",
-        "phpunit/phpunit": "^9.5.25",
+        "phpunit/phpunit": "^11.5.15",
         "psalm/plugin-phpunit": "^0.19.2",
         "vimeo/psalm": "^6.8.8"
     },

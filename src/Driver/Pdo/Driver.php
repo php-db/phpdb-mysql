@@ -150,17 +150,6 @@ class Driver implements DriverInterface, DriverFeatureInterface, Profiler\Profil
      */
     public function setupDefaultFeatures()
     {
-        $driverName = $this->connection->getDriverName();
-        if ($driverName === 'sqlite') {
-            $this->addFeature(null, new Feature\SqliteRowCounter());
-            return $this;
-        }
-
-        if ($driverName === 'oci') {
-            $this->addFeature(null, new Feature\OracleRowCounter());
-            return $this;
-        }
-
         return $this;
     }
 

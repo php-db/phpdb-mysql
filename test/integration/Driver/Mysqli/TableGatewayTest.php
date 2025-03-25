@@ -6,6 +6,7 @@ use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Mysql\Adapter;
 use Laminas\Db\Mysql\Driver\Mysqli\Driver;
 use Laminas\Db\Mysql\Platform;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\TableGateway;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +17,7 @@ final class TableGatewayTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-db/issues/330
      */
-    public function testSelectWithEmptyCurrentWithBufferResult()
+    public function testSelectWithEmptyCurrentWithBufferResult(): void
     {
         $dbConfig = [
             'database' => $this->variables['database'],
@@ -33,7 +34,8 @@ final class TableGatewayTest extends TestCase
             new Platform($driver)
         );
         $tableGateway = new TableGateway('test', $adapter);
-        $rowset       = $tableGateway->select('id = 0');
+        /** @var ResultSet */
+        $rowset = $tableGateway->select('id = 0');
 
         $this->assertNull($rowset->current());
 
@@ -43,7 +45,7 @@ final class TableGatewayTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-db/issues/330
      */
-    public function testSelectWithEmptyCurrentWithoutBufferResult()
+    public function testSelectWithEmptyCurrentWithoutBufferResult(): void
     {
         $dbConfig = [
             'driver'   => Driver::class,
@@ -53,6 +55,7 @@ final class TableGatewayTest extends TestCase
             'password' => $this->variables['password'],
             'options'  => ['buffer_results' => false],
         ];
+        /** @var DriverInterface */
         $driver  = $this->getDriverFactory()($dbConfig);
         $adapter = new Adapter(
             $dbConfig,
@@ -60,6 +63,7 @@ final class TableGatewayTest extends TestCase
             new Platform($driver)
         );
         $tableGateway = new TableGateway('test', $adapter);
+        /** @var ResultSet */
         $rowset       = $tableGateway->select('id = 0');
 
         $this->assertNull($rowset->current());

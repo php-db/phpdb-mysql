@@ -2,6 +2,8 @@
 
 namespace LaminasIntegrationTest\Db\Mysql\Driver\Pdo;
 
+use Laminas\Db\ResultSet\ResultSet;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\TableGateway\TableGateway;
 use PHPUnit\Framework\TestCase;
 
@@ -27,8 +29,11 @@ final class TableGatewayAndAdapterTest extends TestCase
             'test',
             $this->adapter
         );
+        /** @var Select */
         $select = $table->getSql()->select()->where(['name' => 'foo']);
+        /** @var ResultSet */
         $result = $table->selectWith($select);
+        /** @psalm-suppress PossiblyNullArgument */
         self::assertCount(3, $result->current());
     }
 
@@ -37,9 +42,12 @@ final class TableGatewayAndAdapterTest extends TestCase
         if ($this->adapter->getDriver()->getConnection()->isConnected()) {
             $this->adapter->getDriver()->getConnection()->disconnect();
         }
-        $this->adapter = null;
+        unset($this->adapter);
     }
 
+    /**
+     * @psalm-return array<int, array<int, array>>
+     */
     public static function connections(): array
     {
         return array_fill(0, 200, []);

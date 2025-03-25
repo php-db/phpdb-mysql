@@ -6,6 +6,7 @@ use Laminas\Db\Mysql\Driver\Pdo\Result as PdoResult;
 use Laminas\Db\Adapter\Exception\RuntimeException;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Sql;
+use Laminas\Stdlib\ArrayObject;
 use PHPUnit\Framework\TestCase;
 
 final class QueryTest extends TestCase
@@ -40,14 +41,17 @@ final class QueryTest extends TestCase
      * @covers \Laminas\Db\Adapter\Adapter::query
      * @covers \Laminas\Db\ResultSet\ResultSet::current
      */
-    public function testQuery(string $query, array $params, array $expected)
+    public function testQuery(string $query, array $params, array $expected): void
     {
         $result = $this->adapter->query($query, $params);
         $this->assertInstanceOf(ResultSet::class, $result);
         $current = $result->current();
         // test as array value
         $this->assertEquals($expected, (array) $current);
-        // test as object value
+        /**
+         * test as object value
+         * @var ArrayObject $value
+         */
         foreach ($expected as $key => $value) {
             $this->assertEquals($value, $current->$key);
         }
@@ -56,13 +60,13 @@ final class QueryTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-db/issues/288
      */
-    public function testSetSessionTimeZone()
+    public function testSetSessionTimeZone(): void
     {
         $result = $this->adapter->query('SET @@session.time_zone = :tz', [':tz' => 'SYSTEM']);
         $this->assertInstanceOf(PdoResult::class, $result);
     }
 
-    public function testSelectWithNotPermittedBindParamName()
+    public function testSelectWithNotPermittedBindParamName(): void
     {
         $this->expectException(RuntimeException::class);
         $this->adapter->query('SET @@session.time_zone = :tz$', [':tz$' => 'SYSTEM']);
@@ -71,7 +75,7 @@ final class QueryTest extends TestCase
     /**
      * @see https://github.com/laminas/laminas-db/issues/47
      */
-    public function testNamedParameters()
+    public function testNamedParameters(): void
     {
         $this->expectNotToPerformAssertions();
 

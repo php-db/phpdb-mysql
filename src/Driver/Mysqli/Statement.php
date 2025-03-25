@@ -17,7 +17,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /** @var \mysqli */
     protected $mysqli;
 
-    /** @var Mysqli */
+    /** @var Driver */
     protected $driver;
 
     /** @var Profiler\ProfilerInterface */
@@ -59,7 +59,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      *
      * @return $this Provides a fluent interface
      */
-    public function setDriver(Mysqli $driver)
+    public function setDriver(Driver $driver)
     {
         $this->driver = $driver;
         return $this;

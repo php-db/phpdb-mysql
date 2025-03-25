@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasIntegrationTest\Db\Mysql\Extension;
 
 use PHPUnit\Runner\Extension\Extension;

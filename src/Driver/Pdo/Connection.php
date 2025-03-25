@@ -13,6 +13,7 @@ use function array_diff_key;
 use function implode;
 use function is_array;
 use function is_int;
+use function str_ends_with;
 use function str_replace;
 use function strpos;
 use function strtolower;
@@ -72,13 +73,11 @@ class Connection extends AbstractConnection
                 0,
                 strpos($connectionParameters['dsn'], ':')
             );
-        } elseif (isset($connectionParameters['pdodriver'])) {
-            $this->driverName = strtolower($connectionParameters['pdodriver']);
         } elseif (isset($connectionParameters['driver'])) {
-            $this->driverName = strtolower(substr(
-                str_replace(['-', '_', ' '], '', $connectionParameters['driver']),
-                3
-            ));
+            $this->driverName = match ($connectionParameters['driver']) {
+                Driver::class, 'pdo_mysql', 'pdo' => 'mysql',
+                default => 'mysql',
+            };
         }
     }
 
@@ -107,22 +106,6 @@ class Connection extends AbstractConnection
         if (! $this->isConnected()) {
             $this->connect();
         }
-
-        // switch ($this->driverName) {
-        //     case 'mysql':
-        //         $sql = 'SELECT DATABASE()';
-        //         break;
-        //     case 'sqlite':
-        //         return 'main';
-        //     case 'sqlsrv':
-        //     case 'dblib':
-        //         $sql = 'SELECT SCHEMA_NAME()';
-        //         break;
-        //     case 'pgsql':
-        //     default:
-        //         $sql = 'SELECT CURRENT_SCHEMA';
-        //         break;
-        // }
 
         /** @var PDOStatement $result */
         $result = $this->resource->query('SELECT DATABASE()');
@@ -166,14 +149,11 @@ class Connection extends AbstractConnection
                     $dsn = $value;
                     break;
                 case 'driver':
-                    $value = strtolower((string) $value);
-                    if (strpos($value, 'pdo') === 0) {
-                        $pdoDriver = str_replace(['-', '_', ' '], '', $value);
-                        $pdoDriver = substr($pdoDriver, 3) ?: '';
-                    }
-                    break;
                 case 'pdodriver':
-                    $pdoDriver = (string) $value;
+                    $driver = match ($value) {
+                        Driver::class, 'pdo_mysql', 'pdo' => 'mysql',
+                        default => 'mysql',
+                    };
                     break;
                 case 'user':
                 case 'username':
@@ -221,42 +201,29 @@ class Connection extends AbstractConnection
             );
         }
 
-        if (! isset($dsn) && isset($pdoDriver)) {
+        if (! isset($dsn) && isset($driver)) {
             $dsn = [];
-            switch ($pdoDriver) {
-                case 'sqlite':
-                    $dsn[] = $database;
-                    break;
-                case 'sqlsrv':
-                    if (isset($database)) {
-                        $dsn[] = "database={$database}";
-                    }
-                    if (isset($hostname)) {
-                        $dsn[] = "server={$hostname}";
-                    }
-                    break;
-                default:
-                    if (isset($database)) {
-                        $dsn[] = "dbname={$database}";
-                    }
-                    if (isset($hostname)) {
-                        $dsn[] = "host={$hostname}";
-                    }
-                    if (isset($port)) {
-                        $dsn[] = "port={$port}";
-                    }
-                    if (isset($charset) && $pdoDriver !== 'pgsql') {
-                        $dsn[] = "charset={$charset}";
-                    }
-                    if (isset($unixSocket)) {
-                        $dsn[] = "unix_socket={$unixSocket}";
-                    }
-                    if (isset($version)) {
-                        $dsn[] = "version={$version}";
-                    }
-                    break;
+            if (isset($database)) {
+                $dsn[] = "dbname={$database}";
             }
-            $dsn = $pdoDriver . ':' . implode(';', $dsn);
+            if (isset($hostname)) {
+                $dsn[] = "host={$hostname}";
+            }
+            if (isset($port)) {
+                $dsn[] = "port={$port}";
+            }
+            if (isset($charset)) {
+                $dsn[] = "charset={$charset}";
+            }
+            if (isset($unixSocket)) {
+                $dsn[] = "unix_socket={$unixSocket}";
+            }
+            if (isset($version)) {
+                $dsn[] = "version={$version}";
+            }
+
+            $dsn = $driver . ':' . implode(';', $dsn);
+
         } elseif (! isset($dsn)) {
             throw new Exception\InvalidConnectionParametersException(
                 'A dsn was not provided or could not be constructed from your parameters',
@@ -269,9 +236,6 @@ class Connection extends AbstractConnection
         try {
             $this->resource = new \PDO($dsn, $username, $password, $options);
             $this->resource->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            if (isset($charset) && $pdoDriver === 'pgsql') {
-                $this->resource->exec('SET NAMES ' . $this->resource->quote($charset));
-            }
             $this->driverName = strtolower($this->resource->getAttribute(\PDO::ATTR_DRIVER_NAME));
         } catch (PDOException $e) {
             $code = $e->getCode();
@@ -411,13 +375,6 @@ class Connection extends AbstractConnection
      */
     public function getLastGeneratedValue($name = null)
     {
-        if (
-            $name === null
-            && ($this->driverName === 'pgsql' || $this->driverName === 'firebird')
-        ) {
-            return;
-        }
-
         try {
             return $this->resource->lastInsertId($name);
         } catch (\Exception $e) {

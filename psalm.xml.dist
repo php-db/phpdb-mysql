@@ -35,6 +35,30 @@
             </errorLevel>
         </MissingOverrideAttribute>
 
+        <PossiblyNullReference>
+            <errorLevel type="suppress">
+                <directory name="test" />
+            </errorLevel>
+        </PossiblyNullReference>
+
+        <UnusedClass>
+            <errorLevel type="suppress">
+                <directory name="test" />
+            </errorLevel>
+        </UnusedClass>
+
+        <ClassMustBeFinal>
+            <errorLevel type="suppress">
+                <directory name="test" />
+            </errorLevel>
+        </ClassMustBeFinal>
+
+        <MissingConstructor>
+            <errorLevel type="suppress">
+                <directory name="test" />
+            </errorLevel>
+        </MissingConstructor>
+
     </issueHandlers>
 
     <plugins>

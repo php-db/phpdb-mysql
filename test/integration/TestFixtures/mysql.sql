@@ -15,12 +15,12 @@ INSERT INTO test (name, value) VALUES
 DROP TABLE IF EXISTS test_charset;
 CREATE TABLE IF NOT EXISTS test_charset (
     id INT NOT NULL AUTO_INCREMENT,
-    field$ VARCHAR(255) NOT NULL,
-    field_ VARCHAR(255) NOT NULL,
+    field1 VARCHAR(255) NOT NULL,
+    field2 VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
 
-INSERT INTO test_charset (field$, field_) VALUES
+INSERT INTO test_charset (field1, field2) VALUES
 ('foo', 'bar'),
 ('bar', 'baz');
 

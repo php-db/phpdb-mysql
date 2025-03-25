@@ -26,10 +26,11 @@
         </testsuite>
     </testsuites>
     <php>
-        <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER" value="false"/>
+        <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER" value="true"/>
         <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_HOSTNAME" value="mysql"/>
         <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_USERNAME" value="user"/>
         <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_PASSWORD" value="password"/>
         <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_DATABASE" value="laminasdb_test"/>
+        <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_PORT" value="3306"/>
     </php>
 </phpunit>
