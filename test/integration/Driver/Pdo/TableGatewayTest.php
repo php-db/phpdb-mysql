@@ -8,27 +8,29 @@ use Laminas\Db\Sql\TableIdentifier;
 use Laminas\Db\TableGateway\Feature\MetadataFeature;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Stdlib\ArrayObject;
+use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 use Webmozart\Assert\Assert;
 
 use function count;
 
+#[Attributes\Group('integration')]
+#[Attributes\Group('integration-pdo')]
+#[Attributes\CoversClass(TableGateway::class)]
+#[Attributes\CoversMethod(TableGateway::class, '__construct')]
+#[Attributes\CoversMethod(TableGateway::class, 'select')]
+#[Attributes\CoversMethod(TableGateway::class, 'insert')]
+#[Attributes\CoversMethod(TableGateway::class, 'update')]
 final class TableGatewayTest extends TestCase
 {
     use AdapterTrait;
 
-    /**
-     * @covers \Laminas\Db\TableGateway\TableGateway::__construct
-     */
     public function testConstructor(): void
     {
         $tableGateway = new TableGateway('test', $this->adapter);
         $this->assertInstanceOf(TableGateway::class, $tableGateway);
     }
 
-    /**
-     * @covers \Laminas\Db\TableGateway\TableGateway::select
-     */
     public function testSelect(): void
     {
         $tableGateway = new TableGateway('test', $this->adapter);
@@ -44,10 +46,6 @@ final class TableGatewayTest extends TestCase
         }
     }
 
-    /**
-     * @covers \Laminas\Db\TableGateway\TableGateway::insert
-     * @covers \Laminas\Db\TableGateway\TableGateway::select
-     */
     public function testInsert(): void
     {
         $tableGateway = new TableGateway('test', $this->adapter);
@@ -90,9 +88,9 @@ final class TableGatewayTest extends TestCase
     }
 
     /**
-     * @depends testInsertWithExtendedCharsetFieldName
      * @param mixed $id
      */
+    #[Attributes\Depends('testInsertWithExtendedCharsetFieldName')]
     public function testUpdateWithExtendedCharsetFieldName($id): void
     {
         Assert::isInstanceOf($this->adapter, AdapterInterface::class);
@@ -116,9 +114,9 @@ final class TableGatewayTest extends TestCase
     }
 
     /**
-     * @dataProvider tableProvider
      * @param string|TableIdentifier|array $table
      */
+    #[Attributes\DataProvider('tableProvider')]
     public function testTableGatewayWithMetadataFeature($table): void
     {
         Assert::isInstanceOf($this->adapter, AdapterInterface::class);
@@ -130,7 +128,6 @@ final class TableGatewayTest extends TestCase
 
     /**
      * @psalm-return array<array-key, array{0: string|TableIdentifier|array}>
-     *
      * */
     public static function tableProvider(): array
     {

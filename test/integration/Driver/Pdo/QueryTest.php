@@ -2,13 +2,19 @@
 
 namespace LaminasIntegrationTest\Db\Mysql\Driver\Pdo;
 
-use Laminas\Db\Mysql\Driver\Pdo\Result as PdoResult;
 use Laminas\Db\Adapter\Exception\RuntimeException;
+use Laminas\Db\Mysql\Adapter;
+use Laminas\Db\Mysql\Driver\Pdo\Result as PdoResult;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Sql;
 use Laminas\Stdlib\ArrayObject;
+use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 
+#[Attributes\Group('integration')]
+#[Attributes\Group('integration-pdo')]
+#[Attributes\CoversMethod(Adapter::class, 'query')]
+#[Attributes\CoversMethod(ResultSet::class, 'current')]
 final class QueryTest extends TestCase
 {
     use AdapterTrait;
@@ -36,11 +42,7 @@ final class QueryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getQueriesWithRowResult
-     * @covers \Laminas\Db\Adapter\Adapter::query
-     * @covers \Laminas\Db\ResultSet\ResultSet::current
-     */
+    #[Attributes\DataProvider('getQueriesWithRowResult')]
     public function testQuery(string $query, array $params, array $expected): void
     {
         $result = $this->adapter->query($query, $params);

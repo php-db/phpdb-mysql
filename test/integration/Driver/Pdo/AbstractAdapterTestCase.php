@@ -4,11 +4,20 @@ namespace LaminasIntegrationTest\Db\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Mysql\Adapter;
+use Laminas\Db\Mysql\Driver\Pdo\Connection;
+use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 
 use function getmypid;
 use function shell_exec;
 
+#[Attributes\Group('integration')]
+#[Attributes\Group('integration-pdo')]
+#[Attributes\CoversClass(Adapter::class)]
+#[Attributes\CoversMethod(Adapter::class, '__construct')]
+#[Attributes\CoversClass(Connection::class)]
+#[Attributes\CoversMethod(Connection::class, 'connect')]
+#[Attributes\CoversMethod(Connection::class, 'disconnect')]
 abstract class AbstractAdapterTestCase extends TestCase
 {
     /** @var ?int */
@@ -16,9 +25,6 @@ abstract class AbstractAdapterTestCase extends TestCase
 
     protected AdapterInterface&Adapter $adapter;
 
-    /**
-     * @covers \Laminas\Db\Adapter\Adapter::__construct()
-     */
     public function testConnection(): void
     {
         $this->assertInstanceOf(Adapter::class, $this->adapter);

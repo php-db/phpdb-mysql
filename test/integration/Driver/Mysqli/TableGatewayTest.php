@@ -8,8 +8,13 @@ use Laminas\Db\Mysql\Driver\Mysqli\Driver;
 use Laminas\Db\Mysql\Platform;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\TableGateway\TableGateway;
+use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 
+#[Attributes\Group('integration')]
+#[Attributes\Group('integration-mysqli')]
+#[Attributes\CoversClass(TableGateway::class)]
+#[Attributes\CoversMethod(TableGateway::class, '__construct')]
 final class TableGatewayTest extends TestCase
 {
     use TraitSetup;

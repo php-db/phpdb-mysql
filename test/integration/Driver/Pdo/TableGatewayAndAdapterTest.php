@@ -5,6 +5,7 @@ namespace LaminasIntegrationTest\Db\Mysql\Driver\Pdo;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\TableGateway\TableGateway;
+use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 
 use function array_fill;
@@ -15,24 +16,30 @@ use function array_fill;
  * On tear down disconnected from the database and set the driver adapter on null
  * Running many tests ended up in consuming all mysql connections and not releasing them
  */
+#[Attributes\Group('integration')]
+#[Attributes\Group('integration-pdo')]
+#[Attributes\CoversClass(TableGateway::class)]
+#[Attributes\CoversMethod(TableGateway::class, '__construct')]
+#[Attributes\CoversMethod(TableGateway::class, 'getSql')]
+#[Attributes\CoversMethod(TableGateway::class, 'selectWith')]
 final class TableGatewayAndAdapterTest extends TestCase
 {
     use AdapterTrait;
 
-    /**
-     * @dataProvider connections
-     */
+    #[Attributes\DataProvider('connections')]
     public function testGetOutOfConnections(): void
     {
         $this->adapter->query('SELECT VERSION();');
-        $table  = new TableGateway(
+        $table = new TableGateway(
             'test',
             $this->adapter
         );
         /** @var Select */
         $select = $table->getSql()->select()->where(['name' => 'foo']);
+        self::assertInstanceOf(Select::class, $select);
         /** @var ResultSet */
         $result = $table->selectWith($select);
+        self::assertInstanceOf(ResultSet::class, $result);
         /** @psalm-suppress PossiblyNullArgument */
         self::assertCount(3, $result->current());
     }
