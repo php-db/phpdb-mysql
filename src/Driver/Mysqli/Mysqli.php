@@ -1,11 +1,10 @@
 <?php
 
-namespace Laminas\Db\Mysql\Driver\Mysqli;
+namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\Profiler;
-use Laminas\Db\Mysql\Driver\DatabasePlatformNameTrait;
 use mysqli_stmt;
 
 use function array_intersect_key;
@@ -13,10 +12,8 @@ use function array_merge;
 use function extension_loaded;
 use function is_string;
 
-class Driver implements DriverInterface, Profiler\ProfilerAwareInterface
+class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
 {
-    use DatabasePlatformNameTrait;
-
     /** @var Connection */
     protected $connection;
 
@@ -38,7 +35,6 @@ class Driver implements DriverInterface, Profiler\ProfilerAwareInterface
      * Constructor
      *
      * @param array|Connection|\mysqli $connection
-     * @param array $options
      */
     public function __construct(
         $connection,
@@ -128,6 +124,21 @@ class Driver implements DriverInterface, Profiler\ProfilerAwareInterface
     }
 
     /**
+     * Get database platform name
+     *
+     * @param  string $nameFormat
+     * @return string
+     */
+    public function getDatabasePlatformName($nameFormat = self::NAME_FORMAT_CAMELCASE)
+    {
+        if ($nameFormat === self::NAME_FORMAT_CAMELCASE) {
+            return 'Mysql';
+        }
+
+        return 'MySQL';
+    }
+
+    /**
      * Check environment
      *
      * @throws Exception\RuntimeException
@@ -162,9 +173,9 @@ class Driver implements DriverInterface, Profiler\ProfilerAwareInterface
     {
         /**
          * @todo Resource tracking
-         * if (is_resource($sqlOrResource) && !in_array($sqlOrResource, $this->resources, true)) {
-         *   $this->resources[] = $sqlOrResource;
-         * }
+        if (is_resource($sqlOrResource) && !in_array($sqlOrResource, $this->resources, true)) {
+            $this->resources[] = $sqlOrResource;
+        }
         */
 
         $statement = clone $this->statementPrototype;

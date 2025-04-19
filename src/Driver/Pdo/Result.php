@@ -1,6 +1,6 @@
 <?php
 
-namespace Laminas\Db\Mysql\Driver\Pdo;
+namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
 
 use Closure;
 use Iterator;

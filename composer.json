@@ -1,5 +1,5 @@
 {
-    "name": "laminas/laminas-db-mysql-adapter",
+    "name": "laminas/laminas-db-adapter-mysql",
     "description": "MySQL support for laminas-db",
     "license": "BSD-3-Clause",
     "keywords": [
@@ -7,11 +7,11 @@
         "mysql",
         "db"
     ],
-    "homepage": "https://github.com/axleus/laminas-db-mysql/discussions",
+    "homepage": "https://github.com/axleus/laminas-db-adapter-mysql/discussions",
     "support": {
-        "issues": "https://github.com/alxeus/laminas-db-mysql/issues",
-        "source": "https://github.com/axleus/laminas-db-mysql",
-        "forum": "https://github.com/axleus/laminas-db-mysql/discussions"
+        "issues": "https://github.com/alxeus/laminas-db-adapter-mysql/issues",
+        "source": "https://github.com/axleus/laminas-db-adapter-mysql",
+        "forum": "https://github.com/axleus/laminas-db-adapter-mysql/discussions"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -26,8 +26,8 @@
     },
     "extra": {
         "laminas": {
-            "component": "Laminas\\Db\\Mysql",
-            "config-provider": "Laminas\\Db\\Mysql\\ConfigProvider"
+            "component": "Laminas\\Db\\Adapter\\Mysql",
+            "config-provider": "Laminas\\Db\\Adapter\\Mysql\\ConfigProvider"
         }
     },
     "require": {
@@ -52,13 +52,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Laminas\\Db\\Mysql\\": "src/"
+            "Laminas\\Db\\Adapter\\Mysql\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LaminasTest\\Db\\Mysql\\": "test/unit/",
-            "LaminasIntegrationTest\\Db\\Mysql\\": "test/integration/"
+            "LaminasTest\\Db\\Adapter\\Mysql\\": "test/unit/",
+            "LaminasIntegrationTest\\Db\\Adapter\\Mysql\\": "test/integration/"
         }
     },
     "scripts": {
@@ -73,8 +73,5 @@
         "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
         "static-analysis": "psalm --shepherd --stats",
         "upload-coverage": "coveralls -v"
-    },
-    "conflict": {
-        "laminas/laminas-db": "*"
     }
 }

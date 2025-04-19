@@ -1,10 +1,9 @@
 <?php
 
-namespace Laminas\Db\Mysql\Driver\Mysqli;
+namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Exception as GenericException;
 use Laminas\Db\Adapter\Driver\AbstractConnection;
-use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\Exception\InvalidArgumentException;
 
@@ -19,7 +18,7 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
 class Connection extends AbstractConnection
 {
-    /** @var DriverInterface */
+    /** @var Mysqli */
     protected $driver;
 
     /** @var \mysqli */
@@ -47,7 +46,7 @@ class Connection extends AbstractConnection
     /**
      * @return $this Provides a fluent interface
      */
-    public function setDriver(DriverInterface $driver)
+    public function setDriver(Mysqli $driver)
     {
         $this->driver = $driver;
 

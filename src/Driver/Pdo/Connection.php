@@ -1,11 +1,10 @@
 <?php
 
-namespace Laminas\Db\Mysql\Driver\Pdo;
+namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\Driver\AbstractConnection;
-use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Exception\RunTimeException;
+use Laminas\Db\Adapter\Exception\RuntimeException;
 use PDOException;
 use PDOStatement;
 
@@ -20,7 +19,7 @@ use function substr;
 
 class Connection extends AbstractConnection
 {
-    /** @var DriverInterface */
+    /** @var Pdo */
     protected $driver;
 
     /** @var \PDO */
@@ -53,7 +52,7 @@ class Connection extends AbstractConnection
      *
      * @return $this Provides a fluent interface
      */
-    public function setDriver(DriverInterface $driver)
+    public function setDriver(Pdo $driver)
     {
         $this->driver = $driver;
 
@@ -85,7 +84,7 @@ class Connection extends AbstractConnection
     /**
      * Get the dsn string for this connection
      *
-     * @throws RunTimeException
+     * @throws RuntimeException
      * @return string
      */
     public function getDsn()
@@ -108,24 +107,24 @@ class Connection extends AbstractConnection
             $this->connect();
         }
 
-        // switch ($this->driverName) {
-        //     case 'mysql':
-        //         $sql = 'SELECT DATABASE()';
-        //         break;
-        //     case 'sqlite':
-        //         return 'main';
-        //     case 'sqlsrv':
-        //     case 'dblib':
-        //         $sql = 'SELECT SCHEMA_NAME()';
-        //         break;
-        //     case 'pgsql':
-        //     default:
-        //         $sql = 'SELECT CURRENT_SCHEMA';
-        //         break;
-        // }
+        switch ($this->driverName) {
+            case 'mysql':
+                $sql = 'SELECT DATABASE()';
+                break;
+            case 'sqlite':
+                return 'main';
+            case 'sqlsrv':
+            case 'dblib':
+                $sql = 'SELECT SCHEMA_NAME()';
+                break;
+            case 'pgsql':
+            default:
+                $sql = 'SELECT CURRENT_SCHEMA';
+                break;
+        }
 
         /** @var PDOStatement $result */
-        $result = $this->resource->query('SELECT DATABASE()');
+        $result = $this->resource->query($sql);
         if ($result instanceof PDOStatement) {
             return $result->fetchColumn();
         }

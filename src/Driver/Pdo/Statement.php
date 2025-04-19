@@ -1,8 +1,7 @@
 <?php
 
-namespace Laminas\Db\Mysql\Driver\Pdo;
+namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\ParameterContainer;
@@ -23,7 +22,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /** @var Profiler\ProfilerInterface */
     protected $profiler;
 
-    /** @var DriverInterface */
+    /** @var Pdo */
     protected $driver;
 
     /** @var string */
@@ -49,7 +48,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      *
      * @return $this Provides a fluent interface
      */
-    public function setDriver(DriverInterface $driver)
+    public function setDriver(Pdo $driver)
     {
         $this->driver = $driver;
         return $this;

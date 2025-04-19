@@ -1,13 +1,12 @@
 <?php
 
-namespace Laminas\Db\Mysql\Driver\Pdo;
+namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Driver\Feature\AbstractFeature;
 use Laminas\Db\Adapter\Driver\Feature\DriverFeatureInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\Profiler;
-use Laminas\Db\Mysql\Driver\DatabasePlatformNameTrait;
 use PDOStatement;
 
 use function extension_loaded;
@@ -19,9 +18,8 @@ use function preg_match;
 use function sprintf;
 use function ucfirst;
 
-class Driver implements DriverInterface, DriverFeatureInterface, Profiler\ProfilerAwareInterface
+class Pdo implements DriverInterface, DriverFeatureInterface, Profiler\ProfilerAwareInterface
 {
-    use DatabasePlatformNameTrait;
     /**
      * @const
      */
@@ -150,17 +148,6 @@ class Driver implements DriverInterface, DriverFeatureInterface, Profiler\Profil
      */
     public function setupDefaultFeatures()
     {
-        $driverName = $this->connection->getDriverName();
-        if ($driverName === 'sqlite') {
-            $this->addFeature(null, new Feature\SqliteRowCounter());
-            return $this;
-        }
-
-        if ($driverName === 'oci') {
-            $this->addFeature(null, new Feature\OracleRowCounter());
-            return $this;
-        }
-
         return $this;
     }
 
@@ -176,6 +163,37 @@ class Driver implements DriverInterface, DriverFeatureInterface, Profiler\Profil
             return $this->features[$name];
         }
         return false;
+    }
+
+    /**
+     * Get database platform name
+     *
+     * @param  string $nameFormat
+     * @return string
+     */
+    public function getDatabasePlatformName($nameFormat = self::NAME_FORMAT_CAMELCASE)
+    {
+        $name = $this->getConnection()->getDriverName();
+        if ($nameFormat === self::NAME_FORMAT_CAMELCASE) {
+            switch ($name) {
+                case 'pgsql':
+                    return 'Postgresql';
+                case 'oci':
+                    return 'Oracle';
+                case 'dblib':
+                case 'sqlsrv':
+                    return 'SqlServer';
+                default:
+                    return ucfirst($name);
+            }
+        } else {
+            switch ($name) {
+                case 'mysql':
+                    return 'MySQL';
+                default:
+                    return ucfirst($name);
+            }
+        }
     }
 
     /**
@@ -238,7 +256,7 @@ class Driver implements DriverInterface, DriverFeatureInterface, Profiler\Profil
         //     $rowCount = $sqliteRowCounter->getRowCountClosure($context);
         // }
 
-        // special feature, oracle PDO counter
+        // // special feature, oracle PDO counter
         // if (
         //     $this->connection->getDriverName() === 'oci'
         //     && ($oracleRowCounter = $this->getFeature('OracleRowCounter'))
