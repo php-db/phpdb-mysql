@@ -146,7 +146,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * @param string $sql
      * @throws Exception\RuntimeException
      */
-    public function prepare($sql = null)
+    public function prepare(?string $sql = null): ?self
     {
         if ($this->isPrepared) {
             throw new Exception\RuntimeException('This statement has been prepared already');
@@ -164,6 +164,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         }
 
         $this->isPrepared = true;
+        // todo: why does this not return $this like mysqli?
+        return $this;
     }
 
     /**

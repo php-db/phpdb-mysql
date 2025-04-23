@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Mysql\Driver;
+namespace Laminas\Db\Adapter\Mysql;
 
 trait DatabasePlatformNameTrait
 {

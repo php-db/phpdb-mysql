@@ -176,7 +176,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * @throws Exception\InvalidQueryException
      * @throws Exception\RuntimeException
      */
-    public function prepare($sql = null)
+    public function prepare(?string $sql = null): self
     {
         if ($this->isPrepared) {
             throw new Exception\RuntimeException('This statement has already been prepared');
