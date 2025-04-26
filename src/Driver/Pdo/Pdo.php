@@ -2,7 +2,7 @@
 
 namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
+use Laminas\Db\Adapter\Driver\PdoDriverInterface;
 use Laminas\Db\Adapter\Driver\Feature\AbstractFeature;
 use Laminas\Db\Adapter\Driver\Feature\DriverFeatureInterface;
 use Laminas\Db\Adapter\Exception;
@@ -18,7 +18,7 @@ use function preg_match;
 use function sprintf;
 use function ucfirst;
 
-class Pdo implements DriverInterface, DriverFeatureInterface, Profiler\ProfilerAwareInterface
+class Pdo implements PdoDriverInterface, DriverFeatureInterface, Profiler\ProfilerAwareInterface
 {
     /**
      * @const
