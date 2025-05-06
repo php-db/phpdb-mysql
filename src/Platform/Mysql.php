@@ -8,6 +8,8 @@ use Laminas\Db\Adapter\Exception\InvalidArgumentException;
 use Laminas\Db\Adapter\Platform\AbstractPlatform;
 use Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo;
+use Laminas\Db\Adapter\Mysql\Sql\Platform\Mysql\Mysql as SqlPlatform;
+use Laminas\Db\Sql\Platform\PlatformDecoratorInterface;
 
 use function implode;
 use function str_replace;
@@ -35,10 +37,11 @@ class Mysql extends AbstractPlatform
     protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
     /**
-     * @param null|\Laminas\Db\Adapter\Driver\Mysqli\Mysqli|\Laminas\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
+     * todo: track down if this still needs to accept null
      */
-    public function __construct($driver = null)
-    {
+    public function __construct(
+        ?DriverInterface $driver = null
+    ) {
         if ($driver) {
             $this->setDriver($driver);
         }
@@ -63,7 +66,7 @@ class Mysql extends AbstractPlatform
         }
 
         throw new Exception\InvalidArgumentException(
-            '$driver must be a Mysqli or Mysql PDO Laminas\Db\Adapter\Driver, Mysqli instance or MySQL PDO instance'
+            '$driver must be a Laminas\Db\Adapter\Mysql\Driver\*, Mysqli\Mysqli or Pdo\Pdo instance'
         );
     }
 
@@ -73,6 +76,11 @@ class Mysql extends AbstractPlatform
     public function getName()
     {
         return 'MySQL';
+    }
+
+    public function getSqlPlatformDecorator(): PlatformDecoratorInterface
+    {
+        return new SqlPlatform();
     }
 
     /**
@@ -110,6 +118,7 @@ class Mysql extends AbstractPlatform
     protected function quoteViaDriver($value)
     {
         if ($this->driver instanceof DriverInterface) {
+            // todo: verify this can not return a PDOStatement instance
             $resource = $this->driver->getConnection()->getResource();
         } else {
             $resource = $this->driver;

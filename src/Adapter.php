@@ -2,18 +2,18 @@
 
 namespace Laminas\Db\Adapter\Mysql;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Adapter\AbstractAdapter;
+use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Exception;
+use Laminas\Db\Adapter\Platform\PlatformInterface;
 
 use function is_string;
 use function str_starts_with;
 use function strtolower;
 
 /**
- * @property Driver\DriverInterface $driver
- * @property Platform\PlatformInterface $platform
+ * @property DriverInterface $driver
+ * @property PlatformInterface $platform
  */
 class Adapter extends AbstractAdapter
 {
@@ -30,13 +30,16 @@ class Adapter extends AbstractAdapter
             );
         }
 
-        if ($parameters['driver'] instanceof DriverInterface) {
+        if ($parameters['driver'] instanceof Driver\Mysqli\Mysqli || $parameters['driver'] instanceof Driver\Pdo\Pdo) {
             return $parameters['driver'];
         }
 
         if (! is_string($parameters['driver'])) {
             throw new Exception\InvalidArgumentException(
-                __FUNCTION__ . ' expects a "driver" to be a string or instance of DriverInterface'
+                __FUNCTION__
+                . ' expects a "driver" to be a string or instance of '
+                . Driver\Mysqli\Mysqli::class
+                . ' or ' . Driver\Pdo\Pdo::class
             );
         }
 
@@ -67,19 +70,10 @@ class Adapter extends AbstractAdapter
 
     protected function createPlatform(array $parameters): PlatformInterface
     {
-        if (isset($parameters['platform'])) {
-            $platformName = $parameters['platform'];
-        } elseif ($this->driver instanceof DriverInterface) {
-            $platformName = $this->driver->getDatabasePlatformName();
-        } else {
-            throw new Exception\InvalidArgumentException(
-                'A platform could not be determined from the provided configuration'
-            );
-        }
-
+        $platformName = $parameters['platform'] ?? $this->driver->getDatabasePlatformName();
         // currently only supported by the IbmDb2 & Oracle concrete implementations
-        //$options = $parameters['platform_options'] ?? [];
-
+        // todo: check recent versions of mysqli and pdo to see if they support this
+        $options = $parameters['platform_options'] ?? [];
         // mysqli or pdo_mysql driver
         if ($this->driver instanceof Driver\Mysqli\Mysqli || $this->driver instanceof Driver\Pdo\Pdo) {
             $driver = $this->driver;
