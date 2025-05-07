@@ -1,10 +1,12 @@
 <?php
 
-namespace LaminasIntegrationTest\Db\Adapter\Platform;
+declare(strict_types=1);
 
-use Laminas\Db\Adapter\Driver\Mysqli;
-use Laminas\Db\Adapter\Driver\Pdo;
-use Laminas\Db\Adapter\Platform\Mysql;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Platform;
+
+use Laminas\Db\Adapter\Mysql\Driver\Mysqli;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo;
+use Laminas\Db\Adapter\Mysql\Platform\Mysql;
 use Override;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

@@ -1,6 +1,8 @@
 <?php
 
-namespace LaminasTest\Db\Adapter\Driver\Pdo;
+declare(strict_types=1);
+
+namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
 use Laminas\Db\Adapter\Driver\Pdo\Connection;

@@ -1,6 +1,8 @@
 <?php
 
-namespace LaminasTest\Db\Adapter\Driver\TestAsset;
+declare(strict_types=1);
+
+namespace LaminasTest\Db\Adapter\Mysql\Driver\TestAsset;
 
 use PDO;
 use ReturnTypeWillChange;

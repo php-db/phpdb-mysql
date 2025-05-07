@@ -1,6 +1,8 @@
 <?php
 
-namespace LaminasTest\Db\Adapter\Driver\Pdo;
+declare(strict_types=1);
+
+namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\Driver\Pdo\Statement;
 use Override;

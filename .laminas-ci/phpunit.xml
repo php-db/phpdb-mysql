@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    requireCoverageMetadata="true"
+    colors="true">
+
+    <extensions>
+        <bootstrap class="LaminasIntegrationTest\Db\Mysql\Extension\ListenerExtension" />
+    </extensions>
+    <testsuites>
+        <testsuite name="unit test">
+            <directory>./test/unit</directory>
+        </testsuite>
+        <testsuite name="integration test">
+            <directory>./test/integration</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <!-- Integration Test Variables -->
+        <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER" value="true" /><!-- todo: remove this env variable as its no longer needed-->
+        <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_HOSTNAME" value="mysql" />
+        <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_USERNAME" value="gha" />
+        <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_PASSWORD" value="password" />
+        <env name="TESTS_LAMINAS_DB_MYSQL_ADAPTER_DATABASE" value="laminasdb_test" />
+    </php>
+</phpunit>
+

@@ -1,6 +1,8 @@
 <?php
 
-namespace LaminasTest\Db\Adapter\Driver\Mysqli;
+declare(strict_types=1);
+
+namespace LaminasTest\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Laminas\Db\Adapter\Driver\Mysqli\Connection;
 use Laminas\Db\Adapter\Driver\Mysqli\Mysqli;

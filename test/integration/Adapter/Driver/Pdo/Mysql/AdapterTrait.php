@@ -1,8 +1,10 @@
 <?php
 
-namespace LaminasIntegrationTest\Db\Adapter\Driver\Pdo\Mysql;
+declare(strict_types=1);
 
-use Laminas\Db\Adapter\Adapter;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
+
+use Laminas\Db\Adapter\Mysql\Adapter;
 use Override;
 
 use function getenv;

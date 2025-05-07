@@ -101,7 +101,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * @param  string $sql
      * @return $this Provides a fluent interface
      */
-    public function setSql($sql)
+    public function setSql($sql): static
     {
         $this->sql = $sql;
         return $this;
@@ -145,7 +145,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      *
      * @return string
      */
-    public function getSql()
+    public function getSql(): ?string
     {
         return $this->sql;
     }
@@ -178,7 +178,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * @throws Exception\InvalidQueryException
      * @throws Exception\RuntimeException
      */
-    public function prepare(?string $sql = null): self
+    public function prepare(?string $sql = null): ?static
     {
         if ($this->isPrepared) {
             throw new Exception\RuntimeException('This statement has already been prepared');

@@ -1,8 +1,10 @@
 <?php
 
-namespace LaminasIntegrationTest\Db\Adapter\Driver\Mysqli;
+declare(strict_types=1);
 
-use Laminas\Db\Adapter\Driver\Mysqli\Connection;
+namespace LaminasIntegrationTest\Db\Adapter\Mysqli\Driver\Mysqli;
+
+use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Connection;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 

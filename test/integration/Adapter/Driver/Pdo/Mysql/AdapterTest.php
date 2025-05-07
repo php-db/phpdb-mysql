@@ -1,6 +1,8 @@
 <?php
 
-namespace LaminasIntegrationTest\Db\Adapter\Driver\Pdo\Mysql;
+declare(strict_types=1);
+
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
 
 use LaminasIntegrationTest\Db\Adapter\Driver\Pdo\AbstractAdapterTestCase;
 use LaminasIntegrationTest\Db\Adapter\Driver\Pdo\AdapterTrait as BaseAdapterTrait;

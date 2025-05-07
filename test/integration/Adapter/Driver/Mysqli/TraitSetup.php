@@ -1,6 +1,8 @@
 <?php
 
-namespace LaminasIntegrationTest\Db\Adapter\Driver\Mysqli;
+declare(strict_types=1);
+
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Override;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;

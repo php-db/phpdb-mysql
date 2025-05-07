@@ -1,6 +1,8 @@
 <?php
 
-namespace LaminasTest\Db\Adapter\Platform;
+declare(strict_types=1);
+
+namespace LaminasTest\Db\Adapter\Mysql\Platform;
 
 use Laminas\Db\Adapter\Platform\Mysql;
 use Override;
