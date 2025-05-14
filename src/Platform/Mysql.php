@@ -42,7 +42,7 @@ class Mysql extends AbstractPlatform
      * todo: track down if this still needs to accept null
      */
     public function __construct(
-        ?DriverInterface $driver = null
+        DriverInterface|\mysqli|\PDO|null $driver = null
     ) {
         if ($driver) {
             $this->setDriver($driver);

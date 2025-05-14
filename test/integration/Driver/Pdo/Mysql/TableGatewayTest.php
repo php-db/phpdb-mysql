@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
 
+use Laminas\Db\Adapter\Mysql\Metadata\Source\MysqlMetadata;
 use Laminas\Db\Sql\TableIdentifier;
 use Laminas\Db\TableGateway\Feature\MetadataFeature;
 use Laminas\Db\TableGateway\TableGateway;
@@ -68,7 +69,7 @@ final class TableGatewayTest extends TestCase
      * @see https://github.com/zendframework/zend-db/issues/35
      * @see https://github.com/zendframework/zend-db/pull/178
      */
-    public function testInsertWithExtendedCharsetFieldName(): int
+    public function testInsertWithExtendedCharsetFieldName(): int|string
     {
         $tableGateway = new TableGateway('test_charset', $this->getAdapter());
 
@@ -105,7 +106,13 @@ final class TableGatewayTest extends TestCase
     #[DataProvider('tableProvider')]
     public function testTableGatewayWithMetadataFeature(array|string|TableIdentifier $table): void
     {
-        $tableGateway = new TableGateway($table, $this->getAdapter(), new MetadataFeature());
+        $tableGateway = new TableGateway(
+                        $table,
+                        $this->getAdapter(),
+                        new MetadataFeature(
+                            new MysqlMetadata($this->getAdapter()),
+                        )
+                    );
 
         self::assertInstanceOf(TableGateway::class, $tableGateway);
         self::assertSame($table, $tableGateway->getTable());

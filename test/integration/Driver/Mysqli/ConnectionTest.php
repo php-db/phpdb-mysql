@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysqli\Driver\Mysqli;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Connection;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 #[Group('integration')]
 #[Group('integration-mysqli')]
+#[CoversMethod(Connection::class, 'connect')]
+#[CoversMethod(Connection::class, 'disconnect')]
+#[CoversMethod(Connection::class, 'isConnected')]
 final class ConnectionTest extends TestCase
 {
     use TraitSetup;
@@ -21,5 +25,6 @@ final class ConnectionTest extends TestCase
 
         self::assertTrue($connection->isConnected());
         $connection->disconnect();
+        self::assertFalse($connection->isConnected());
     }
 }

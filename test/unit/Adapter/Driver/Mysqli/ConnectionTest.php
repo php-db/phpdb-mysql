@@ -9,6 +9,7 @@ use Laminas\Db\Adapter\Driver\Mysqli\Mysqli;
 use Laminas\Db\Adapter\Exception\RuntimeException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -17,6 +18,7 @@ use function getenv;
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
+#[RequiresPhpExtension('mysqli')]
 #[CoversMethod(Connection::class, 'setDriver')]
 #[CoversMethod(Connection::class, 'setConnectionParameters')]
 #[CoversMethod(Connection::class, 'getConnectionParameters')]
@@ -31,9 +33,9 @@ final class ConnectionTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        if (! getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL')) {
-            $this->markTestSkipped('Mysqli test disabled');
-        }
+        // if (! (bool) getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL')) {
+        //     $this->markTestSkipped('Mysqli test disabled');
+        // }
         $this->connection = new Connection([]);
     }
 

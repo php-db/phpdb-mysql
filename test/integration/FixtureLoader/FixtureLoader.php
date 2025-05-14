@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Platform;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\FixtureLoader;
 
 // phpcs:ignore WebimpressCodingStandard.NamingConventions.Interface.Suffix
 interface FixtureLoader

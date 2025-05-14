@@ -18,15 +18,15 @@ trait TraitSetup
 {
     /** @var array<string, string> */
     protected array $variables = [
-        'hostname' => 'TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME',
-        'username' => 'TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_USERNAME',
-        'password' => 'TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_PASSWORD',
-        'database' => 'TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_DATABASE',
+        'hostname' => 'TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME',
+        'username' => 'TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME',
+        'password' => 'TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD',
+        'database' => 'TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE',
     ];
 
     /** @var array<string, string> */
     protected array $optional = [
-        'port' => 'TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_PORT',
+        'port' => 'TESTS_LAMINAS_DB_ADAPTER_MYSQL_PORT',
     ];
 
     /**
@@ -37,14 +37,14 @@ trait TraitSetup
     #[Override]
     protected function setUp(): void
     {
-        $testEnabled = (string) getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_ENABLED');
-        if (strtolower($testEnabled) !== 'true') {
-            $this->markTestSkipped('Mysqli integration test disabled');
-        }
+        // $testEnabled = (string) getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_ENABLED');
+        // if (strtolower($testEnabled) !== 'true') {
+        //     $this->markTestSkipped('Mysqli integration test disabled');
+        // }
 
-        if (! extension_loaded('mysqli')) {
-            $this->fail('The phpunit group integration-mysqli was enabled, but the extension is not loaded.');
-        }
+        // if (! extension_loaded('mysqli')) {
+        //     $this->fail('The phpunit group integration-mysqli was enabled, but the extension is not loaded.');
+        // }
 
         foreach ($this->variables as $name => $value) {
             if (! is_string(getenv($value)) || '' === getenv($value)) {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Platform;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\FixtureLoader;
 
 use Exception;
 use PDO;
@@ -28,22 +28,22 @@ final class MysqlFixtureLoader implements FixtureLoader
         if (
             false === $this->pdo->exec(sprintf(
                 "CREATE DATABASE IF NOT EXISTS %s",
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_DATABASE')
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')
             ))
         ) {
             throw new Exception(sprintf(
                 "I cannot create the MySQL %s test database: %s",
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_DATABASE'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
                 print_r($this->pdo->errorInfo(), true)
             ));
         }
 
-        $this->pdo->exec('USE ' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_DATABASE'));
+        $this->pdo->exec('USE ' . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'));
 
         if (false === $this->pdo->exec(file_get_contents($this->fixtureFile))) {
             throw new Exception(sprintf(
                 "I cannot create the table for %s database. Check the %s file. %s ",
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_DATABASE'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
                 $this->fixtureFile,
                 print_r($this->pdo->errorInfo(), true)
             ));
@@ -58,7 +58,7 @@ final class MysqlFixtureLoader implements FixtureLoader
 
         $this->pdo->exec(sprintf(
             "DROP DATABASE IF EXISTS %s",
-            getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_DATABASE')
+            getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')
         ));
 
         $this->disconnect();
@@ -66,15 +66,15 @@ final class MysqlFixtureLoader implements FixtureLoader
 
     protected function connect(): void
     {
-        $dsn = 'mysql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME');
-        if (getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_PORT')) {
-            $dsn .= ';port=' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_PORT');
+        $dsn = 'mysql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME');
+        if (getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PORT')) {
+            $dsn .= ';port=' . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PORT');
         }
 
         $this->pdo = new PDO(
             $dsn,
-            getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_USERNAME'),
-            getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_PASSWORD')
+            getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
+            getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD')
         );
     }
 

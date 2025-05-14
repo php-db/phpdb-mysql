@@ -6,7 +6,7 @@ namespace Laminas\Db\Adapter\Mysql\Metadata\Source;
 
 use DateTime;
 use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Metadata\Source\AbstractSource;
+use Laminas\Db\Metadata\Source\AbstractSource;
 
 use function array_change_key_case;
 use function array_walk;

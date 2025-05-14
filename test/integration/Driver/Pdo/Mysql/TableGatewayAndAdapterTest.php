@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
 
 use Exception;
+use Laminas\Db\Adapter\Driver\ConnectionInterface;
 use Laminas\Db\TableGateway\TableGateway;
 use LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -18,6 +20,7 @@ use function array_fill;
  * On tear down disconnected from the database and set the driver adapter on null
  * Running many tests ended up in consuming all mysql connections and not releasing them
  */
+#[CoversMethod(ConnectionInterface::class, 'disconnect')]
 final class TableGatewayAndAdapterTest extends TestCase
 {
     use AdapterTrait;

@@ -8,6 +8,7 @@ use Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo;
 use Laminas\Db\Adapter\Mysql\Platform\Mysql;
 use Override;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -16,6 +17,8 @@ use function getenv;
 
 #[Group('integration')]
 #[Group('integration-mysql')]
+#[CoversMethod(Mysqli\Mysqli::class, 'quoteValue')]
+#[CoversMethod(Pdo\Pdo::class, 'quoteValue')]
 final class MysqlTest extends TestCase
 {
     /** @var array<string, resource|\PDO> */
@@ -24,23 +27,23 @@ final class MysqlTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        if (! getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL')) {
+        if (! getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL')) {
             $this->markTestSkipped(self::class . ' integration tests are not enabled!');
         }
         if (extension_loaded('mysqli')) {
             $this->adapters['mysqli'] = new \mysqli(
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_USERNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_PASSWORD'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_DATABASE')
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')
             );
         }
         if (extension_loaded('pdo')) {
             $this->adapters['pdo_mysql'] = new \PDO(
-                'mysql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_HOSTNAME') . ';dbname='
-                . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_DATABASE'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_USERNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL_PASSWORD')
+                'mysql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME') . ';dbname='
+                . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD')
             );
         }
     }

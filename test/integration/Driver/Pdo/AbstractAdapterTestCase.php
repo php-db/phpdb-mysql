@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Db\Adapter\Driver\ConnectionInterface;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -12,6 +13,9 @@ use function getmypid;
 use function shell_exec;
 
 #[CoversMethod(AdapterInterface::class, '__construct()')]
+#[CoversMethod(ConnectionInterface::class, 'connect')]
+#[CoversMethod(ConnectionInterface::class, 'disconnect')]
+#[CoversMethod(ConnectionInterface::class, 'isConnected')]
 abstract class AbstractAdapterTestCase extends TestCase
 {
     use AdapterTrait;
