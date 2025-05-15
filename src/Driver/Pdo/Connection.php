@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\AbstractConnection;
+use Laminas\Db\Adapter\Driver\Pdo\AbstractPdoConnection;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\Exception\RuntimeException;
+use Override;
 use PDOException;
 use PDOStatement;
 
@@ -19,114 +20,20 @@ use function strpos;
 use function strtolower;
 use function substr;
 
-class Connection extends AbstractConnection
+class Connection extends AbstractPdoConnection
 {
-    /** @var Pdo */
-    protected $driver;
-
-    /** @var \PDO */
-    protected $resource;
-
-    /** @var string */
-    protected $dsn;
-
     /**
-     * Constructor
-     *
-     * @param  array|\PDO|null                    $connectionParameters
-     * @throws Exception\InvalidArgumentException
+     * @inheritDoc
      */
-    public function __construct($connectionParameters = null)
-    {
-        if (is_array($connectionParameters)) {
-            $this->setConnectionParameters($connectionParameters);
-        } elseif ($connectionParameters instanceof \PDO) {
-            $this->setResource($connectionParameters);
-        } elseif (null !== $connectionParameters) {
-            throw new Exception\InvalidArgumentException(
-                '$connection must be an array of parameters, a PDO object or null'
-            );
-        }
-    }
-
-    /**
-     * Set driver
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function setDriver(Pdo $driver)
-    {
-        $this->driver = $driver;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setConnectionParameters(array $connectionParameters)
-    {
-        $this->connectionParameters = $connectionParameters;
-        if (isset($connectionParameters['dsn'])) {
-            $this->driverName = substr(
-                $connectionParameters['dsn'],
-                0,
-                strpos($connectionParameters['dsn'], ':')
-            );
-        } elseif (isset($connectionParameters['pdodriver'])) {
-            $this->driverName = strtolower($connectionParameters['pdodriver']);
-        } elseif (isset($connectionParameters['driver'])) {
-            $this->driverName = strtolower(substr(
-                str_replace(['-', '_', ' '], '', $connectionParameters['driver']),
-                3
-            ));
-        }
-    }
-
-    /**
-     * Get the dsn string for this connection
-     *
-     * @throws RuntimeException
-     * @return string
-     */
-    public function getDsn()
-    {
-        if (! $this->dsn) {
-            throw new Exception\RuntimeException(
-                'The DSN has not been set or constructed from parameters in connect() for this Connection'
-            );
-        }
-
-        return $this->dsn;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCurrentSchema()
+    #[Override]
+    public function getCurrentSchema(): string|bool
     {
         if (! $this->isConnected()) {
             $this->connect();
         }
 
-        switch ($this->driverName) {
-            case 'mysql':
-                $sql = 'SELECT DATABASE()';
-                break;
-            case 'sqlite':
-                return 'main';
-            case 'sqlsrv':
-            case 'dblib':
-                $sql = 'SELECT SCHEMA_NAME()';
-                break;
-            case 'pgsql':
-            default:
-                $sql = 'SELECT CURRENT_SCHEMA';
-                break;
-        }
-
         /** @var PDOStatement $result */
-        $result = $this->resource->query($sql);
+        $result = $this->resource->query('SELECT DATABASE()');
         if ($result instanceof PDOStatement) {
             return $result->fetchColumn();
         }
@@ -135,25 +42,13 @@ class Connection extends AbstractConnection
     }
 
     /**
-     * Set resource
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function setResource(\PDO $resource)
-    {
-        $this->resource   = $resource;
-        $this->driverName = strtolower($this->resource->getAttribute(\PDO::ATTR_DRIVER_NAME));
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
+     * @inheritDoc
      *
      * @throws Exception\InvalidConnectionParametersException
      * @throws Exception\RuntimeException
      */
-    public function connect()
+    #[Override]
+    public function connect(): static
     {
         if ($this->resource) {
             return $this;
@@ -270,9 +165,6 @@ class Connection extends AbstractConnection
         try {
             $this->resource = new \PDO($dsn, $username, $password, $options);
             $this->resource->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            if (isset($charset) && $pdoDriver === 'pgsql') {
-                $this->resource->exec('SET NAMES ' . $this->resource->quote($charset));
-            }
             $this->driverName = strtolower($this->resource->getAttribute(\PDO::ATTR_DRIVER_NAME));
         } catch (PDOException $e) {
             $code = $e->getCode();
@@ -286,139 +178,13 @@ class Connection extends AbstractConnection
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function isConnected()
-    {
-        return $this->resource instanceof \PDO;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function beginTransaction()
-    {
-        if (! $this->isConnected()) {
-            $this->connect();
-        }
-
-        if (0 === $this->nestedTransactionsCount) {
-            $this->resource->beginTransaction();
-            $this->inTransaction = true;
-        }
-
-        $this->nestedTransactionsCount++;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function commit()
-    {
-        if (! $this->isConnected()) {
-            $this->connect();
-        }
-
-        if ($this->inTransaction) {
-            $this->nestedTransactionsCount -= 1;
-        }
-
-        /*
-         * This shouldn't check for being in a transaction since
-         * after issuing a SET autocommit=0; we have to commit too.
-         */
-        if (0 === $this->nestedTransactionsCount) {
-            $this->resource->commit();
-            $this->inTransaction = false;
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
+     * @inheritDoc
      *
-     * @throws Exception\RuntimeException
+     * @param string $name
      */
-    public function rollback()
+    #[Override]
+    public function getLastGeneratedValue($name = null): string|int|bool|null
     {
-        if (! $this->isConnected()) {
-            throw new Exception\RuntimeException('Must be connected before you can rollback');
-        }
-
-        if (! $this->inTransaction()) {
-            throw new Exception\RuntimeException('Must call beginTransaction() before you can rollback');
-        }
-
-        $this->resource->rollBack();
-
-        $this->inTransaction           = false;
-        $this->nestedTransactionsCount = 0;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws Exception\InvalidQueryException
-     */
-    public function execute($sql)
-    {
-        if (! $this->isConnected()) {
-            $this->connect();
-        }
-
-        if ($this->profiler) {
-            $this->profiler->profilerStart($sql);
-        }
-
-        $resultResource = $this->resource->query($sql);
-
-        if ($this->profiler) {
-            $this->profiler->profilerFinish($sql);
-        }
-
-        if ($resultResource === false) {
-            $errorInfo = $this->resource->errorInfo();
-            throw new Exception\InvalidQueryException($errorInfo[2]);
-        }
-
-        return $this->driver->createResult($resultResource, $sql);
-    }
-
-    /**
-     * Prepare
-     *
-     * @param  string    $sql
-     * @return Statement
-     */
-    public function prepare($sql)
-    {
-        if (! $this->isConnected()) {
-            $this->connect();
-        }
-
-        return $this->driver->createStatement($sql);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param  string            $name
-     * @return string|null|false
-     */
-    public function getLastGeneratedValue($name = null)
-    {
-        if (
-            $name === null
-            && ($this->driverName === 'pgsql' || $this->driverName === 'firebird')
-        ) {
-            return;
-        }
-
         try {
             return $this->resource->lastInsertId($name);
         } catch (\Exception $e) {

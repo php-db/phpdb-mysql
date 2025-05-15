@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\Pdo\Connection;
-use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\Db\Adapter\Driver\Pdo\Result;
 use Laminas\Db\Adapter\Driver\Pdo\Statement;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

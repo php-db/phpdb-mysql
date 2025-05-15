@@ -6,8 +6,10 @@ namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Exception as GenericException;
 use Laminas\Db\Adapter\Driver\AbstractConnection;
+use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\Exception\InvalidArgumentException;
+use Override;
 
 use function constant;
 use function defined;
@@ -45,20 +47,16 @@ class Connection extends AbstractConnection
         }
     }
 
-    /**
-     * @return $this Provides a fluent interface
-     */
-    public function setDriver(Mysqli $driver)
+    public function setDriver(Mysqli $driver): static
     {
         $this->driver = $driver;
 
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getCurrentSchema()
+    /** @inheritDoc */
+    #[Override]
+    public function getCurrentSchema(): string|bool
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -82,10 +80,9 @@ class Connection extends AbstractConnection
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function connect()
+    /** @inheritDoc */
+    #[Override]
+    public function connect(): static
     {
         if ($this->resource instanceof \mysqli) {
             return $this;
@@ -180,29 +177,26 @@ class Connection extends AbstractConnection
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isConnected()
+    /** @inheritDoc */
+    public function isConnected(): bool
     {
         return $this->resource instanceof \mysqli;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function disconnect()
+    /** @inheritDoc */
+    #[Override]
+    public function disconnect(): static
     {
         if ($this->resource instanceof \mysqli) {
             $this->resource->close();
         }
         $this->resource = null;
+        return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function beginTransaction()
+    /** @inheritDoc */
+    #[Override]
+    public function beginTransaction(): static
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -214,10 +208,9 @@ class Connection extends AbstractConnection
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function commit()
+    /** @inheritDoc */
+    #[Override]
+    public function commit(): static
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -230,10 +223,9 @@ class Connection extends AbstractConnection
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function rollback()
+    /** @inheritDoc */
+    #[Override]
+    public function rollback(): static
     {
         if (! $this->isConnected()) {
             throw new Exception\RuntimeException('Must be connected before you can rollback.');
@@ -251,11 +243,12 @@ class Connection extends AbstractConnection
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      *
      * @throws Exception\InvalidQueryException
      */
-    public function execute($sql)
+    #[Override]
+    public function execute($sql): ResultInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -279,16 +272,17 @@ class Connection extends AbstractConnection
         return $this->driver->createResult($resultResource === true ? $this->resource : $resultResource);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getLastGeneratedValue($name = null)
+    /** @inheritDoc */
+    #[Override]
+    public function getLastGeneratedValue($name = null): string|int|bool|null
     {
         return $this->resource->insert_id;
     }
 
     /**
      * Create a new mysqli resource
+     *
+     * todo: why do we have this random method here?
      *
      * @return \mysqli
      */

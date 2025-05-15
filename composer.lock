@@ -61,12 +61,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/axleus/laminas-db.git",
-                "reference": "d5b3f4ec3ecbfdc9946a20e49353d4e290571686"
+                "reference": "05b6f9982ed1552e0bcdaec403c29d45933eba39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/axleus/laminas-db/zipball/d5b3f4ec3ecbfdc9946a20e49353d4e290571686",
-                "reference": "d5b3f4ec3ecbfdc9946a20e49353d4e290571686",
+                "url": "https://api.github.com/repos/axleus/laminas-db/zipball/05b6f9982ed1552e0bcdaec403c29d45933eba39",
+                "reference": "05b6f9982ed1552e0bcdaec403c29d45933eba39",
                 "shasum": ""
             },
             "require": {
@@ -154,7 +154,7 @@
                     "url": "https://github.com/AXLEUS"
                 }
             ],
-            "time": "2025-05-14T05:30:43+00:00"
+            "time": "2025-05-15T07:24:38+00:00"
         },
         {
             "name": "laminas/laminas-servicemanager",

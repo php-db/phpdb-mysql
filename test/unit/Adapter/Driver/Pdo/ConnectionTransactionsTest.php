@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\Driver\AbstractConnection;
-use Laminas\Db\Adapter\Driver\Pdo\Connection;
 use Laminas\Db\Adapter\Exception\RuntimeException;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
 use LaminasTest\Db\TestAsset\ConnectionWrapper;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests for {@see \Laminas\Db\Adapter\Driver\Pdo\Connection} transaction support
+ * Tests for {@see \Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection} transaction support
  */
 #[CoversClass(Connection::class)]
 #[CoversClass(AbstractConnection::class)]

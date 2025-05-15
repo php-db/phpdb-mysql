@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace LaminasTest\Db\Adapter\Mysql\Driver\Mysqli;
 
-use Laminas\Db\Adapter\Driver\Mysqli\Connection;
-use Laminas\Db\Adapter\Driver\Mysqli\Mysqli;
+use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Connection;
+use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Mysqli;
 use Laminas\Db\Adapter\Exception\RuntimeException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;

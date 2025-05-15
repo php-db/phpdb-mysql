@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\Db\Adapter\Driver\Pdo\Result;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
 use Laminas\Db\Exception\RuntimeException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -32,9 +32,9 @@ final class PdoTest extends TestCase
     public function testGetDatabasePlatformName(): void
     {
         // Test platform name for SqlServer
-        $this->pdo->getConnection()->setConnectionParameters(['pdodriver' => 'sqlsrv']);
-        self::assertEquals('SqlServer', $this->pdo->getDatabasePlatformName());
-        self::assertEquals('SQLServer', $this->pdo->getDatabasePlatformName(DriverInterface::NAME_FORMAT_NATURAL));
+        $this->pdo->getConnection()->setConnectionParameters(['pdodriver' => 'pdo_mysql']);
+        self::assertEquals('Mysql', $this->pdo->getDatabasePlatformName());
+        self::assertEquals('MySQL', $this->pdo->getDatabasePlatformName(DriverInterface::NAME_FORMAT_NATURAL));
     }
 
     /** @psalm-return array<array-key, array{0: int|string, 1: null|string, 2: string}> */

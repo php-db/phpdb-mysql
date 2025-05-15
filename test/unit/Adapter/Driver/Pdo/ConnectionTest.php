@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
-use Laminas\Db\Adapter\Driver\Pdo\Connection;
 use Laminas\Db\Adapter\Exception\InvalidConnectionParametersException;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
