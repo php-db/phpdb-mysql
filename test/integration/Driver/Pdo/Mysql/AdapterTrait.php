@@ -8,8 +8,6 @@ use Laminas\Db\Adapter\Mysql\Adapter;
 use Override;
 
 use function getenv;
-use function is_string;
-use function strtolower;
 
 trait AdapterTrait
 {

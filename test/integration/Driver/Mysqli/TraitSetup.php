@@ -7,11 +7,9 @@ namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Mysqli;
 use Override;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 
-use function extension_loaded;
 use function getenv;
 use function is_string;
 use function sprintf;
-use function strtolower;
 
 // phpcs:ignore WebimpressCodingStandard.NamingConventions.Trait.Suffix
 trait TraitSetup

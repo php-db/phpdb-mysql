@@ -14,14 +14,16 @@ use function implode;
 use function preg_match;
 use function preg_match_all;
 use function str_replace;
-use function strpos;
 
 use const CASE_LOWER;
 use const PREG_PATTERN_ORDER;
 
 class MysqlMetadata extends AbstractSource
 {
-    protected function loadSchemaData()
+    /**
+     * @throws \Exception
+     */
+    protected function loadSchemaData(): void
     {
         if (isset($this->data['schemas'])) {
             return;
@@ -49,7 +51,7 @@ class MysqlMetadata extends AbstractSource
      * @param string $schema
      * @return void
      */
-    protected function loadTableNameData($schema)
+    protected function loadTableNameData($schema): void
     {
         if (isset($this->data['table_names'][$schema])) {
             return;
@@ -110,7 +112,7 @@ class MysqlMetadata extends AbstractSource
      * @param string $schema
      * @return void
      */
-    protected function loadColumnData($table, $schema)
+    protected function loadColumnData($table, $schema): void
     {
         if (isset($this->data['columns'][$schema][$table])) {
             return;
@@ -185,7 +187,7 @@ class MysqlMetadata extends AbstractSource
                 'character_octet_length'   => $row['CHARACTER_OCTET_LENGTH'],
                 'numeric_precision'        => $row['NUMERIC_PRECISION'],
                 'numeric_scale'            => $row['NUMERIC_SCALE'],
-                'numeric_unsigned'         => false !== strpos($row['COLUMN_TYPE'], 'unsigned'),
+                'numeric_unsigned'         => str_contains($row['COLUMN_TYPE'], 'unsigned'),
                 'erratas'                  => $erratas,
             ];
         }

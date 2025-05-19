@@ -226,7 +226,7 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
      * @param mixed  $type
      * @return string
      */
-    public function formatParameterName($name, $type = null)
+    public function formatParameterName($name, $type = null): string
     {
         return '?';
     }

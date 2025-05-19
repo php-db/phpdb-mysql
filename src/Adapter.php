@@ -72,7 +72,6 @@ class Adapter extends AbstractAdapter
 
     protected function createPlatform(array $parameters): PlatformInterface
     {
-        $platformName = $parameters['platform'] ?? $this->driver->getDatabasePlatformName();
         // currently only supported by the IbmDb2 & Oracle concrete implementations
         // todo: check recent versions of mysqli and pdo to see if they support this
         $options = $parameters['platform_options'] ?? [];

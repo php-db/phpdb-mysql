@@ -6,17 +6,14 @@ namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\Driver\Pdo\AbstractPdoConnection;
 use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Exception\RuntimeException;
 use Override;
 use PDOException;
 use PDOStatement;
 
 use function array_diff_key;
 use function implode;
-use function is_array;
 use function is_int;
 use function str_replace;
-use function strpos;
 use function strtolower;
 use function substr;
 
@@ -63,7 +60,7 @@ class Connection extends AbstractPdoConnection
                     break;
                 case 'driver':
                     $value = strtolower((string) $value);
-                    if (strpos($value, 'pdo') === 0) {
+                    if (str_starts_with($value, 'pdo')) {
                         $pdoDriver = str_replace(['-', '_', ' '], '', $value);
                         $pdoDriver = substr($pdoDriver, 3) ?: '';
                     }
@@ -187,7 +184,7 @@ class Connection extends AbstractPdoConnection
     {
         try {
             return $this->resource->lastInsertId($name);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // do nothing
         }
 

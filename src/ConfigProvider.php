@@ -5,12 +5,8 @@ namespace Laminas\Db\Adapter\Mysql;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\AdapterAbstractServiceFactory;
 use Laminas\Db\Adapter\AdapterServiceFactory;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Container\MetadataFactory;
 use Laminas\Db\Metadata\MetadataInterface;
-use Laminas\ServiceManager\Factory\InvokableFactory;
-use PHPUnit\Metadata\Metadata;
 
 readonly class ConfigProvider
 {
