@@ -8,14 +8,15 @@ use Laminas\Db\Adapter\Driver\Pdo\AbstractPdo;
 use Laminas\Db\Adapter\Driver\Pdo\Result;
 use Laminas\Db\Adapter\Driver\Pdo\Statement;
 use Laminas\Db\Adapter\Driver\Feature\AbstractFeature;
-use Laminas\Db\Adapter\Exception;
+use Laminas\Db\Adapter\Mysql\DatabasePlatformNameTrait;
 use Laminas\Db\Adapter\Profiler;
 
 use function is_array;
-use function ucfirst;
 
 class Pdo extends AbstractPdo
 {
+    use DatabasePlatformNameTrait;
+
     /**
      * @param array|Connection|\PDO $connection
      * @param string $features
@@ -101,31 +102,5 @@ class Pdo extends AbstractPdo
             return $this->features[$name];
         }
         return false;
-    }
-
-    /**
-     * Get database platform name
-     *
-     * @param  string $nameFormat
-     * @return string
-     */
-    public function getDatabasePlatformName($nameFormat = self::NAME_FORMAT_CAMELCASE): string
-    {
-        $name = $this->getConnection()->getDriverName();
-
-        if ($nameFormat === self::NAME_FORMAT_CAMELCASE) {
-            return ucfirst($name);
-        }
-
-        if ($nameFormat === self::NAME_FORMAT_NATURAL) {
-            return match ($name) {
-                'mysql' => 'MySQL',
-                default => ucfirst($name),
-            };
-        }
-
-        throw new Exception\InvalidArgumentException(
-            'Invalid name format provided. Must be one of: ' . self::NAME_FORMAT_CAMELCASE . ', ' . self::NAME_FORMAT_NATURAL
-        );
     }
 }
