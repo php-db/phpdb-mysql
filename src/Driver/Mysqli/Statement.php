@@ -143,7 +143,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Get sql
      *
-     * @return string
+     * @return string|null
      */
     public function getSql(): ?string
     {
@@ -173,10 +173,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Prepare
      *
-     * @param string $sql
-     * @return $this Provides a fluent interface
-     * @throws Exception\InvalidQueryException
-     * @throws Exception\RuntimeException
+     * @param string|null $sql
+     * @return Statement|null Provides a fluent interface
      */
     public function prepare(?string $sql = null): ?static
     {
@@ -231,15 +229,11 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         }
         /** END Standard ParameterContainer Merging Block */
 
-        if ($this->profiler) {
-            $this->profiler->profilerStart($this);
-        }
+        $this->profiler?->profilerStart($this);
 
         $return = $this->resource->execute();
 
-        if ($this->profiler) {
-            $this->profiler->profilerFinish();
-        }
+        $this->profiler?->profilerFinish();
 
         if ($return === false) {
             throw new Exception\RuntimeException($this->resource->error);

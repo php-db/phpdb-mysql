@@ -12,10 +12,9 @@ trait DatabasePlatformNameTrait
     /**
      * Get database platform name
      *
-     * @param  string $nameFormat
-     * @return string
+     * @param string $nameFormat
      */
-    public function getDatabasePlatformName($nameFormat = DriverInterface::NAME_FORMAT_CAMELCASE)
+    public function getDatabasePlatformName(string $nameFormat = DriverInterface::NAME_FORMAT_CAMELCASE): string
     {
         if ($nameFormat === DriverInterface::NAME_FORMAT_CAMELCASE) {
             return 'Mysql';

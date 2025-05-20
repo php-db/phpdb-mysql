@@ -13,8 +13,6 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-use function getenv;
-
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
