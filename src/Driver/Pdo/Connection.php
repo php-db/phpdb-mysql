@@ -116,38 +116,23 @@ class Connection extends AbstractPdoConnection
 
         if (! isset($dsn) && isset($pdoDriver)) {
             $dsn = [];
-            switch ($pdoDriver) {
-                case 'sqlite':
-                    $dsn[] = $database;
-                    break;
-                case 'sqlsrv':
-                    if (isset($database)) {
-                        $dsn[] = "database={$database}";
-                    }
-                    if (isset($hostname)) {
-                        $dsn[] = "server={$hostname}";
-                    }
-                    break;
-                default:
-                    if (isset($database)) {
-                        $dsn[] = "dbname={$database}";
-                    }
-                    if (isset($hostname)) {
-                        $dsn[] = "host={$hostname}";
-                    }
-                    if (isset($port)) {
-                        $dsn[] = "port={$port}";
-                    }
-                    if (isset($charset) && $pdoDriver !== 'pgsql') {
-                        $dsn[] = "charset={$charset}";
-                    }
-                    if (isset($unixSocket)) {
-                        $dsn[] = "unix_socket={$unixSocket}";
-                    }
-                    if (isset($version)) {
-                        $dsn[] = "version={$version}";
-                    }
-                    break;
+            if (isset($database)) {
+                $dsn[] = "dbname={$database}";
+            }
+            if (isset($hostname)) {
+                $dsn[] = "host={$hostname}";
+            }
+            if (isset($port)) {
+                $dsn[] = "port={$port}";
+            }
+            if (isset($charset) && $pdoDriver !== 'pgsql') {
+                $dsn[] = "charset={$charset}";
+            }
+            if (isset($unixSocket)) {
+                $dsn[] = "unix_socket={$unixSocket}";
+            }
+            if (isset($version)) {
+                $dsn[] = "version={$version}";
             }
             $dsn = $pdoDriver . ':' . implode(';', $dsn);
         } elseif (! isset($dsn)) {

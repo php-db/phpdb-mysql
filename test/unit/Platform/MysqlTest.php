@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LaminasTest\Db\Adapter\Mysql\Platform;
 
-use Laminas\Db\Adapter\Platform\Mysql;
+use Laminas\Db\Adapter\Mysql\Platform\Mysql;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;

@@ -7,7 +7,7 @@ namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 use Laminas\Db\Adapter\Driver\AbstractConnection;
 use Laminas\Db\Adapter\Exception\RuntimeException;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
-use LaminasTest\Db\TestAsset\ConnectionWrapper;
+use LaminasTest\Db\Adapter\Mysql\TestAsset\ConnectionWrapper;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -24,8 +24,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(Connection::class, 'rollback()')]
 final class ConnectionTransactionsTest extends TestCase
 {
-    /** @var Wrapper */
-    protected Wrapper|ConnectionWrapper $wrapper;
+    protected ConnectionWrapper $wrapper;
 
     /**
      * {@inheritDoc}

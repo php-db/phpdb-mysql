@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaminasTest\Db\TestAsset;
+namespace LaminasTest\Db\Adapter\Mysql\TestAsset;
 
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
-use LaminasTest\Db\Adapter\Pdo\PdoStubDriver;
 
 /**
  * Test asset class used only by {@see \LaminasTest\Db\Adapter\Driver\Pdo\ConnectionTransactionsTest}

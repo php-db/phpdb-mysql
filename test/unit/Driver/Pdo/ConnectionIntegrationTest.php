@@ -29,16 +29,22 @@ use PHPUnit\Framework\TestCase;
 final class ConnectionIntegrationTest extends TestCase
 {
     /** @var array<string, string> */
-    protected array $variables = ['pdodriver' => 'sqlite', 'database' => ':memory:'];
+    protected array $variables = ['driver' => 'pdo_mysql', 'database' => 'laminas_test'];
 
     public function testGetCurrentSchema(): void
     {
+        $this->markTestIncomplete(
+            'Already covered by integration group'
+        );
         $connection = new Connection($this->variables);
         self::assertIsString($connection->getCurrentSchema());
     }
 
     public function testSetResource(): void
     {
+        $this->markTestIncomplete(
+            'Needs refactored since no Sqlite testing should occur here'
+        );
         $resource   = new TestAsset\SqliteMemoryPdo();
         $connection = new Connection([]);
         self::assertSame($connection, $connection->setResource($resource));
@@ -50,6 +56,9 @@ final class ConnectionIntegrationTest extends TestCase
 
     public function testGetResource(): void
     {
+        $this->markTestIncomplete(
+            'Possibly covered by integration group'
+        );
         $connection = new Connection($this->variables);
         $connection->connect();
         self::assertInstanceOf('PDO', $connection->getResource());
@@ -60,6 +69,9 @@ final class ConnectionIntegrationTest extends TestCase
 
     public function testConnect(): void
     {
+        $this->markTestIncomplete(
+            'Already covered by integration group'
+        );
         $connection = new Connection($this->variables);
         self::assertSame($connection, $connection->connect());
         self::assertTrue($connection->isConnected());
@@ -70,6 +82,9 @@ final class ConnectionIntegrationTest extends TestCase
 
     public function testIsConnected(): void
     {
+        $this->markTestIncomplete(
+            'Already covered by integration group'
+        );
         $connection = new Connection($this->variables);
         self::assertFalse($connection->isConnected());
         self::assertSame($connection, $connection->connect());
@@ -81,6 +96,9 @@ final class ConnectionIntegrationTest extends TestCase
 
     public function testDisconnect(): void
     {
+        $this->markTestIncomplete(
+            'Already covered by integration group'
+        );
         $connection = new Connection($this->variables);
         $connection->connect();
         self::assertTrue($connection->isConnected());
@@ -123,6 +141,9 @@ final class ConnectionIntegrationTest extends TestCase
 
     public function testExecute(): void
     {
+        $this->markTestIncomplete(
+            'Needs refactored or removed since sqlsrv testing should not occur here'
+        );
         $sqlsrv     = new Pdo($this->variables);
         $connection = $sqlsrv->getConnection();
 
@@ -132,6 +153,9 @@ final class ConnectionIntegrationTest extends TestCase
 
     public function testPrepare(): void
     {
+        $this->markTestIncomplete(
+            'Needs refactored or removed since we do not have a valid connection in Unit test'
+        );
         $sqlsrv     = new Pdo($this->variables);
         $connection = $sqlsrv->getConnection();
 
@@ -149,6 +173,9 @@ final class ConnectionIntegrationTest extends TestCase
     #[Group('laminas3469')]
     public function testConnectReturnsConnectionWhenResourceSet(): void
     {
+        $this->markTestIncomplete(
+            'Needs refactored or removed since we do not have a valid connection in Unit test'
+        );
         $resource   = new TestAsset\SqliteMemoryPdo();
         $connection = new Connection([]);
         $connection->setResource($resource);

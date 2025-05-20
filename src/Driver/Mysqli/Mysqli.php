@@ -7,6 +7,7 @@ namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\Profiler;
+use Laminas\Db\Adapter\Mysql\DatabasePlatformNameTrait;
 use mysqli_stmt;
 
 use function array_intersect_key;
@@ -16,6 +17,8 @@ use function is_string;
 
 class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
 {
+    use DatabasePlatformNameTrait;
+
     /** @var Connection */
     protected $connection;
 
@@ -123,21 +126,6 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
     public function getResultPrototype()
     {
         return $this->resultPrototype;
-    }
-
-    /**
-     * Get database platform name
-     *
-     * @param  string $nameFormat
-     * @return string
-     */
-    public function getDatabasePlatformName($nameFormat = self::NAME_FORMAT_CAMELCASE)
-    {
-        if ($nameFormat === self::NAME_FORMAT_CAMELCASE) {
-            return 'Mysql';
-        }
-
-        return 'MySQL';
     }
 
     /**
