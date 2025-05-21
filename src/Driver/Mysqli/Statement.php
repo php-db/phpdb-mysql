@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 
+use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\ParameterContainer;
@@ -160,12 +161,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         return $this->parameterContainer;
     }
 
-    /**
-     * Is prepared
-     *
-     * @return bool
-     */
-    public function isPrepared()
+    /** Is prepared */
+    public function isPrepared(): bool
     {
         return $this->isPrepared;
     }
@@ -176,7 +173,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * @param string|null $sql
      * @return Statement|null Provides a fluent interface
      */
-    public function prepare(?string $sql = null): ?static
+    public function prepare(?string $sql = null): StatementInterface
     {
         if ($this->isPrepared) {
             throw new Exception\RuntimeException('This statement has already been prepared');
@@ -200,11 +197,9 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Execute
      *
-     * @param null|array|ParameterContainer $parameters
      * @throws Exception\RuntimeException
-     * @return mixed
      */
-    public function execute($parameters = null)
+    public function execute(null|array|ParameterContainer $parameters = null): ?ResultInterface
     {
         if (! $this->isPrepared) {
             $this->prepare();

@@ -25,6 +25,11 @@
             <directory>./test/integration</directory>
         </testsuite>
     </testsuites>
+    <source restrictNotices="true">
+        <include>
+            <directory>./src</directory>
+        </include>
+    </source>
     <php>
         <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL" value="true"/>
         <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME" value="localhost"/>
