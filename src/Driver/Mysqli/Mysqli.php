@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 
+use Laminas\Db\Adapter\Driver\ConnectionInterface;
+use Laminas\Db\Adapter\Driver\DriverAwareInterface;
 use Laminas\Db\Adapter\Driver\DriverInterface;
+use Laminas\Db\Adapter\Driver\ResultInterface;
+use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Profiler;
+use Laminas\Db\Adapter\Profiler\ProfilerAwareInterface;
+use Laminas\Db\Adapter\Profiler\ProfilerInterface;
 use Laminas\Db\Adapter\Mysql\DatabasePlatformNameTrait;
 use mysqli_stmt;
 
@@ -15,36 +20,21 @@ use function array_merge;
 use function extension_loaded;
 use function is_string;
 
-class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
+class Mysqli implements DriverInterface, ProfilerAwareInterface
 {
     use DatabasePlatformNameTrait;
 
-    /** @var Connection */
-    protected $connection;
-
-    /** @var Statement */
-    protected $statementPrototype;
-
-    /** @var Result */
-    protected $resultPrototype;
-
-    /** @var Profiler\ProfilerInterface */
-    protected $profiler;
+    protected ?ProfilerInterface $profiler = null;
 
     /** @var array */
     protected $options = [
         'buffer_results' => false,
     ];
 
-    /**
-     * Constructor
-     *
-     * @param array|Connection|\mysqli $connection
-     */
     public function __construct(
-        $connection,
-        ?Statement $statementPrototype = null,
-        ?Result $resultPrototype = null,
+        protected ConnectionInterface|\mysqli|array $connection,
+        protected ?StatementInterface $statementPrototype = null,
+        protected ?ResultInterface $resultPrototype = null,
         array $options = []
     ) {
         if (! $connection instanceof Connection) {
@@ -61,22 +51,19 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
     /**
      * @return $this Provides a fluent interface
      */
-    public function setProfiler(Profiler\ProfilerInterface $profiler)
+    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;
-        if ($this->connection instanceof Profiler\ProfilerAwareInterface) {
+        if ($this->connection instanceof ProfilerAwareInterface) {
             $this->connection->setProfiler($profiler);
         }
-        if ($this->statementPrototype instanceof Profiler\ProfilerAwareInterface) {
+        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
             $this->statementPrototype->setProfiler($profiler);
         }
         return $this;
     }
 
-    /**
-     * @return null|Profiler\ProfilerInterface
-     */
-    public function getProfiler()
+    public function getProfiler(): ?ProfilerInterface
     {
         return $this->profiler;
     }
@@ -86,20 +73,25 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
      *
      * @return $this Provides a fluent interface
      */
-    public function registerConnection(Connection $connection)
+    public function registerConnection(ConnectionInterface $connection): DriverInterface
     {
         $this->connection = $connection;
-        $this->connection->setDriver($this); // needs access to driver to createStatement()
+        if ($this->connection instanceof DriverAwareInterface) {
+            $this->connection->setDriver($this);
+        }
         return $this;
     }
 
     /**
      * Register statement prototype
      */
-    public function registerStatementPrototype(Statement $statementPrototype)
+    public function registerStatementPrototype(StatementInterface $statementPrototype): static
     {
         $this->statementPrototype = $statementPrototype;
-        $this->statementPrototype->setDriver($this); // needs access to driver to createResult()
+        if ($this->statementPrototype instanceof DriverAwareInterface) {
+            $this->statementPrototype->setDriver($this);
+        }
+        return $this;
     }
 
     /**
@@ -134,21 +126,17 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
      * @throws Exception\RuntimeException
      * @return void
      */
-    public function checkEnvironment()
+    public function checkEnvironment(): bool
     {
         if (! extension_loaded('mysqli')) {
             throw new Exception\RuntimeException(
                 'The Mysqli extension is required for this adapter but the extension is not loaded'
             );
         }
+        return true;
     }
 
-    /**
-     * Get connection
-     *
-     * @return Connection
-     */
-    public function getConnection()
+    public function getConnection(): ConnectionInterface
     {
         return $this->connection;
     }
@@ -159,7 +147,7 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
      * @param string $sqlOrResource
      * @return Statement
      */
-    public function createStatement($sqlOrResource = null)
+    public function createStatement($sqlOrResource = null): StatementInterface
     {
         /**
          * @todo Resource tracking
@@ -190,7 +178,7 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
      * @param null|bool $isBuffered
      * @return Result
      */
-    public function createResult($resource, $isBuffered = null)
+    public function createResult($resource, $isBuffered = null): ResultInterface
     {
         $result = clone $this->resultPrototype;
         $result->initialize($resource, $this->connection->getLastGeneratedValue(), $isBuffered);
@@ -202,7 +190,7 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
      *
      * @return string
      */
-    public function getPrepareType()
+    public function getPrepareType(): string
     {
         return self::PARAMETERIZATION_POSITIONAL;
     }
@@ -224,7 +212,7 @@ class Mysqli implements DriverInterface, Profiler\ProfilerAwareInterface
      *
      * @return mixed
      */
-    public function getLastGeneratedValue()
+    public function getLastGeneratedValue(): int|string|null|false
     {
         return $this->getConnection()->getLastGeneratedValue();
     }

@@ -6,6 +6,9 @@ namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Exception as GenericException;
 use Laminas\Db\Adapter\Driver\AbstractConnection;
+use Laminas\Db\Adapter\Driver\ConnectionInterface;
+use Laminas\Db\Adapter\Driver\DriverAwareInterface;
+use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\Exception\InvalidArgumentException;
@@ -20,10 +23,9 @@ use function strtoupper;
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
-class Connection extends AbstractConnection
+class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    /** @var Mysqli */
-    protected $driver;
+    protected Mysqli $driver;
 
     /** @var \mysqli */
     protected $resource;
@@ -47,7 +49,7 @@ class Connection extends AbstractConnection
         }
     }
 
-    public function setDriver(Mysqli $driver): static
+    public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
         $this->driver = $driver;
 
@@ -73,7 +75,7 @@ class Connection extends AbstractConnection
      *
      * @return $this Provides a fluent interface
      */
-    public function setResource(\mysqli $resource)
+    public function setResource(\mysqli $resource): static
     {
         $this->resource = $resource;
 
@@ -82,7 +84,7 @@ class Connection extends AbstractConnection
 
     /** @inheritDoc */
     #[Override]
-    public function connect(): static
+    public function connect(): ConnectionInterface
     {
         if ($this->resource instanceof \mysqli) {
             return $this;
@@ -184,7 +186,7 @@ class Connection extends AbstractConnection
 
     /** @inheritDoc */
     #[Override]
-    public function disconnect(): static
+    public function disconnect(): ConnectionInterface
     {
         if ($this->resource instanceof \mysqli) {
             $this->resource->close();
@@ -195,7 +197,7 @@ class Connection extends AbstractConnection
 
     /** @inheritDoc */
     #[Override]
-    public function beginTransaction(): static
+    public function beginTransaction(): ConnectionInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -209,7 +211,7 @@ class Connection extends AbstractConnection
 
     /** @inheritDoc */
     #[Override]
-    public function commit(): static
+    public function commit(): ConnectionInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -224,7 +226,7 @@ class Connection extends AbstractConnection
 
     /** @inheritDoc */
     #[Override]
-    public function rollback(): static
+    public function rollback(): ConnectionInterface
     {
         if (! $this->isConnected()) {
             throw new Exception\RuntimeException('Must be connected before you can rollback.');
@@ -247,7 +249,7 @@ class Connection extends AbstractConnection
      * @throws Exception\InvalidQueryException
      */
     #[Override]
-    public function execute($sql): ResultInterface
+    public function execute($sql): ?ResultInterface
     {
         if (! $this->isConnected()) {
             $this->connect();

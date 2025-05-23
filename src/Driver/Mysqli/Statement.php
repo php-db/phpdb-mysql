@@ -4,53 +4,41 @@ declare(strict_types=1);
 
 namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 
+use Laminas\Db\Adapter\Driver\DriverAwareInterface;
+use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\ParameterContainer;
-use Laminas\Db\Adapter\Profiler;
+use Laminas\Db\Adapter\Profiler\ProfilerAwareInterface;
+use Laminas\Db\Adapter\Profiler\ProfilerInterface;
 use mysqli_stmt;
 
 use function array_unshift;
 use function call_user_func_array;
 use function is_array;
 
-class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
+class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
 {
-    /** @var \mysqli */
-    protected $mysqli;
+    protected \mysqli $mysqli;
 
-    /** @var Mysqli */
-    protected $driver;
+    protected Mysqli $driver;
 
-    /** @var Profiler\ProfilerInterface */
-    protected $profiler;
+    protected ?ProfilerInterface $profiler = null;
 
-    /** @var string */
-    protected $sql = '';
+    protected string $sql = '';
 
-    /**
-     * Parameter container
-     *
-     * @var ParameterContainer
-     */
-    protected $parameterContainer;
+    protected ParameterContainer $parameterContainer;
 
     /** @var mysqli_stmt */
     protected $resource;
 
-    /**
-     * Is prepared
-     *
-     * @var bool
-     */
     protected $isPrepared = false;
 
-    /** @var bool */
     protected $bufferResults = false;
 
     /**
-     * @param  bool $bufferResults
+     * @param bool $bufferResults
      */
     public function __construct($bufferResults = false)
     {
@@ -62,25 +50,19 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      *
      * @return $this Provides a fluent interface
      */
-    public function setDriver(Mysqli $driver)
+    public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
         $this->driver = $driver;
         return $this;
     }
 
-    /**
-     * @return $this Provides a fluent interface
-     */
-    public function setProfiler(Profiler\ProfilerInterface $profiler)
+    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;
         return $this;
     }
 
-    /**
-     * @return null|Profiler\ProfilerInterface
-     */
-    public function getProfiler()
+    public function getProfiler(): ?ProfilerInterface
     {
         return $this->profiler;
     }
@@ -90,7 +72,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      *
      * @return $this Provides a fluent interface
      */
-    public function initialize(\mysqli $mysqli)
+    public function initialize(\mysqli $mysqli): static
     {
         $this->mysqli = $mysqli;
         return $this;
@@ -108,12 +90,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         return $this;
     }
 
-    /**
-     * Set Parameter container
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function setParameterContainer(ParameterContainer $parameterContainer)
+    /** Set Parameter container */
+    public function setParameterContainer(ParameterContainer $parameterContainer): static
     {
         $this->parameterContainer = $parameterContainer;
         return $this;
@@ -151,12 +129,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         return $this->sql;
     }
 
-    /**
-     * Get parameter count
-     *
-     * @return ParameterContainer
-     */
-    public function getParameterContainer()
+    /** Get parameter count */
+    public function getParameterContainer(): ?ParameterContainer
     {
         return $this->parameterContainer;
     }
@@ -167,12 +141,6 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         return $this->isPrepared;
     }
 
-    /**
-     * Prepare
-     *
-     * @param string|null $sql
-     * @return Statement|null Provides a fluent interface
-     */
     public function prepare(?string $sql = null): StatementInterface
     {
         if ($this->isPrepared) {
