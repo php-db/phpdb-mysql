@@ -12,6 +12,7 @@ use Laminas\Db\Adapter\Exception;
 use Laminas\Db\Adapter\ParameterContainer;
 use Laminas\Db\Adapter\Profiler\ProfilerAwareInterface;
 use Laminas\Db\Adapter\Profiler\ProfilerInterface;
+use Laminas\Db\Adapter\StatementContainerInterface;
 use mysqli_stmt;
 
 use function array_unshift;
@@ -28,7 +29,7 @@ class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwa
 
     protected string $sql = '';
 
-    protected ParameterContainer $parameterContainer;
+    protected ?ParameterContainer $parameterContainer = null;
 
     /** @var mysqli_stmt */
     protected $resource;
@@ -84,14 +85,14 @@ class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwa
      * @param  string $sql
      * @return $this Provides a fluent interface
      */
-    public function setSql($sql): static
+    public function setSql($sql): StatementContainerInterface
     {
         $this->sql = $sql;
         return $this;
     }
 
     /** Set Parameter container */
-    public function setParameterContainer(ParameterContainer $parameterContainer): static
+    public function setParameterContainer(ParameterContainer $parameterContainer): StatementContainerInterface
     {
         $this->parameterContainer = $parameterContainer;
         return $this;

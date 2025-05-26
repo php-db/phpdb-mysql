@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
 
 use Laminas\Db\Adapter\Mysql\Metadata\Source\MysqlMetadata;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\TableIdentifier;
 use Laminas\Db\TableGateway\Feature\MetadataFeature;
 use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Stdlib\ArrayObject;
 use LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -33,10 +35,10 @@ final class TableGatewayTest extends TestCase
     public function testSelect(): void
     {
         $tableGateway = new TableGateway('test', $this->getAdapter());
+        /** @var ResultSet $rowset */
         $rowset       = $tableGateway->select();
-
         $this->assertTrue(count($rowset) > 0);
-        /** @var object $row */
+        /** @var ArrayObject $row */
         foreach ($rowset as $row) {
             $this->assertTrue(isset($row->id));
             $this->assertNotEmpty(isset($row->name));
@@ -55,9 +57,9 @@ final class TableGatewayTest extends TestCase
         ];
         $affectedRows = $tableGateway->insert($data);
         $this->assertEquals(1, $affectedRows);
-
+        /** @var ResultSet */
         $rowSet = $tableGateway->select(['id' => $tableGateway->getLastInsertValue()]);
-        /** @var object $row */
+        /** @var ArrayObject $row */
         $row = $rowSet->current();
 
         foreach ($data as $key => $value) {
@@ -93,9 +95,9 @@ final class TableGatewayTest extends TestCase
         ];
         $affectedRows = $tableGateway->update($data, ['id' => $id]);
         $this->assertEquals(1, $affectedRows);
-
+        /** @var ResultSet */
         $rowSet = $tableGateway->select(['id' => $id]);
-        /** @var object $row */
+        /** @var ArrayObject $row */
         $row = $rowSet->current();
 
         foreach ($data as $key => $value) {

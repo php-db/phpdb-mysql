@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3601be926e7985151a1ac381838f662d",
+    "content-hash": "62aeeedb3ca2ac0fd57d9a7311109ee8",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -61,12 +61,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/axleus/laminas-db.git",
-                "reference": "213e6d3606c085382dc6a7885496b9ff4f471910"
+                "reference": "a700452ca7fc3465231fd8d8cb131d19d813edbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/axleus/laminas-db/zipball/213e6d3606c085382dc6a7885496b9ff4f471910",
-                "reference": "213e6d3606c085382dc6a7885496b9ff4f471910",
+                "url": "https://api.github.com/repos/axleus/laminas-db/zipball/a700452ca7fc3465231fd8d8cb131d19d813edbd",
+                "reference": "a700452ca7fc3465231fd8d8cb131d19d813edbd",
                 "shasum": ""
             },
             "require": {
@@ -80,7 +80,6 @@
             "require-dev": {
                 "laminas/laminas-coding-standard": "^3.0.1",
                 "laminas/laminas-eventmanager": "^3.14.0",
-                "laminas/laminas-servicemanager": "^4.0.0",
                 "phpunit/phpunit": "^11.5.12",
                 "psalm/plugin-phpunit": "^0.19.2",
                 "rector/rector": "^2.0",
@@ -88,10 +87,14 @@
             },
             "suggest": {
                 "laminas/laminas-eventmanager": "Laminas\\EventManager component",
-                "laminas/laminas-hydrator": "(^5.0.0) Laminas\\Hydrator component for using HydratingResultSets",
-                "laminas/laminas-servicemanager": "Laminas\\ServiceManager component"
+                "laminas/laminas-hydrator": "(^5.0.0) Laminas\\Hydrator component for using HydratingResultSets"
             },
             "type": "library",
+            "extra": {
+                "laminas": {
+                    "config-provider": "Laminas\\Db\\Container\\ConfigProvider"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Laminas\\Db\\": "src/",
@@ -154,7 +157,7 @@
                     "url": "https://github.com/AXLEUS"
                 }
             ],
-            "time": "2025-05-23T07:35:45+00:00"
+            "time": "2025-05-25T09:51:14+00:00"
         },
         {
             "name": "laminas/laminas-servicemanager",

@@ -23,34 +23,7 @@ class Pdo extends AbstractPdo
 {
     use DatabasePlatformNameTrait;
 
-    /**
-     * @param array|Connection|\PDO $connection
-     * @param string $features
-     */
-    public function __construct(
-        $connection,
-        ?StatementInterface $statementPrototype = null,
-        ?ResultInterface $resultPrototype = null,
-        $features = self::FEATURES_DEFAULT
-    ) {
-        if (! $connection instanceof Connection) {
-            $connection = new Connection($connection);
-        }
 
-        $this->registerConnection($connection);
-        $this->registerStatementPrototype($statementPrototype ?: new Statement());
-        $this->registerResultPrototype($resultPrototype ?: new Result());
-
-        if (is_array($features)) {
-            foreach ($features as $name => $feature) {
-                $this->addFeature($name, $feature);
-            }
-        } elseif ($features instanceof AbstractFeature) {
-            $this->addFeature($features->getName(), $features);
-        } elseif ($features === self::FEATURES_DEFAULT) {
-            $this->setupDefaultFeatures();
-        }
-    }
 
     /**
      * @return $this Provides a fluent interface
