@@ -11,7 +11,7 @@ use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Adapter\Profiler;
 use Laminas\Db\Container\AdapterManager;
-use Laminas\Db\ResultSet\ResultSetInterface;
+use Laminas\Db\ResultSet;
 use Laminas\ServiceManager\Factory\DelegatorFactoryInterface;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Psr\Container\ContainerInterface;
@@ -28,6 +28,7 @@ final class AdapterManagerDelegator implements DelegatorFactoryInterface
         $adapterManager->configure([
             'aliases'   => [
                 Profiler\ProfilerInterface::class => Profiler\Profiler::class,
+                ResultSet\ResultSetInterface::class => ResultSet\ResultSet::class,
             ],
             'factories' => [
                 AdapterInterface::class    => AdapterFactory::class,
@@ -36,7 +37,7 @@ final class AdapterManagerDelegator implements DelegatorFactoryInterface
                 PlatformInterface::class   => PlatformInterfaceFactory::class,
                 Profiler\Profiler::class   => InvokableFactory::class,
                 ResultInterface::class     => ResultInterfaceFactory::class,
-                ResultSetInterface::class  => InvokableFactory::class,
+                ResultSet\ResultSet::class  => InvokableFactory::class,
             ],
         ]);
 
