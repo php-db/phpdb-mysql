@@ -26,14 +26,19 @@ trait InterfaceFactoryTrait
         return new Driver\Mysqli\Connection($config);
     }
 
+    // todo: pull the ResultInterface from the adapter manager and pass it to the driver
     private function getDriver(AdapterManager $adapterManager): DriverInterface
     {
         $config = $adapterManager->get('db');
 
         if ($this->isPdo($config['driver'])) {
-            return new Driver\Pdo\Pdo($adapterManager->get(ConnectionInterface::class));
+            return new Driver\Pdo\Pdo(
+                $adapterManager->get(ConnectionInterface::class)
+            );
         }
-        return new Driver\Mysqli\Mysqli($adapterManager->get(ConnectionInterface::class));
+        return new Driver\Mysqli\Mysqli(
+            $adapterManager->get(ConnectionInterface::class)
+        );
     }
 
     private function getResult(AdapterManager $adapterManager): ResultInterface
