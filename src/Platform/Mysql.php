@@ -37,9 +37,6 @@ class Mysql extends AbstractPlatform
      */
     protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
-    /**
-     * todo: track down if this still needs to accept null
-     */
     public function __construct(
         protected readonly DriverInterface|\mysqli|\PDO $driver
     ) {}
@@ -47,7 +44,7 @@ class Mysql extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return self::PLATFORM_NAME;
     }
@@ -57,18 +54,12 @@ class Mysql extends AbstractPlatform
         return new SqlPlatform();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function quoteIdentifierChain($identifierChain)
+    public function quoteIdentifierChain(array|string $identifierChain): string
     {
         return '`' . implode('`.`', (array) str_replace('`', '``', $identifierChain)) . '`';
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function quoteValue($value)
+    public function quoteValue(string $value): string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
 
@@ -78,7 +69,7 @@ class Mysql extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function quoteTrustedValue($value)
+    public function quoteTrustedValue(int|float|string|bool $value): ?string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
 

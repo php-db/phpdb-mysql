@@ -31,7 +31,10 @@ final class AdapterManagerDelegator implements DelegatorFactoryInterface
             'aliases'   => [
                 'MySqli'                            => Driver\Mysqli\Mysqli::class,
                 'MySQLi'                            => Driver\Mysqli\Mysqli::class,
+                'Mysqli'                            => Driver\Mysqli\Mysqli::class,
                 'mysqli'                            => Driver\Mysqli\Mysqli::class,
+                'PDO_MySQL'                         => Driver\Pdo\Pdo::class,
+                'Pdo_MySQL'                         => Driver\Pdo\Pdo::class,
                 'Pdo_Mysql'                         => Driver\Pdo\Pdo::class,
                 'pdo_mysql'                         => Driver\Pdo\Pdo::class,
                 'pdomysql'                          => Driver\Pdo\Pdo::class,
