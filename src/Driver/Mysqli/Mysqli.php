@@ -32,20 +32,22 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
     ];
 
     public function __construct(
-        protected ConnectionInterface|\mysqli|array $connection,
-        protected ?StatementInterface $statementPrototype = null,
-        protected ?ResultInterface $resultPrototype = null,
+        protected readonly ConnectionInterface&Connection $connection,
+        protected readonly StatementInterface&Statement $statementPrototype,
+        protected readonly ResultInterface $resultPrototype,
         array $options = []
     ) {
-        if (! $connection instanceof Connection) {
-            $connection = new Connection($connection);
-        }
+
+        $this->checkEnvironment();
 
         $options = array_intersect_key(array_merge($this->options, $options), $this->options);
 
-        $this->registerConnection($connection);
-        $this->registerStatementPrototype($statementPrototype ?: new Statement($options['buffer_results']));
-        $this->registerResultPrototype($resultPrototype ?: new Result());
+        if ($this->connection instanceof DriverAwareInterface) {
+            $this->connection->setDriver($this);
+        }
+        if ($this->statementPrototype instanceof DriverAwareInterface) {
+            $this->statementPrototype->setDriver($this);
+        }
     }
 
     /**
@@ -72,50 +74,22 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
      * Register connection
      *
      * @return $this Provides a fluent interface
+     * @deprecated as of 3.0.0, this method is no longer used.
      */
     public function registerConnection(ConnectionInterface $connection): DriverInterface
     {
-        $this->connection = $connection;
-        if ($this->connection instanceof DriverAwareInterface) {
-            $this->connection->setDriver($this);
-        }
-        return $this;
-    }
-
-    /**
-     * Register statement prototype
-     */
-    public function registerStatementPrototype(StatementInterface $statementPrototype): static
-    {
-        $this->statementPrototype = $statementPrototype;
-        if ($this->statementPrototype instanceof DriverAwareInterface) {
-            $this->statementPrototype->setDriver($this);
-        }
         return $this;
     }
 
     /**
      * Get statement prototype
-     *
-     * @return null|Statement
      */
-    public function getStatementPrototype()
+    public function getStatementPrototype(): StatementInterface&Statement
     {
         return $this->statementPrototype;
     }
 
-    /**
-     * Register result prototype
-     */
-    public function registerResultPrototype(Result $resultPrototype)
-    {
-        $this->resultPrototype = $resultPrototype;
-    }
-
-    /**
-     * @return null|Result
-     */
-    public function getResultPrototype()
+    public function getResultPrototype(): ResultInterface&Result
     {
         return $this->resultPrototype;
     }
@@ -124,7 +98,6 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
      * Check environment
      *
      * @throws Exception\RuntimeException
-     * @return void
      */
     public function checkEnvironment(): bool
     {
@@ -136,7 +109,7 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
         return true;
     }
 
-    public function getConnection(): ConnectionInterface
+    public function getConnection(): ConnectionInterface&Connection
     {
         return $this->connection;
     }
@@ -145,9 +118,8 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
      * Create statement
      *
      * @param string $sqlOrResource
-     * @return Statement
      */
-    public function createStatement($sqlOrResource = null): StatementInterface
+    public function createStatement($sqlOrResource = null): StatementInterface&Statement
     {
         /**
          * @todo Resource tracking
@@ -166,7 +138,9 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
             if (! $this->connection->isConnected()) {
                 $this->connection->connect();
             }
-            $statement->initialize($this->connection->getResource());
+            /** @var \mysqli $resource */
+            $resource = $this->connection->getResource();
+            $statement->initialize($resource);
         }
         return $statement;
     }
@@ -176,10 +150,10 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
      *
      * @param resource $resource
      * @param null|bool $isBuffered
-     * @return Result
      */
-    public function createResult($resource, $isBuffered = null): ResultInterface
+    public function createResult($resource, $isBuffered = null): ResultInterface&Result
     {
+        /** @var Result $result */
         $result = clone $this->resultPrototype;
         $result->initialize($resource, $this->connection->getLastGeneratedValue(), $isBuffered);
         return $result;
