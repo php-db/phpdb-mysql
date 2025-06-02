@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
 
+use Laminas\Db\Adapter\Driver\ConnectionInterface;
 use Laminas\Db\Adapter\Driver\Pdo\AbstractPdoConnection;
 use Laminas\Db\Adapter\Exception;
 use Override;
@@ -13,9 +14,8 @@ use PDOStatement;
 use function array_diff_key;
 use function implode;
 use function is_int;
-use function str_replace;
+use function is_string;
 use function strtolower;
-use function substr;
 
 class Connection extends AbstractPdoConnection
 {
@@ -45,7 +45,7 @@ class Connection extends AbstractPdoConnection
      * @throws Exception\RuntimeException
      */
     #[Override]
-    public function connect(): static
+    public function connect(): ConnectionInterface
     {
         if ($this->resource) {
             return $this;
@@ -56,17 +56,7 @@ class Connection extends AbstractPdoConnection
         foreach ($this->connectionParameters as $key => $value) {
             switch (strtolower($key)) {
                 case 'dsn':
-                    $dsn = $value;
-                    break;
-                case 'driver':
-                    $value = strtolower((string) $value);
-                    if (str_starts_with($value, 'pdo')) {
-                        $pdoDriver = str_replace(['-', '_', ' '], '', $value);
-                        $pdoDriver = substr($pdoDriver, 3) ?: '';
-                    }
-                    break;
-                case 'pdodriver':
-                    $pdoDriver = (string) $value;
+                    $dsn = (string) $value;
                     break;
                 case 'user':
                 case 'username':
@@ -97,7 +87,6 @@ class Connection extends AbstractPdoConnection
                     $version = (string) $value;
                     break;
                 case 'driver_options':
-                case 'options':
                     $value   = (array) $value;
                     $options = array_diff_key($options, $value) + $value;
                     break;
@@ -114,7 +103,7 @@ class Connection extends AbstractPdoConnection
             );
         }
 
-        if (! isset($dsn) && isset($pdoDriver)) {
+        if (! isset($dsn)) {
             $dsn = [];
             if (isset($database)) {
                 $dsn[] = "dbname={$database}";
@@ -125,7 +114,7 @@ class Connection extends AbstractPdoConnection
             if (isset($port)) {
                 $dsn[] = "port={$port}";
             }
-            if (isset($charset) && $pdoDriver !== 'pgsql') {
+            if (isset($charset)) {
                 $dsn[] = "charset={$charset}";
             }
             if (isset($unixSocket)) {
@@ -134,8 +123,10 @@ class Connection extends AbstractPdoConnection
             if (isset($version)) {
                 $dsn[] = "version={$version}";
             }
-            $dsn = $pdoDriver . ':' . implode(';', $dsn);
-        } elseif (! isset($dsn)) {
+            $dsn = 'mysql:' . implode(';', $dsn);
+        }
+
+        if (! is_string($dsn)) {
             throw new Exception\InvalidConnectionParametersException(
                 'A dsn was not provided or could not be constructed from your parameters',
                 $this->connectionParameters

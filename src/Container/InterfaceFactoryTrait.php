@@ -36,9 +36,9 @@ trait InterfaceFactoryTrait
                 $adapterManager->get(ConnectionInterface::class)
             );
         }
-        return new Driver\Mysqli\Mysqli(
-            $adapterManager->get(ConnectionInterface::class)
-        );
+        // return new Driver\Mysqli\Mysqli(
+        //     $adapterManager->get(ConnectionInterface::class)
+        // );
     }
 
     private function getResult(AdapterManager $adapterManager): ResultInterface
