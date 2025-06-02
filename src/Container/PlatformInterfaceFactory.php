@@ -12,10 +12,12 @@ use Psr\Container\ContainerInterface;
 
 final class PlatformInterfaceFactory
 {
-    public function __invoke(ContainerInterface $container): PlatformInterface
+    public function __invoke(ContainerInterface $container): PlatformInterface&Mysql
     {
         /** @var AdapterManager $manager */
         $adapterManager = $container->get(AdapterManager::class);
-        return new Mysql($adapterManager->get(DriverInterface::class));
+        /** @var DriverInterface $driver */
+        $driver = $container->get('config')['db']['driver'];
+        return new Mysql($adapterManager->get($driver));
     }
 }

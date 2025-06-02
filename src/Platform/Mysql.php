@@ -18,6 +18,8 @@ use function str_replace;
 
 class Mysql extends AbstractPlatform
 {
+    public final const PLATFORM_NAME = 'MySQL';
+
     /**
      * {@inheritDoc}
      */
@@ -27,9 +29,6 @@ class Mysql extends AbstractPlatform
      * {@inheritDoc}
      */
     protected $quoteIdentifierTo = '``';
-
-    /** @var \mysqli|\PDO|Pdo\Pdo|Mysqli\Mysqli */
-    protected $driver;
 
     /**
      * NOTE: Include dashes for MySQL only, need tests for others platforms
@@ -42,42 +41,15 @@ class Mysql extends AbstractPlatform
      * todo: track down if this still needs to accept null
      */
     public function __construct(
-        DriverInterface|\mysqli|\PDO|null $driver = null
-    ) {
-        if ($driver) {
-            $this->setDriver($driver);
-        }
-    }
-
-    /**
-     * @param \Laminas\Db\Adapter\Driver\Mysqli\Mysqli|\Laminas\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
-     * @return $this Provides a fluent interface
-     * @throws InvalidArgumentException
-     */
-    public function setDriver($driver)
-    {
-        // handle Laminas\Db drivers
-        if (
-            $driver instanceof Mysqli\Mysqli
-            || ($driver instanceof Pdo\Pdo && $driver->getDatabasePlatformName() === 'Mysql')
-            || $driver instanceof \mysqli
-            || ($driver instanceof \PDO && $driver->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'mysql')
-        ) {
-            $this->driver = $driver;
-            return $this;
-        }
-
-        throw new Exception\InvalidArgumentException(
-            '$driver must be a Laminas\Db\Adapter\Mysql\Driver\*, Mysqli\Mysqli or Pdo\Pdo instance'
-        );
-    }
+        protected readonly DriverInterface|\mysqli|\PDO $driver
+    ) {}
 
     /**
      * {@inheritDoc}
      */
     public function getName()
     {
-        return 'MySQL';
+        return self::PLATFORM_NAME;
     }
 
     public function getSqlPlatformDecorator(): PlatformDecoratorInterface
@@ -113,11 +85,7 @@ class Mysql extends AbstractPlatform
         return $quotedViaDriverValue ?? parent::quoteTrustedValue($value);
     }
 
-    /**
-     * @param  string $value
-     * @return string|null
-     */
-    protected function quoteViaDriver($value)
+    protected function quoteViaDriver(string $value): ?string
     {
         if ($this->driver instanceof DriverInterface) {
             // todo: verify this can not return a PDOStatement instance
