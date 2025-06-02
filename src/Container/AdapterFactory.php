@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laminas\Db\Adapter\Mysql\Container;
 
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Mysql\Adapter;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
@@ -14,7 +15,7 @@ use Psr\Container\ContainerInterface;
 
 final class AdapterFactory
 {
-    public function __invoke(ContainerInterface $container): Adapter
+    public function __invoke(ContainerInterface $container): AdapterInterface
     {
         /** @var AdapterManager $adapterManager */
         $adapterManager = $container->get(AdapterManager::class);

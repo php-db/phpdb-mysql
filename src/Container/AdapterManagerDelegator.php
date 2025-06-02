@@ -27,7 +27,7 @@ final class AdapterManagerDelegator implements DelegatorFactoryInterface
         $adapterManager = $callback();
         $adapterManager->configure([
             'aliases'   => [
-                Profiler\ProfilerInterface::class => Profiler\Profiler::class,
+                Profiler\ProfilerInterface::class   => Profiler\Profiler::class,
                 ResultSet\ResultSetInterface::class => ResultSet\ResultSet::class,
             ],
             'factories' => [
@@ -37,7 +37,7 @@ final class AdapterManagerDelegator implements DelegatorFactoryInterface
                 PlatformInterface::class   => PlatformInterfaceFactory::class,
                 Profiler\Profiler::class   => InvokableFactory::class,
                 ResultInterface::class     => ResultInterfaceFactory::class,
-                ResultSet\ResultSet::class  => InvokableFactory::class,
+                ResultSet\ResultSet::class => InvokableFactory::class,
             ],
         ]);
 
