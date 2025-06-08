@@ -23,8 +23,6 @@ class Pdo extends AbstractPdo
 {
     use DatabasePlatformNameTrait;
 
-
-
     /**
      * @return $this Provides a fluent interface
      */

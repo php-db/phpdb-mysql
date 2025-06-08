@@ -50,9 +50,6 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
         }
     }
 
-    /**
-     * @return $this Provides a fluent interface
-     */
     public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;
@@ -72,8 +69,6 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
 
     /**
      * Register connection
-     *
-     * @return $this Provides a fluent interface
      * @deprecated as of 3.0.0, this method is no longer used.
      */
     public function registerConnection(ConnectionInterface $connection): DriverInterface
@@ -149,9 +144,8 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
      * Create result
      *
      * @param resource $resource
-     * @param null|bool $isBuffered
      */
-    public function createResult($resource, $isBuffered = null): ResultInterface&Result
+    public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
     {
         /** @var Result $result */
         $result = clone $this->resultPrototype;
@@ -161,8 +155,6 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
 
     /**
      * Get prepare type
-     *
-     * @return string
      */
     public function getPrepareType(): string
     {
@@ -171,20 +163,14 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
 
     /**
      * Format parameter name
-     *
-     * @param string $name
-     * @param mixed  $type
-     * @return string
      */
-    public function formatParameterName($name, $type = null): string
+    public function formatParameterName(string $name, ?string $type = null): string
     {
         return '?';
     }
 
     /**
      * Get last generated value
-     *
-     * @return mixed
      */
     public function getLastGeneratedValue(): int|string|null|false
     {
