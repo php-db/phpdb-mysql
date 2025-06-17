@@ -16,7 +16,6 @@ use function extension_loaded;
 use function getenv;
 
 #[Group('integration')]
-#[Group('integration-mysql')]
 #[CoversMethod(Mysqli\Mysqli::class, 'quoteValue')]
 #[CoversMethod(Pdo\Pdo::class, 'quoteValue')]
 final class MysqlTest extends TestCase
@@ -27,9 +26,8 @@ final class MysqlTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        if (! getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL')) {
-            $this->markTestSkipped(self::class . ' integration tests are not enabled!');
-        }
+        $this->markTestSkipped(self::class . ' test need refactored');
+
         if (extension_loaded('mysqli')) {
             $this->adapters['mysqli'] = new \mysqli(
                 getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME'),

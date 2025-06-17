@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
 
+use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetUpTrait;
 use LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\AbstractAdapterTestCase;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
 use PHPUnit\Framework\Attributes\CoversNothing;
 
 #[CoversNothing]
 final class AdapterTest extends AbstractAdapterTestCase
 {
-    use AdapterTrait;
-    use BaseAdapterTrait;
-
-    public ?int $port = 3306;
+    use SetUpTrait;
 }

@@ -61,12 +61,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/axleus/laminas-db.git",
-                "reference": "132cfba83f01812b2f7bb548e573e7d44ef526b9"
+                "reference": "5154e4375c98a365937560fdf9cf7b317f9fe1ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/axleus/laminas-db/zipball/132cfba83f01812b2f7bb548e573e7d44ef526b9",
-                "reference": "132cfba83f01812b2f7bb548e573e7d44ef526b9",
+                "url": "https://api.github.com/repos/axleus/laminas-db/zipball/5154e4375c98a365937560fdf9cf7b317f9fe1ae",
+                "reference": "5154e4375c98a365937560fdf9cf7b317f9fe1ae",
                 "shasum": ""
             },
             "require": {
@@ -157,7 +157,7 @@
                     "url": "https://github.com/AXLEUS"
                 }
             ],
-            "time": "2025-06-11T03:13:16+00:00"
+            "time": "2025-06-17T02:27:11+00:00"
         },
         {
             "name": "laminas/laminas-servicemanager",
@@ -2887,16 +2887,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.22",
+            "version": "11.5.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "4cd72faaa8f811e4cc63040cba167757660a5538"
+                "reference": "86ebcd8a3dbcd1857d88505109b2a2b376501cde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4cd72faaa8f811e4cc63040cba167757660a5538",
-                "reference": "4cd72faaa8f811e4cc63040cba167757660a5538",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/86ebcd8a3dbcd1857d88505109b2a2b376501cde",
+                "reference": "86ebcd8a3dbcd1857d88505109b2a2b376501cde",
                 "shasum": ""
             },
             "require": {
@@ -2968,7 +2968,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.22"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.23"
             },
             "funding": [
                 {
@@ -2992,7 +2992,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-06T02:48:05+00:00"
+            "time": "2025-06-13T05:47:49+00:00"
         },
         {
             "name": "psalm/plugin-phpunit",
@@ -4355,16 +4355,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.13.0",
+            "version": "3.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "65ff2489553b83b4597e89c3b8b721487011d186"
+                "reference": "1b71b4dd7e7ef651ac749cea67e513c0c832f4bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/65ff2489553b83b4597e89c3b8b721487011d186",
-                "reference": "65ff2489553b83b4597e89c3b8b721487011d186",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/1b71b4dd7e7ef651ac749cea67e513c0c832f4bd",
+                "reference": "1b71b4dd7e7ef651ac749cea67e513c0c832f4bd",
                 "shasum": ""
             },
             "require": {
@@ -4435,7 +4435,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-05-11T03:36:00+00:00"
+            "time": "2025-06-12T15:04:34+00:00"
         },
         {
             "name": "staabm/side-effects-detector",

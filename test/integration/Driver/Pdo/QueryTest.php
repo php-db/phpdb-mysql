@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
-use Laminas\Db\Adapter\Mysql\Adapter;
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\Pdo\Result as PdoResult;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Adapter\Exception\RuntimeException;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Sql;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
+use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(ResultSet::class, 'current')]
 final class QueryTest extends TestCase
 {
-    use AdapterTrait;
-    use BaseAdapterTrait;
+    use SetupTrait;
 
     /**
      * @psalm-return array<array-key, array{
@@ -53,7 +52,6 @@ final class QueryTest extends TestCase
     public function testQuery(string $query, array $params, array $expected): void
     {
         /** @todo Have AdapterInterface implement query */
-        /** @psalm-suppress UndefinedInterfaceMethod */
         $result = $this->getAdapter()->query($query, $params);
         $this->assertInstanceOf(ResultSet::class, $result);
         $current = $result->current();
@@ -73,8 +71,6 @@ final class QueryTest extends TestCase
      */
     public function testSetSessionTimeZone(): void
     {
-        /** @todo Have AdapterInterface implement query */
-        /** @psalm-suppress UndefinedInterfaceMethod */
         $result = $this->getAdapter()->query('SET @@session.time_zone = :tz', [':tz' => 'SYSTEM']);
         $this->assertInstanceOf(PdoResult::class, $result);
     }
@@ -85,8 +81,6 @@ final class QueryTest extends TestCase
     public function testSelectWithNotPermittedBindParamName(): void
     {
         $this->expectException(RuntimeException::class);
-        /** @todo Have AdapterInterface implement query */
-        /** @psalm-suppress UndefinedInterfaceMethod */
         $this->getAdapter()->query('SET @@session.time_zone = :tz$', [':tz$' => 'SYSTEM']);
     }
 
@@ -103,6 +97,7 @@ final class QueryTest extends TestCase
             'name'  => ':name',
             'value' => ':value',
         ])->where(['id' => ':id']);
+        /** @var StatementInterface $stmt */
         $stmt = $sql->prepareStatementForSqlObject($insert);
         $this->assertInstanceOf(StatementInterface::class, $stmt);
 

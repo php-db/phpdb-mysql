@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
 use Laminas\Db\Adapter\Driver\ConnectionInterface;
 use Laminas\Db\TableGateway\TableGateway;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
+use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -23,8 +23,7 @@ use function array_fill;
 #[CoversMethod(ConnectionInterface::class, 'disconnect')]
 final class TableGatewayAndAdapterTest extends TestCase
 {
-    use AdapterTrait;
-    use BaseAdapterTrait;
+    use SetupTrait;
 
     /**
      * @throws Exception

@@ -173,7 +173,7 @@ final class ConnectionIntegrationTest extends TestCase
     #[Group('laminas3469')]
     public function testConnectReturnsConnectionWhenResourceSet(): void
     {
-        $this->markTestIncomplete(
+        $this->markTestSkipped(
             'Needs refactored or removed since we do not have a valid connection in Unit test'
         );
         $resource   = new TestAsset\SqliteMemoryPdo();

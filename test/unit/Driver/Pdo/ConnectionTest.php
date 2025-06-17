@@ -42,7 +42,7 @@ final class ConnectionTest extends TestCase
      */
     public function testGetDsn(): void
     {
-        $dsn = "sqlite::memory:";
+        $dsn = "mysql:";
         $this->connection->setConnectionParameters(['dsn' => $dsn]);
         try {
             $this->connection->connect();

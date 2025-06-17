@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Mysqli;
 
-use Laminas\Db\Adapter\Mysql\Adapter;
+use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Mysqli;
 use Laminas\Db\ResultSet\AbstractResultSet;
 use Laminas\Db\TableGateway\TableGateway;
+use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -15,23 +17,34 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(TableGateway::class, 'select')]
 final class TableGatewayTest extends TestCase
 {
-    use TraitSetup;
+    use SetupTrait;
 
     /**
      * @see https://github.com/zendframework/zend-db/issues/330
      */
     public function testSelectWithEmptyCurrentWithBufferResult(): void
     {
-        $adapter      = new Adapter([
-            'driver'   => 'mysqli',
-            'database' => $this->variables['database'],
-            'hostname' => $this->variables['hostname'],
-            'username' => $this->variables['username'],
-            'password' => $this->variables['password'],
-            'options'  => ['buffer_results' => true],
+        // $adapter      = new Adapter([
+        //     'driver'   => 'mysqli',
+        //     'database' => $this->variables['database'],
+        //     'hostname' => $this->variables['hostname'],
+        //     'username' => $this->variables['username'],
+        //     'password' => $this->variables['password'],
+        //     'options'  => ['buffer_results' => true],
+        // ]);
+        /** @var AdapterInterface $adapter */
+        $adapter = $this->getAdapter([
+            'db' => [
+                'driver' => Mysqli::class,
+                'options' => [
+                    'buffer_results' => true,
+                ],
+            ],
         ]);
+
         $tableGateway = new TableGateway('test', $adapter);
-        $rowset       = $tableGateway->select('id = 0');
+        /** @var AbstractResultSet $rowset */
+        $rowset = $tableGateway->select('id = 0');
         $this->assertEquals(true, $rowset->isBuffered());
 
         $this->assertNull($rowset->current());
@@ -44,20 +57,20 @@ final class TableGatewayTest extends TestCase
      */
     public function testSelectWithEmptyCurrentWithoutBufferResult(): void
     {
-        $adapter      = new Adapter([
-            'driver'   => 'mysqli',
-            'database' => $this->variables['database'],
-            'hostname' => $this->variables['hostname'],
-            'username' => $this->variables['username'],
-            'password' => $this->variables['password'],
-            'options'  => ['buffer_results' => false],
+        /** @var AdapterInterface $adapter */
+        $adapter = $this->getAdapter([
+            'db' => [
+                'driver' => 'mysqli',
+                'options' => [
+                    'buffer_results' => false,
+                ],
+            ],
         ]);
         $tableGateway = new TableGateway('test', $adapter);
+        /** @var AbstractResultSet $rowset */
         $rowset       = $tableGateway->select('id = 0');
         $this->assertEquals(false, $rowset->isBuffered());
 
-        /** @todo Have resultset implememt Iterator */
-        /** @psalm-suppress UndefinedInterfaceMethod */
         $this->assertNull($rowset->current());
 
         $adapter->getDriver()->getConnection()->disconnect();

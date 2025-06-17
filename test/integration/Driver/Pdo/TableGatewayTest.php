@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\Mysql;
+namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
 
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Mysql\Metadata\Source\MysqlMetadata;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\TableIdentifier;
 use Laminas\Db\TableGateway\Feature\MetadataFeature;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Stdlib\ArrayObject;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
+use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
@@ -23,12 +24,13 @@ use function count;
 #[CoversMethod(TableGateway::class, 'insert')]
 final class TableGatewayTest extends TestCase
 {
-    use AdapterTrait;
-    use BaseAdapterTrait;
+    use SetupTrait;
 
     public function testConstructor(): void
     {
-        $tableGateway = new TableGateway('test', $this->getAdapter());
+        /** @var AdapterInterface $adapter */
+        $adapter = $this->getAdapter();
+        $tableGateway = new TableGateway('test', $adapter);
         $this->assertInstanceOf(TableGateway::class, $tableGateway);
     }
 
@@ -108,11 +110,13 @@ final class TableGatewayTest extends TestCase
     #[DataProvider('tableProvider')]
     public function testTableGatewayWithMetadataFeature(array|string|TableIdentifier $table): void
     {
+        /** @var AdapterInterface $adapter */
+        $adapter = $this->getAdapter(['db' => ['driver' => 'mysqli']]);
         $tableGateway = new TableGateway(
                         $table,
-                        $this->getAdapter(),
+                        $adapter,
                         new MetadataFeature(
-                            new MysqlMetadata($this->getAdapter()),
+                            new MysqlMetadata($adapter),
                         )
                     );
 

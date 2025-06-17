@@ -6,57 +6,65 @@ namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\ConnectionInterface;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
+use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
 use function getmypid;
 use function shell_exec;
 
-#[CoversMethod(AdapterInterface::class, '__construct()')]
+#[CoversMethod(AdapterInterface::class, '__construct')]
 #[CoversMethod(ConnectionInterface::class, 'connect')]
 #[CoversMethod(ConnectionInterface::class, 'disconnect')]
 #[CoversMethod(ConnectionInterface::class, 'isConnected')]
 abstract class AbstractAdapterTestCase extends TestCase
 {
-    use AdapterTrait;
-
-    public ?int $port = null;
+    use SetupTrait;
 
     public function testConnection(): void
     {
-        $this->assertInstanceOf(AdapterInterface::class, $this->adapter);
+        /** @var ConnectionInterface $connection */
+        $connection = $this->getAdapter()->getDriver()->getConnection();
+        $this->assertInstanceOf(ConnectionInterface::class, $connection);
     }
 
     public function testDriverDisconnectAfterQuoteWithPlatform(): void
     {
         $isTcpConnection = $this->isTcpConnection();
 
-        $this->getAdapter()->getDriver()->getConnection()->connect();
+        /** @var AdapterInterface $adapter */
+        $adapter = $this->getAdapter([
+            'db' => [
+                'driver' => Pdo::class,
+            ],
+        ]);
+        $adapter->getDriver()->getConnection()->connect();
 
-        self::assertTrue($this->getAdapter()->getDriver()->getConnection()->isConnected());
+        self::assertTrue($adapter->getDriver()->getConnection()->isConnected());
         if ($isTcpConnection) {
             self::assertTrue($this->isConnectedTcp());
         }
 
-        $this->getAdapter()->getDriver()->getConnection()->disconnect();
+        $adapter->getDriver()->getConnection()->disconnect();
 
-        self::assertFalse($this->getAdapter()->getDriver()->getConnection()->isConnected());
+        self::assertFalse($adapter->getDriver()->getConnection()->isConnected());
         if ($isTcpConnection) {
             self::assertFalse($this->isConnectedTcp());
         }
 
-        $this->getAdapter()->getDriver()->getConnection()->connect();
+        $adapter->getDriver()->getConnection()->connect();
 
-        self::assertTrue($this->getAdapter()->getDriver()->getConnection()->isConnected());
+        self::assertTrue($adapter->getDriver()->getConnection()->isConnected());
         if ($isTcpConnection) {
             self::assertTrue($this->isConnectedTcp());
         }
 
-        $this->getAdapter()->getPlatform()->quoteValue('test');
+        $adapter->getPlatform()->quoteValue('test');
 
-        $this->getAdapter()->getDriver()->getConnection()->disconnect();
+        $adapter->getDriver()->getConnection()->disconnect();
 
-        self::assertFalse($this->getAdapter()->getDriver()->getConnection()->isConnected());
+        self::assertFalse($adapter->getDriver()->getConnection()->isConnected());
         if ($isTcpConnection) {
             self::assertFalse($this->isConnectedTcp());
         }
@@ -65,7 +73,7 @@ abstract class AbstractAdapterTestCase extends TestCase
     protected function isConnectedTcp(): bool
     {
         $mypid  = getmypid();
-        $dbPort = (string) $this->port;
+        $dbPort = (string) $this->getConfig()['db']['connection']['port'] ?? '3306';
         /** @psalm-suppress ForbiddenCode - running lsof */
         $lsof = shell_exec("lsof -i -P -n | grep $dbPort | grep $mypid");
 
