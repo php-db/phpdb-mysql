@@ -7,12 +7,11 @@ namespace LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset;
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\AdapterServiceFactory;
-use Laminas\Db\Adapter\Mysql\Container\AdapterManagerDelegator;
+use Laminas\Db\Adapter\Mysql\ConfigProvider;
 use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Mysqli;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
 use Laminas\Db\Container\AdapterManager;
-use Laminas\Db\Container\AdapterManagerFactory;
+use Laminas\Db\Container\ConfigProvider as LaminasDbConfigProvider;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 
@@ -39,11 +38,12 @@ trait SetupTrait
     protected function setUp(): void
     {
         $this->getAdapter();
+        parent::setUp();
     }
 
     protected function getAdapter(array $config = []): AdapterInterface&Adapter
     {
-        $baseConfig = [
+        $connectionConfig = [
             'db' => [
                 'driver'     => $this->driver ?? Pdo::class,
                 'connection' => [
@@ -61,28 +61,33 @@ trait SetupTrait
             ],
         ];
 
+        // merge service config from both Laminas\Db and Laminas\Db\Adapter\Mysql
+        $serviceManagerConfig = ArrayUtils::merge(
+            (new LaminasDbConfigProvider())()['dependencies'],
+            (new ConfigProvider())()['dependencies']
+        );
+
+        $serviceManagerConfig = ArrayUtils::merge(
+            $serviceManagerConfig,
+            $connectionConfig
+        );
+
+        // prefer passed config over environment variables
         if ($config !== []) {
-            // If the config is not empty, merge it with the base config
-            // to allow for overriding or extending the default configuration.
-            $baseConfig = ArrayUtils::merge($baseConfig, $config);
+            $serviceManagerConfig = ArrayUtils::merge($serviceManagerConfig, $config);
         }
-        $this->config = ArrayUtils::merge($this->config, $baseConfig);
 
-        $container = new ServiceManager([
-            'services'   => [
-                'config' => $this->config,
-            ],
-            'factories'  => [
-                AdapterInterface::class => AdapterServiceFactory::class,
-                AdapterManager::class   => AdapterManagerFactory::class,
-            ],
-            'delegators' => [
-                AdapterManager::class => [
-                    AdapterManagerDelegator::class,
+        $serviceManagerConfig = ArrayUtils::merge(
+            $serviceManagerConfig,
+            [
+                'services'   => [
+                    'config' => $serviceManagerConfig,
                 ],
-            ],
-        ]);
+            ]
+        );
 
+        $this->config         = $serviceManagerConfig;
+        $container            = new ServiceManager($this->config);
         $this->adapterManager = $container->get(AdapterManager::class);
         $this->adapter        = $this->adapterManager->get(AdapterInterface::class);
 
