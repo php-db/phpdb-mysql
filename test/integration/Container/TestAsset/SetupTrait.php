@@ -72,6 +72,11 @@ trait SetupTrait
             $connectionConfig
         );
 
+        // prefer passed config over environment variables
+        if ($config !== []) {
+            $serviceManagerConfig = ArrayUtils::merge($serviceManagerConfig, $config);
+        }
+
         $serviceManagerConfig = ArrayUtils::merge(
             $serviceManagerConfig,
             [
@@ -80,11 +85,6 @@ trait SetupTrait
                 ],
             ]
         );
-
-        // prefer passed config over environment variables
-        if ($config !== []) {
-            $serviceManagerConfig = ArrayUtils::merge($serviceManagerConfig, $config);
-        }
 
         $this->config         = $serviceManagerConfig;
         $container            = new ServiceManager($this->config);
