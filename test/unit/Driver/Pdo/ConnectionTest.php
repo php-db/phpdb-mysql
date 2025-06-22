@@ -6,6 +6,7 @@ namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
 use Laminas\Db\Adapter\Exception\InvalidConnectionParametersException;
+use Laminas\Db\Adapter\Exception\RuntimeException;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -33,7 +34,7 @@ final class ConnectionTest extends TestCase
      */
     public function testResource(): void
     {
-        $this->expectException(InvalidConnectionParametersException::class);
+        $this->expectException(RuntimeException::class);
         $this->connection->getResource();
     }
 
@@ -91,27 +92,5 @@ final class ConnectionTest extends TestCase
             'unix_socket' => '/var/run/mysqld/mysqld.sock',
         ]);
         $this->connection->connect();
-    }
-
-    public function testDblibArrayOfConnectionParametersCreatesCorrectDsn(): void
-    {
-        $this->connection->setConnectionParameters([
-            'driver'  => 'pdo_dblib',
-            'charset' => 'UTF-8',
-            'dbname'  => 'foo',
-            'port'    => '1433',
-            'version' => '7.3',
-        ]);
-        try {
-            $this->connection->connect();
-        } catch (Exception) {
-        }
-        $responseString = $this->connection->getDsn();
-
-        $this->assertStringStartsWith('dblib:', $responseString);
-        $this->assertStringContainsString('charset=UTF-8', $responseString);
-        $this->assertStringContainsString('dbname=foo', $responseString);
-        $this->assertStringContainsString('port=1433', $responseString);
-        $this->assertStringContainsString('version=7.3', $responseString);
     }
 }

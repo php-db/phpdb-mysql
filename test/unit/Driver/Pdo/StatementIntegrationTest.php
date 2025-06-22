@@ -10,9 +10,11 @@ use LaminasTest\Db\Adapter\Mysql\Driver\Pdo\TestAsset;
 use Override;
 use PDO;
 use PDOStatement;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[CoversMethod(Statement::class, 'execute')]
 final class StatementIntegrationTest extends TestCase
 {
     protected Statement $statement;

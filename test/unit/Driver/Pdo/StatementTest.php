@@ -24,6 +24,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(Statement::class, 'execute')]
 final class StatementTest extends TestCase
 {
+    protected ?Pdo $pdo = null;
     protected Statement $statement;
 
     /**
@@ -34,6 +35,11 @@ final class StatementTest extends TestCase
     protected function setUp(): void
     {
         $this->statement = new Statement();
+        $this->pdo       = new Pdo(
+            $this->createMock(Connection::class),
+            $this->statement,
+            $this->createMock(Result::class),
+        );
     }
 
     /**
@@ -46,7 +52,7 @@ final class StatementTest extends TestCase
 
     public function testSetDriver(): void
     {
-        self::assertEquals($this->statement, $this->statement->setDriver(new Pdo([])));
+        self::assertEquals($this->statement, $this->statement->setDriver($this->pdo));
     }
 
     public function testSetParameterContainer(): void

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace LaminasTest\Db\Adapter\Mysql\Platform;
 
+use Laminas\Db\Adapter\Driver\Pdo\Result;
+use Laminas\Db\Adapter\Driver\Pdo\Statement;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo;
 use Laminas\Db\Adapter\Mysql\Platform\Mysql;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -30,7 +33,12 @@ final class MysqlTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $this->platform = new Mysql();
+        $pdo = new Pdo\Pdo(
+            $this->createMock(Pdo\Connection::class),
+            $this->createMock(Statement::class),
+            $this->createMock(Result::class),
+        );
+        $this->platform = new Mysql($pdo);
     }
 
     public function testGetName(): void
@@ -73,6 +81,10 @@ final class MysqlTest extends TestCase
     {
         /**
          * @todo Determine if vulnerability warning is required during unit testing
+         *
+         * @todo This testing needs expanded to cover all possible driver types
+         * since using \PDO currently causes a TypeError to be raised due to the
+         * underlying quoteViaDriver method returning false instead of ?string
          */
         //$this->expectNotice();
         //$this->expectExceptionMessage(

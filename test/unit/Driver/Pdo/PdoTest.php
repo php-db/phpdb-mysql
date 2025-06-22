@@ -6,18 +6,19 @@ namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Driver\Pdo\Result;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
+use Laminas\Db\Adapter\Driver\Pdo\Statement;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo;
 use Laminas\Db\Exception\RuntimeException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Pdo::class, 'getDatabasePlatformName')]
-#[CoversMethod(Pdo::class, 'getResultPrototype')]
+#[CoversMethod(Pdo\Pdo::class, 'getDatabasePlatformName')]
+#[CoversMethod(Pdo\Pdo::class, 'getResultPrototype')]
 final class PdoTest extends TestCase
 {
-    protected Pdo $pdo;
+    protected Pdo\Pdo $pdo;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -26,13 +27,20 @@ final class PdoTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $this->pdo = new Pdo([]);
+        $connection = $this->createMock(Pdo\Connection::class);
+        $statement  = $this->createMock(Statement::class);
+        $result     = $this->createMock(Result::class);
+        $this->pdo = new Pdo\Pdo(
+            $connection,
+            $statement,
+            $result
+        );
     }
 
     public function testGetDatabasePlatformName(): void
     {
         // Test platform name for SqlServer
-        $this->pdo->getConnection()->setConnectionParameters(['pdodriver' => 'pdo_mysql']);
+        //$this->pdo->getConnection()->setConnectionParameters(['driver' => 'pdo_mysql']);
         self::assertEquals('Mysql', $this->pdo->getDatabasePlatformName());
         self::assertEquals('MySQL', $this->pdo->getDatabasePlatformName(DriverInterface::NAME_FORMAT_NATURAL));
     }

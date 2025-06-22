@@ -88,6 +88,7 @@ class Mysql extends AbstractPlatform
         if ($resource instanceof \mysqli) {
             return '\'' . $resource->real_escape_string($value) . '\'';
         }
+
         if ($resource instanceof \PDO) {
             return $resource->quote($value);
         }
