@@ -6,7 +6,7 @@ namespace LaminasTest\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Connection;
 use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Mysqli;
-use Laminas\Db\Adapter\Exception\RuntimeException;
+use Laminas\Db\Exception\RuntimeException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
