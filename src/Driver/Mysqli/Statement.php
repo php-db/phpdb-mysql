@@ -12,7 +12,7 @@ use Laminas\Db\Adapter\ParameterContainer;
 use Laminas\Db\Adapter\Profiler\ProfilerAwareInterface;
 use Laminas\Db\Adapter\Profiler\ProfilerInterface;
 use Laminas\Db\Adapter\StatementContainerInterface;
-use Laminas\Db\Exception;
+use Laminas\Db\Adapter\Exception;
 use mysqli_stmt;
 
 use function array_unshift;
