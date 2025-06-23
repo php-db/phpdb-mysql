@@ -244,7 +244,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @throws Exception\InvalidQueryException
      */

@@ -29,7 +29,7 @@ final class TableGatewayTest extends TestCase
     public function testConstructor(): void
     {
         /** @var AdapterInterface $adapter */
-        $adapter = $this->getAdapter();
+        $adapter      = $this->getAdapter();
         $tableGateway = new TableGateway('test', $adapter);
         $this->assertInstanceOf(TableGateway::class, $tableGateway);
     }
@@ -38,7 +38,7 @@ final class TableGatewayTest extends TestCase
     {
         $tableGateway = new TableGateway('test', $this->getAdapter());
         /** @var ResultSet $rowset */
-        $rowset       = $tableGateway->select();
+        $rowset = $tableGateway->select();
         $this->assertTrue(count($rowset) > 0);
         /** @var ArrayObject $row */
         foreach ($rowset as $row) {
@@ -59,7 +59,7 @@ final class TableGatewayTest extends TestCase
         ];
         $affectedRows = $tableGateway->insert($data);
         $this->assertEquals(1, $affectedRows);
-        /** @var ResultSet */
+        /** @var ResultSet $rowSet */
         $rowSet = $tableGateway->select(['id' => $tableGateway->getLastInsertValue()]);
         /** @var ArrayObject $row */
         $row = $rowSet->current();
@@ -97,7 +97,7 @@ final class TableGatewayTest extends TestCase
         ];
         $affectedRows = $tableGateway->update($data, ['id' => $id]);
         $this->assertEquals(1, $affectedRows);
-        /** @var ResultSet */
+        /** @var ResultSet $rowSet */
         $rowSet = $tableGateway->select(['id' => $id]);
         /** @var ArrayObject $row */
         $row = $rowSet->current();
@@ -111,14 +111,14 @@ final class TableGatewayTest extends TestCase
     public function testTableGatewayWithMetadataFeature(array|string|TableIdentifier $table): void
     {
         /** @var AdapterInterface $adapter */
-        $adapter = $this->getAdapter(['db' => ['driver' => 'mysqli']]);
+        $adapter      = $this->getAdapter(['db' => ['driver' => 'pdo']]);
         $tableGateway = new TableGateway(
-                        $table,
-                        $adapter,
-                        new MetadataFeature(
-                            new MysqlMetadata($adapter),
-                        )
-                    );
+            $table,
+            $adapter,
+            new MetadataFeature(
+                new MysqlMetadata($adapter),
+            )
+        );
 
         self::assertInstanceOf(TableGateway::class, $tableGateway);
         self::assertSame($table, $tableGateway->getTable());

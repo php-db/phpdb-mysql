@@ -30,7 +30,7 @@ final class PdoTest extends TestCase
         $connection = $this->createMock(Pdo\Connection::class);
         $statement  = $this->createMock(Statement::class);
         $result     = $this->createMock(Result::class);
-        $this->pdo = new Pdo\Pdo(
+        $this->pdo  = new Pdo\Pdo(
             $connection,
             $statement,
             $result

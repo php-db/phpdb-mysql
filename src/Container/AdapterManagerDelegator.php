@@ -6,9 +6,9 @@ namespace Laminas\Db\Adapter\Mysql\Container;
 
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\PdoDriverInterface;
 use Laminas\Db\Adapter\Driver\Pdo\Result;
 use Laminas\Db\Adapter\Driver\Pdo\Statement as PdoStatement;
+use Laminas\Db\Adapter\Driver\PdoDriverInterface;
 use Laminas\Db\Adapter\Mysql\Driver;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Adapter\Profiler;

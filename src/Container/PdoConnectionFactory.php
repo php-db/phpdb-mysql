@@ -10,7 +10,8 @@ use Psr\Container\ContainerInterface;
 
 final class PdoConnectionFactory
 {
-    public function __invoke(ContainerInterface $container): ConnectionInterface {
+    public function __invoke(ContainerInterface $container): ConnectionInterface
+    {
         $dbConfig = $container->get('config')['db']['connection'] ?? [];
         return new Connection($dbConfig);
     }

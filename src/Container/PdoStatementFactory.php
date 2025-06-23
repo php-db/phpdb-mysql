@@ -12,6 +12,6 @@ final class PdoStatementFactory
     public function __invoke(ContainerInterface $container): Statement
     {
         $options = $container->get('config')['db']['options'] ?? false;
-        return new Statement($options);
+        return new Statement(options: $options);
     }
 }

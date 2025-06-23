@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Extension;
 
 use Exception;
-use LaminasIntegrationTest\Db\FixtureLoader\FixtureLoader;
 use LaminasIntegrationTest\Db\Adapter\Mysql\FixtureLoader\MysqlFixtureLoader;
+use LaminasIntegrationTest\Db\FixtureLoader\FixtureLoader;
 use PHPUnit\Event\TestSuite\Started;
 use PHPUnit\Event\TestSuite\StartedSubscriber;
 

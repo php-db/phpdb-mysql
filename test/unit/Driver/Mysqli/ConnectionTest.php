@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace LaminasTest\Db\Adapter\Mysql\Driver\Mysqli;
 
 use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Connection;
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Mysqli;
 use Laminas\Db\Exception\RuntimeException;
+use mysqli;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
@@ -64,8 +64,8 @@ final class ConnectionTest extends TestCase
 
     public function testNonSecureConnection(): void
     {
-        $mysqli     = $this->createMockMysqli(0);
-        /** @var Connection */
+        $mysqli = $this->createMockMysqli(0);
+        /** @var Connection $connection */
         $connection = $this->createMockConnection(
             $mysqli,
             [
@@ -82,8 +82,8 @@ final class ConnectionTest extends TestCase
 
     public function testSslConnection(): void
     {
-        $mysqli     = $this->createMockMysqli(MYSQLI_CLIENT_SSL);
-        /** @var Connection */
+        $mysqli = $this->createMockMysqli(MYSQLI_CLIENT_SSL);
+        /** @var Connection $connection */
         $connection = $this->createMockConnection(
             $mysqli,
             [
@@ -101,8 +101,8 @@ final class ConnectionTest extends TestCase
 
     public function testSslConnectionNoVerify(): void
     {
-        $mysqli     = $this->createMockMysqli(MYSQLI_CLIENT_SSL | MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
-        /** @var Connection */
+        $mysqli = $this->createMockMysqli(MYSQLI_CLIENT_SSL | MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
+        /** @var Connection $connection */
         $connection = $this->createMockConnection(
             $mysqli,
             [
@@ -137,7 +137,7 @@ final class ConnectionTest extends TestCase
      */
     protected function createMockMysqli(int $flags): MockObject
     {
-        $mysqli = $this->getMockBuilder(\mysqli::class)->getMock();
+        $mysqli = $this->getMockBuilder(mysqli::class)->getMock();
         $mysqli->expects($flags ? $this->once() : $this->never())
             ->method('ssl_set')
             ->with(

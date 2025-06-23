@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Laminas\Db\Adapter\Mysql\Platform;
 
 use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Exception\InvalidArgumentException;
-use Laminas\Db\Adapter\Platform\AbstractPlatform;
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo;
 use Laminas\Db\Adapter\Mysql\Sql\Platform\Mysql\Mysql as SqlPlatform;
+use Laminas\Db\Adapter\Platform\AbstractPlatform;
 use Laminas\Db\Sql\Platform\PlatformDecoratorInterface;
+use mysqli;
+use Override;
+use PDO;
 
 use function implode;
 use function str_replace;
@@ -38,27 +37,41 @@ class Mysql extends AbstractPlatform
     protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
     public function __construct(
-        protected readonly DriverInterface|\mysqli|\PDO $driver
-    ) {}
+        protected readonly DriverInterface|mysqli|PDO $driver
+    ) {
+    }
 
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getName(): string
     {
         return self::PLATFORM_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
     public function getSqlPlatformDecorator(): PlatformDecoratorInterface
     {
         return new SqlPlatform();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
     public function quoteIdentifierChain(array|string $identifierChain): string
     {
         return '`' . implode('`.`', (array) str_replace('`', '``', $identifierChain)) . '`';
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
     public function quoteValue(string $value): string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
@@ -69,6 +82,7 @@ class Mysql extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function quoteTrustedValue(int|float|string|bool $value): ?string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
@@ -85,11 +99,11 @@ class Mysql extends AbstractPlatform
             $resource = $this->driver;
         }
 
-        if ($resource instanceof \mysqli) {
+        if ($resource instanceof mysqli) {
             return '\'' . $resource->real_escape_string($value) . '\'';
         }
 
-        if ($resource instanceof \PDO) {
+        if ($resource instanceof PDO) {
             return $resource->quote($value);
         }
 

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Mysql\ConfigProvider;
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Mysqli;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
 use Laminas\Db\Container\AdapterManager;
 use Laminas\Db\Container\ConfigProvider as LaminasDbConfigProvider;
@@ -80,7 +79,7 @@ trait SetupTrait
         $serviceManagerConfig = ArrayUtils::merge(
             $serviceManagerConfig,
             [
-                'services'   => [
+                'services' => [
                     'config' => $serviceManagerConfig,
                 ],
             ]

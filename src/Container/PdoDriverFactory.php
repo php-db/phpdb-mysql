@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Laminas\Db\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver\PdoDriverInterface;
 use Laminas\Db\Adapter\Driver\Pdo;
+use Laminas\Db\Adapter\Driver\PdoDriverInterface;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
 use Laminas\Db\Container\AdapterManager;

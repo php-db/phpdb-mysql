@@ -9,13 +9,9 @@ use Laminas\Db\Adapter\Exception;
 
 trait DatabasePlatformNameTrait
 {
-    /**
-     * Get database platform name
-     *
-     * @param string $nameFormat
-     */
-    public function getDatabasePlatformName(string $nameFormat = DriverInterface::NAME_FORMAT_CAMELCASE): string
-    {
+    public function getDatabasePlatformName(
+        string $nameFormat = DriverInterface::NAME_FORMAT_CAMELCASE
+    ): string {
         if ($nameFormat === DriverInterface::NAME_FORMAT_CAMELCASE) {
             return 'Mysql';
         }
@@ -25,7 +21,10 @@ trait DatabasePlatformNameTrait
         }
 
         throw new Exception\InvalidArgumentException(
-            'Invalid name format provided. Must be one of: ' . DriverInterface::NAME_FORMAT_CAMELCASE . ', ' . DriverInterface::NAME_FORMAT_NATURAL
+            'Invalid name format provided. Must be one of: '
+            . DriverInterface::NAME_FORMAT_CAMELCASE
+            . ', '
+            . DriverInterface::NAME_FORMAT_NATURAL
         );
     }
 }

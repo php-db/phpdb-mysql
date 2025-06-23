@@ -13,6 +13,6 @@ final class MysqliStatementFactory
     public function __invoke(ContainerInterface $container): StatementInterface
     {
         $bufferResults = $container->get('config')['db']['options']['buffer_results'] ?? false;
-        return new Statement($bufferResults);
+        return new Statement(bufferResults: $bufferResults);
     }
 }

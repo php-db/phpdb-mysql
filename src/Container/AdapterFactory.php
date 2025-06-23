@@ -14,6 +14,8 @@ use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Psr\Container\ContainerInterface;
 
+use function sprintf;
+
 final class AdapterFactory
 {
     public function __invoke(ContainerInterface $container): AdapterInterface

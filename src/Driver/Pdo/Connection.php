@@ -8,6 +8,7 @@ use Laminas\Db\Adapter\Driver\ConnectionInterface;
 use Laminas\Db\Adapter\Driver\Pdo\AbstractPdoConnection;
 use Laminas\Db\Adapter\Exception;
 use Override;
+use PDO;
 use PDOException;
 use PDOStatement;
 
@@ -20,7 +21,7 @@ use function strtolower;
 class Connection extends AbstractPdoConnection
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     #[Override]
     public function getCurrentSchema(): string|bool
@@ -39,7 +40,7 @@ class Connection extends AbstractPdoConnection
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @throws Exception\InvalidConnectionParametersException
      * @throws Exception\RuntimeException
@@ -136,9 +137,9 @@ class Connection extends AbstractPdoConnection
         $this->dsn = $dsn;
 
         try {
-            $this->resource = new \PDO($dsn, $username, $password, $options);
-            $this->resource->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            $this->driverName = strtolower($this->resource->getAttribute(\PDO::ATTR_DRIVER_NAME));
+            $this->resource = new PDO($dsn, $username, $password, $options);
+            $this->resource->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->driverName = strtolower($this->resource->getAttribute(PDO::ATTR_DRIVER_NAME));
         } catch (PDOException $e) {
             $code = $e->getCode();
             if (! is_int($code)) {
@@ -151,7 +152,7 @@ class Connection extends AbstractPdoConnection
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @param string $name
      */

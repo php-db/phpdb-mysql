@@ -10,9 +10,9 @@ use Laminas\Db\Adapter\Driver\DriverInterface;
 use Laminas\Db\Adapter\Driver\ResultInterface;
 use Laminas\Db\Adapter\Driver\StatementInterface;
 use Laminas\Db\Adapter\Exception;
+use Laminas\Db\Adapter\Mysql\DatabasePlatformNameTrait;
 use Laminas\Db\Adapter\Profiler\ProfilerAwareInterface;
 use Laminas\Db\Adapter\Profiler\ProfilerInterface;
-use Laminas\Db\Adapter\Mysql\DatabasePlatformNameTrait;
 use mysqli_stmt;
 
 use function array_intersect_key;
@@ -37,7 +37,6 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
         protected readonly ResultInterface $resultPrototype,
         array $options = []
     ) {
-
         $this->checkEnvironment();
 
         $options = array_intersect_key(array_merge($this->options, $options), $this->options);
@@ -69,6 +68,7 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
 
     /**
      * Register connection
+     *
      * @deprecated as of 3.0.0, this method is no longer used.
      */
     public function registerConnection(ConnectionInterface $connection): DriverInterface
@@ -89,11 +89,6 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
         return $this->resultPrototype;
     }
 
-    /**
-     * Check environment
-     *
-     * @throws Exception\RuntimeException
-     */
     public function checkEnvironment(): bool
     {
         if (! extension_loaded('mysqli')) {
@@ -112,7 +107,7 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
     /**
      * Create statement
      *
-     * @param string $sqlOrResource
+     * @param \mysqli|mysqli_stmt|string $sqlOrResource
      */
     public function createStatement($sqlOrResource = null): StatementInterface&Statement
     {

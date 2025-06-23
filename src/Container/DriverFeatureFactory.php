@@ -6,5 +6,4 @@ namespace Laminas\Db\Adapter\Mysql\Container;
 
 final class DriverFeatureFactory
 {
-
 }

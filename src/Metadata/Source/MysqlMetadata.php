@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Laminas\Db\Adapter\Mysql\Metadata\Source;
 
 use DateTime;
+use Exception;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Metadata\Source\AbstractSource;
 
@@ -13,6 +14,7 @@ use function array_walk;
 use function implode;
 use function preg_match;
 use function preg_match_all;
+use function str_contains;
 use function str_replace;
 
 use const CASE_LOWER;
@@ -21,7 +23,7 @@ use const PREG_PATTERN_ORDER;
 class MysqlMetadata extends AbstractSource
 {
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function loadSchemaData(): void
     {
@@ -47,11 +49,7 @@ class MysqlMetadata extends AbstractSource
         $this->data['schemas'] = $schemas;
     }
 
-    /**
-     * @param string $schema
-     * @return void
-     */
-    protected function loadTableNameData($schema): void
+    protected function loadTableNameData(string $schema): void
     {
         if (isset($this->data['table_names'][$schema])) {
             return;
@@ -107,12 +105,7 @@ class MysqlMetadata extends AbstractSource
         $this->data['table_names'][$schema] = $tables;
     }
 
-    /**
-     * @param string $table
-     * @param string $schema
-     * @return void
-     */
-    protected function loadColumnData($table, $schema): void
+    protected function loadColumnData(string $table, string $schema): void
     {
         if (isset($this->data['columns'][$schema][$table])) {
             return;
@@ -195,12 +188,7 @@ class MysqlMetadata extends AbstractSource
         $this->data['columns'][$schema][$table] = $columns;
     }
 
-    /**
-     * @param string $table
-     * @param string $schema
-     * @return void
-     */
-    protected function loadConstraintData($table, $schema)
+    protected function loadConstraintData(string $table, string $schema): void
     {
         // phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
         if (isset($this->data['constraints'][$schema][$table])) {
@@ -311,11 +299,7 @@ class MysqlMetadata extends AbstractSource
         // phpcs:enable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
     }
 
-    /**
-     * @param string $schema
-     * @return void
-     */
-    protected function loadConstraintDataNames($schema)
+    protected function loadConstraintDataNames(string $schema): void
     {
         if (isset($this->data['constraint_names'][$schema])) {
             return;
@@ -363,11 +347,7 @@ class MysqlMetadata extends AbstractSource
         $this->data['constraint_names'][$schema] = $data;
     }
 
-    /**
-     * @param string $schema
-     * @return void
-     */
-    protected function loadConstraintDataKeys($schema)
+    protected function loadConstraintDataKeys(string $schema): void
     {
         if (isset($this->data['constraint_keys'][$schema])) {
             return;
@@ -418,12 +398,7 @@ class MysqlMetadata extends AbstractSource
         $this->data['constraint_keys'][$schema] = $data;
     }
 
-    /**
-     * @param string $table
-     * @param string $schema
-     * @return void
-     */
-    protected function loadConstraintReferences($table, $schema)
+    protected function loadConstraintReferences(string $table, string $schema): void
     {
         parent::loadConstraintReferences($table, $schema);
 
@@ -481,11 +456,7 @@ class MysqlMetadata extends AbstractSource
         $this->data['constraint_references'][$schema] = $data;
     }
 
-    /**
-     * @param string $schema
-     * @return void
-     */
-    protected function loadTriggerData($schema)
+    protected function loadTriggerData(string $schema): void
     {
         if (isset($this->data['triggers'][$schema])) {
             return;
