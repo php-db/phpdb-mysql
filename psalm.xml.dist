@@ -47,12 +47,6 @@
             </errorLevel>
         </UnusedClass>
 
-        <ClassMustBeFinal>
-            <errorLevel type="suppress">
-                <directory name="test" />
-            </errorLevel>
-        </ClassMustBeFinal>
-
         <MissingConstructor>
             <errorLevel type="suppress">
                 <directory name="test" />
@@ -64,8 +58,4 @@
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
     </plugins>
-
-    <stubs>
-        <file name=".psr-container.php.stub" preloadClasses="true" />
-    </stubs>
 </psalm>
