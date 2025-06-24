@@ -6,6 +6,8 @@ namespace Laminas\Db\Adapter\Mysql\Container;
 
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Db\Adapter\Driver\DriverInterface;
+use Laminas\Db\Adapter\Driver\PdoDriverInterface;
 use Laminas\Db\Adapter\Exception\RuntimeException;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Adapter\Profiler\ProfilerInterface;
@@ -26,24 +28,56 @@ final class AdapterFactory
         /** @var array $config */
         $config = $container->get('config');
 
-        if (! isset($config['db']['driver'])) {
+        /** @var array $dbConfig */
+        $dbConfig = $config['db'] ?? [];
+
+        if (! isset($dbConfig['driver'])) {
             throw new RuntimeException('Database driver configuration is missing.');
         }
 
-        if (! $adapterManager->has($config['db']['driver'])) {
+        /** @var string $driver */
+        $driver = $dbConfig['driver'];
+
+        if (! $adapterManager->has($driver)) {
             throw new ServiceNotFoundException(sprintf(
                 'Database driver "%s" is not registered in the adapter manager.',
-                $config['db']['driver']
+                $driver
             ));
         }
 
-        return new Adapter(
-            $adapterManager->get($config['db']['driver']),
-            $adapterManager->get(PlatformInterface::class),
-            $adapterManager->get(ResultSetInterface::class),
-            $adapterManager->has(ProfilerInterface::class)
+        /** @var DriverInterface|PdoDriverInterface $driverInstance */
+        $driverInstance = $adapterManager->get($driver);
+
+        if (! $adapterManager->has(PlatformInterface::class)) {
+            throw new ServiceNotFoundException(sprintf(
+                'Database platform "%s" is not registered in the adapter manager.',
+                PlatformInterface::class
+            ));
+        }
+
+        /** @var PlatformInterface $platformInstance */
+        $platformInstance = $adapterManager->get(PlatformInterface::class);
+
+        if (! $adapterManager->has(ResultSetInterface::class)) {
+            throw new ServiceNotFoundException(sprintf(
+                'ResultSet "%s" is not registered in the adapter manager.',
+                ResultSetInterface::class
+            ));
+        }
+
+        /** @var ResultSetInterface $resultSetInstance */
+        $resultSetInstance = $adapterManager->get(ResultSetInterface::class);
+
+        /** @var ProfilerInterface|null $profilerInstanceOrNull */
+        $profilerInstanceOrNull = $adapterManager->has(ProfilerInterface::class)
                 ? $adapterManager->get(ProfilerInterface::class)
-                : null
+                : null;
+
+        return new Adapter(
+            $driverInstance,
+            $platformInstance,
+            $resultSetInstance,
+            $profilerInstanceOrNull
         );
     }
 }

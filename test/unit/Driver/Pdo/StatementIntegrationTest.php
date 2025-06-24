@@ -37,7 +37,7 @@ final class StatementIntegrationTest extends TestCase
         $this->statement = new Statement();
         $this->statement->setDriver($driver);
         $this->statement->initialize(new TestAsset\CtorlessPdo(
-            $this->pdoStatementMock = $this->getMockBuilder('PDOStatement')
+            $this->pdoStatementMock = $this->getMockBuilder(PDOStatement::class)
                 ->onlyMethods(['execute', 'bindParam'])
                 ->getMock()
         ));

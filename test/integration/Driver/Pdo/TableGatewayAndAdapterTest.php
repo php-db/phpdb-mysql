@@ -6,6 +6,7 @@ namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
 use Laminas\Db\Adapter\Driver\ConnectionInterface;
+use Laminas\Db\ResultSet\AbstractResultSet;
 use Laminas\Db\TableGateway\TableGateway;
 use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -31,12 +32,14 @@ final class TableGatewayAndAdapterTest extends TestCase
     #[DataProvider('connections')]
     public function testGetOutOfConnections(): void
     {
-        $this->adapter->query('SELECT VERSION();');
+        $adapter = $this->getAdapter();
+        $adapter->query('SELECT VERSION();');
         $table  = new TableGateway(
             'test',
             $this->adapter
         );
         $select = $table->getSql()->select()->where(['name' => 'foo']);
+        /** @var AbstractResultSet $result */
         $result = $table->selectWith($select);
         self::assertCount(3, $result->current());
     }

@@ -26,6 +26,7 @@ final class AdapterManagerDelegator implements DelegatorFactoryInterface
         callable $callback,
         ?array $options = null
     ): AdapterManager {
+        /** @var AdapterManager $adapterManager */
         $adapterManager = $callback();
         $adapterManager->configure([
             'aliases'   => [

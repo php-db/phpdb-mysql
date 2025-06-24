@@ -10,9 +10,20 @@ use Psr\Container\ContainerInterface;
 
 final class MysqliStatementFactory
 {
-    public function __invoke(ContainerInterface $container): StatementInterface
+    public function __invoke(ContainerInterface $container): StatementInterface&Statement
     {
-        $bufferResults = $container->get('config')['db']['options']['buffer_results'] ?? false;
+        /** @var array $config */
+        $config = $container->get('config');
+
+        /** @var array $dbConfig */
+        $dbConfig = $config['db'] ?? [];
+
+        /** @var array $options */
+        $options = $dbConfig['options'] ?? [];
+
+        /** @var bool $bufferResults */
+        $bufferResults = $options['buffer_results'] ?? $bufferResults;
+
         return new Statement(bufferResults: $bufferResults);
     }
 }

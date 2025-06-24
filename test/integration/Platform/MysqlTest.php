@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Platform;
 
+use Laminas\Db\Adapter\Driver\Pdo;
 use Laminas\Db\Adapter\Mysql\Driver\Mysqli;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
+use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
 use Laminas\Db\Adapter\Mysql\Platform\Mysql;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -17,31 +19,50 @@ use function getenv;
 
 #[Group('integration')]
 #[CoversMethod(Mysqli\Mysqli::class, 'quoteValue')]
-#[CoversMethod(Pdo\Pdo::class, 'quoteValue')]
+#[CoversMethod(PdoDriver::class, 'quoteValue')]
 final class MysqlTest extends TestCase
 {
-    /** @var array<string, resource|\PDO> */
-    public array|\PDO $adapters = [];
+    /** @var array<string, \mysqli|\PDO> */
+    public array $adapters = [];
+
+    protected array $mysqliParams;
+
+    protected array $pdoParams;
 
     #[Override]
     protected function setUp(): void
     {
-        $this->markTestSkipped(self::class . ' test need refactored');
+        //$this->markTestSkipped(self::class . ' test need refactored');
 
         if (extension_loaded('mysqli')) {
+            $this->mysqliParams = [
+                'hostname' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME'),
+                'username' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
+                'password' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD'),
+                'database' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
+            ];
+
             $this->adapters['mysqli'] = new \mysqli(
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')
+                $this->mysqliParams['hostname'],
+                $this->mysqliParams['username'],
+                $this->mysqliParams['password'],
+                $this->mysqliParams['database']
             );
         }
+
         if (extension_loaded('pdo')) {
+            $this->pdoParams = [
+                'hostname' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME'),
+                'username' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
+                'password' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD'),
+                'database' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
+            ];
+
             $this->adapters['pdo_mysql'] = new \PDO(
-                'mysql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME') . ';dbname='
-                . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD')
+                'mysql:host=' . $this->pdoParams['hostname'] . ';dbname='
+                . $this->pdoParams['database'],
+                $this->pdoParams['username'],
+                $this->pdoParams['password']
             );
         }
     }
@@ -58,7 +79,13 @@ final class MysqlTest extends TestCase
         $value = $mysql->quoteValue('value');
         self::assertEquals('\'value\'', $value);
 
-        $mysql = new Mysql(new Mysqli\Mysqli(new Mysqli\Connection($this->adapters['mysqli'])));
+        $mysql = new Mysql(
+            new Mysqli\Mysqli(
+                new Mysqli\Connection($this->mysqliParams),
+                new Mysqli\Statement(),
+                new Mysqli\Result()
+            )
+        );
         $value = $mysql->quoteValue('value');
         self::assertEquals('\'value\'', $value);
     }
@@ -75,7 +102,13 @@ final class MysqlTest extends TestCase
         $value = $mysql->quoteValue('value');
         self::assertEquals('\'value\'', $value);
 
-        $mysql = new Mysql(new Pdo\Pdo(new Pdo\Connection($this->adapters['pdo_mysql'])));
+        $mysql = new Mysql(
+            new PdoDriver(
+                new Connection($this->pdoParams),
+                new Pdo\Statement(),
+                new Pdo\Result()
+            )
+        );
         $value = $mysql->quoteValue('value');
         self::assertEquals('\'value\'', $value);
     }

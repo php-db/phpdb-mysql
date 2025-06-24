@@ -25,7 +25,7 @@ final class ResultTest extends TestCase
      */
     public function testCurrent(): void
     {
-        $stub = $this->getMockBuilder('PDOStatement')->getMock();
+        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
         $stub->expects($this->any())
             ->method('fetch')
             ->willReturnCallback(fn() => uniqid());
@@ -49,7 +49,7 @@ final class ResultTest extends TestCase
      */
     public function testFetchModeAnonymousObject(): void
     {
-        $stub = $this->getMockBuilder('PDOStatement')->getMock();
+        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
         $stub->expects($this->any())
             ->method('fetch')
             ->willReturnCallback(fn() => new stdClass());
@@ -67,7 +67,7 @@ final class ResultTest extends TestCase
      */
     public function testFetchModeRange(): void
     {
-        $stub = $this->getMockBuilder('PDOStatement')->getMock();
+        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
         $stub->expects($this->any())
             ->method('fetch')
             ->willReturnCallback(fn() => new stdClass());
@@ -86,7 +86,7 @@ final class ResultTest extends TestCase
         ];
         $position = 0;
 
-        $stub = $this->getMockBuilder('PDOStatement')->getMock();
+        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
         assert($stub instanceof PDOStatement); // to suppress IDE type warnings
         $stub->expects($this->any())
             ->method('fetch')

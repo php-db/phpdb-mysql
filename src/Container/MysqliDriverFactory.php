@@ -4,22 +4,40 @@ declare(strict_types=1);
 
 namespace Laminas\Db\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
+use Laminas\Db\Adapter\Driver;
 use Laminas\Db\Adapter\Mysql\Driver\Mysqli;
 use Laminas\Db\Container\AdapterManager;
 use Psr\Container\ContainerInterface;
 
 final class MysqliDriverFactory
 {
-    public function __invoke(ContainerInterface $container): DriverInterface
+    public function __invoke(ContainerInterface $container): Driver\DriverInterface&Mysqli\Mysqli
     {
         /** @var AdapterManager $adapterManager */
         $adapterManager = $container->get(AdapterManager::class);
-        $options        = $container->get('config')['db']['options'] ?? [];
+
+        /** @var array $config */
+        $config = $container->get('config');
+
+        /** @var array $dbConfig */
+        $dbConfig = $config['db'] ?? [];
+
+        /** @var array $options */
+        $options = $dbConfig['options'] ?? [];
+
+        /** @var Driver\ConnectionInterface&Mysqli\Connection $connectionInstance */
+        $connectionInstance = $adapterManager->get(Mysqli\Connection::class);
+
+        /** @var Driver\StatementInterface&Mysqli\Statement $statementInstance */
+        $statementInstance = $adapterManager->get(Mysqli\Statement::class);
+
+        /** @var Driver\ResultInterface&Mysqli\Result $resultInstance */
+        $resultInstance = $adapterManager->get(Mysqli\Result::class);
+
         return new Mysqli\Mysqli(
-            $adapterManager->get(Mysqli\Connection::class),
-            $adapterManager->get(Mysqli\Statement::class),
-            $adapterManager->get(Mysqli\Result::class),
+            $connectionInstance,
+            $statementInstance,
+            $resultInstance,
             $options
         );
     }

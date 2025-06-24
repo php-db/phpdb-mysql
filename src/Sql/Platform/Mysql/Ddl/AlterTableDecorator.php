@@ -23,7 +23,19 @@ class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterfa
     /** @var AlterTable */
     protected $subject;
 
-    /** @var int[] */
+    /** @var array{
+     *  unsigned: int,
+     *  zerofill: int,
+     *  identity: int,
+     *  serial: int,
+     *  autoincrement: int,
+     *  comment: int,
+     *  columnformat: int,
+     *  format: int,
+     *  storage: int,
+     *  after: int
+     * } $columnOptionSortOrder
+     */
     protected $columnOptionSortOrder = [
         'unsigned'      => 0,
         'zerofill'      => 1,

@@ -72,8 +72,15 @@ abstract class AbstractAdapterTestCase extends TestCase
 
     protected function isConnectedTcp(): bool
     {
-        $mypid  = getmypid();
-        $dbPort = (string) $this->getConfig()['db']['connection']['port'] ?? '3306';
+        $mypid = getmypid();
+        /** @var array $config */
+        $config = $this->getConfig();
+        /** @var array $dbConfig */
+        $dbConfig = $config['db'] ?? [];
+        /** @var array $connectionConfig */
+        $connectionConfig = $dbConfig['connection'] ?? [];
+        /** @var string $dbPort */
+        $dbPort = (string) $connectionConfig['port'] ?? '3306';
         /** @psalm-suppress ForbiddenCode - running lsof */
         $lsof = shell_exec("lsof -i -P -n | grep $dbPort | grep $mypid");
 

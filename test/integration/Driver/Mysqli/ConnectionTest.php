@@ -21,7 +21,16 @@ final class ConnectionTest extends TestCase
 
     public function testConnectionOk(): void
     {
-        $connection = new Connection($this->getConfig()['db']['connection']);
+        /** @var array $config */
+        $config = $this->getConfig();
+
+        /** @var array $dbConfig */
+        $dbConfig = $config['db'] ?? [];
+
+        /** @var array $connectionConfig */
+        $connectionConfig = $dbConfig['connection'] ?? [];
+
+        $connection = new Connection($connectionConfig);
         $connection->connect();
 
         self::assertTrue($connection->isConnected());

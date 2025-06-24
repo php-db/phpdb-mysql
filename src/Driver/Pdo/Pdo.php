@@ -22,10 +22,14 @@ class Pdo extends AbstractPdo
     public function createResult($resource): ResultInterface
     {
         /** @var Result $result */
-        $result   = clone $this->resultPrototype;
+        $result = clone $this->resultPrototype;
+        /** @var null $rowCount */
         $rowCount = null;
 
-        $result->initialize($resource, $this->connection->getLastGeneratedValue(), $rowCount);
+        /** @var string|int|bool|null $lastGeneratedValue */
+        $lastGeneratedValue = $this->getLastGeneratedValue();
+
+        $result->initialize($resource, $lastGeneratedValue, $rowCount);
         return $result;
     }
 }

@@ -6,44 +6,16 @@
     </ClassMustBeFinal>
   </file>
   <file src="src/Container/AdapterFactory.php">
-    <MixedArgument>
-      <code><![CDATA[$adapterManager->get($config['db']['driver'])]]></code>
-      <code><![CDATA[$config['db']['driver']]]></code>
-      <code><![CDATA[$config['db']['driver']]]></code>
-      <code><![CDATA[$config['db']['driver']]]></code>
-    </MixedArgument>
-  </file>
-  <file src="src/Container/AdapterManagerDelegator.php">
-    <MixedAssignment>
-      <code><![CDATA[$adapterManager]]></code>
-    </MixedAssignment>
-    <MixedMethodCall>
-      <code><![CDATA[configure]]></code>
-    </MixedMethodCall>
-    <MixedReturnStatement>
-      <code><![CDATA[$adapterManager]]></code>
-    </MixedReturnStatement>
+    <UnnecessaryVarAnnotation>
+      <code><![CDATA[PlatformInterface]]></code>
+      <code><![CDATA[ProfilerInterface|null]]></code>
+      <code><![CDATA[ResultSetInterface]]></code>
+    </UnnecessaryVarAnnotation>
   </file>
   <file src="src/Container/DriverFeatureFactory.php">
     <UnusedClass>
       <code><![CDATA[DriverFeatureFactory]]></code>
     </UnusedClass>
-  </file>
-  <file src="src/Container/MysqliConnectionFactory.php">
-    <MixedArgument>
-      <code><![CDATA[$dbConfig]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$dbConfig]]></code>
-    </MixedAssignment>
-  </file>
-  <file src="src/Container/MysqliDriverFactory.php">
-    <MixedArgument>
-      <code><![CDATA[$options]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$options]]></code>
-    </MixedAssignment>
   </file>
   <file src="src/Container/MysqliResultFactory.php">
     <UnusedParam>
@@ -51,56 +23,19 @@
     </UnusedParam>
   </file>
   <file src="src/Container/MysqliStatementFactory.php">
-    <MixedArgument>
+    <UndefinedVariable>
       <code><![CDATA[$bufferResults]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$bufferResults]]></code>
-    </MixedAssignment>
-  </file>
-  <file src="src/Container/PdoConnectionFactory.php">
-    <MixedArgument>
-      <code><![CDATA[$dbConfig]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$dbConfig]]></code>
-    </MixedAssignment>
+    </UndefinedVariable>
   </file>
   <file src="src/Container/PdoResultFactory.php">
     <UnusedParam>
       <code><![CDATA[$container]]></code>
     </UnusedParam>
   </file>
-  <file src="src/Container/PdoStatementFactory.php">
-    <MixedArgument>
-      <code><![CDATA[$options]]></code>
-    </MixedArgument>
-    <MixedAssignment>
-      <code><![CDATA[$options]]></code>
-    </MixedAssignment>
-    <PossiblyFalseArgument>
-      <code><![CDATA[$options]]></code>
-    </PossiblyFalseArgument>
-  </file>
-  <file src="src/Container/PlatformInterfaceFactory.php">
-    <MixedArgument>
-      <code><![CDATA[$adapterManager->get($driver)]]></code>
-      <code><![CDATA[$driver]]></code>
-    </MixedArgument>
-    <MixedArrayAccess>
-      <code><![CDATA[$container->get('config')['db']]]></code>
-    </MixedArrayAccess>
-    <MixedAssignment>
-      <code><![CDATA[$driver]]></code>
-    </MixedAssignment>
-  </file>
   <file src="src/Driver/Mysqli/Connection.php">
     <ClassMustBeFinal>
       <code><![CDATA[Connection]]></code>
     </ClassMustBeFinal>
-    <DocblockTypeContradiction>
-      <code><![CDATA[null !== $connectionInfo]]></code>
-    </DocblockTypeContradiction>
     <InvalidArgument>
       <code><![CDATA[$resultResource === true ? $this->resource : $resultResource]]></code>
     </InvalidArgument>
@@ -110,9 +45,6 @@
     <InvalidReturnType>
       <code><![CDATA[string|bool]]></code>
     </InvalidReturnType>
-    <MissingClosureReturnType>
-      <code><![CDATA[function (array $names) use ($p) {]]></code>
-    </MissingClosureReturnType>
     <MissingParamType>
       <code><![CDATA[$sql]]></code>
     </MissingParamType>
@@ -122,20 +54,10 @@
       <code><![CDATA[$cipher]]></code>
       <code><![CDATA[$clientCert]]></code>
       <code><![CDATA[$clientKey]]></code>
-      <code><![CDATA[$database]]></code>
-      <code><![CDATA[$database]]></code>
-      <code><![CDATA[$hostname]]></code>
-      <code><![CDATA[$hostname]]></code>
       <code><![CDATA[$option]]></code>
       <code><![CDATA[$p['charset']]]></code>
-      <code><![CDATA[$password]]></code>
-      <code><![CDATA[$password]]></code>
-      <code><![CDATA[$socket]]></code>
-      <code><![CDATA[$socket]]></code>
       <code><![CDATA[$sql]]></code>
       <code><![CDATA[$sql]]></code>
-      <code><![CDATA[$username]]></code>
-      <code><![CDATA[$username]]></code>
       <code><![CDATA[$value]]></code>
     </MixedArgument>
     <MixedArrayOffset>
@@ -147,17 +69,15 @@
       <code><![CDATA[$cipher]]></code>
       <code><![CDATA[$clientCert]]></code>
       <code><![CDATA[$clientKey]]></code>
-      <code><![CDATA[$database]]></code>
-      <code><![CDATA[$hostname]]></code>
       <code><![CDATA[$name]]></code>
       <code><![CDATA[$option]]></code>
       <code><![CDATA[$option]]></code>
-      <code><![CDATA[$password]]></code>
-      <code><![CDATA[$socket]]></code>
       <code><![CDATA[$useSSL]]></code>
-      <code><![CDATA[$username]]></code>
       <code><![CDATA[$value]]></code>
     </MixedAssignment>
+    <MixedReturnStatement>
+      <code><![CDATA[$p[$name]]]></code>
+    </MixedReturnStatement>
     <NonInvariantDocblockPropertyType>
       <code><![CDATA[$resource]]></code>
     </NonInvariantDocblockPropertyType>
@@ -196,6 +116,14 @@
     <TooManyArguments>
       <code><![CDATA[profilerFinish]]></code>
     </TooManyArguments>
+    <TypeDoesNotContainType>
+      <code><![CDATA[null !== $connectionInfo]]></code>
+    </TypeDoesNotContainType>
+    <UnnecessaryVarAnnotation>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[int|null]]></code>
+      <code><![CDATA[string|null]]></code>
+    </UnnecessaryVarAnnotation>
   </file>
   <file src="src/Driver/Mysqli/Mysqli.php">
     <ClassMustBeFinal>
@@ -204,6 +132,9 @@
     <ImplementedParamTypeMismatch>
       <code><![CDATA[$sqlOrResource]]></code>
     </ImplementedParamTypeMismatch>
+    <InvalidArgument>
+      <code><![CDATA[$resource]]></code>
+    </InvalidArgument>
     <InvalidReturnStatement>
       <code><![CDATA[$this->getConnection()->getLastGeneratedValue()]]></code>
     </InvalidReturnStatement>
@@ -239,12 +170,12 @@
     <InvalidReturnStatement>
       <code><![CDATA[$this->resource->affected_rows]]></code>
       <code><![CDATA[$this->resource->num_rows]]></code>
-      <code><![CDATA[$this->resource->num_rows]]></code>
     </InvalidReturnStatement>
     <InvalidReturnType>
       <code><![CDATA[int]]></code>
     </InvalidReturnType>
     <MissingConstructor>
+      <code><![CDATA[$generatedValue]]></code>
       <code><![CDATA[$isBuffered]]></code>
       <code><![CDATA[$resource]]></code>
     </MissingConstructor>
@@ -376,12 +307,13 @@
     <ImplementedParamTypeMismatch>
       <code><![CDATA[$resource]]></code>
     </ImplementedParamTypeMismatch>
-    <PossiblyUndefinedMethod>
-      <code><![CDATA[getLastGeneratedValue]]></code>
-    </PossiblyUndefinedMethod>
     <PropertyNotSetInConstructor>
       <code><![CDATA[Pdo]]></code>
     </PropertyNotSetInConstructor>
+    <UnnecessaryVarAnnotation>
+      <code><![CDATA[null]]></code>
+      <code><![CDATA[string|int|bool|null]]></code>
+    </UnnecessaryVarAnnotation>
   </file>
   <file src="src/Metadata/Source/MysqlMetadata.php">
     <ClassMustBeFinal>
@@ -705,22 +637,21 @@
     </MoreSpecificReturnType>
   </file>
   <file src="test/integration/Driver/Mysqli/ConnectionTest.php">
-    <MixedArgument>
-      <code><![CDATA[$this->getConfig()['db']['connection']]]></code>
-    </MixedArgument>
-    <MixedArrayAccess>
-      <code><![CDATA[$this->getConfig()['db']['connection']]]></code>
-    </MixedArrayAccess>
+    <UnnecessaryVarAnnotation>
+      <code><![CDATA[array]]></code>
+    </UnnecessaryVarAnnotation>
   </file>
   <file src="test/integration/Driver/Pdo/AbstractAdapterTestCase.php">
     <RedundantCondition>
-      <code><![CDATA[(string) $this->getConfig()['db']['connection']['port']]]></code>
+      <code><![CDATA[(string) $connectionConfig['port']]]></code>
     </RedundantCondition>
     <TypeDoesNotContainNull>
       <code><![CDATA['3306']]></code>
     </TypeDoesNotContainNull>
     <UnnecessaryVarAnnotation>
       <code><![CDATA[ConnectionInterface]]></code>
+      <code><![CDATA[array]]></code>
+      <code><![CDATA[string]]></code>
     </UnnecessaryVarAnnotation>
   </file>
   <file src="test/integration/Driver/Pdo/AdapterTest.php">
@@ -729,19 +660,13 @@
     </UndefinedTrait>
   </file>
   <file src="test/integration/Driver/Pdo/TableGatewayAndAdapterTest.php">
-    <MixedArgument>
-      <code><![CDATA[$result->current()]]></code>
-    </MixedArgument>
     <MixedReturnStatement>
       <code><![CDATA[array]]></code>
     </MixedReturnStatement>
     <PossiblyNullArgument>
+      <code><![CDATA[$result->current()]]></code>
       <code><![CDATA[$this->adapter]]></code>
     </PossiblyNullArgument>
-    <UndefinedInterfaceMethod>
-      <code><![CDATA[current]]></code>
-      <code><![CDATA[query]]></code>
-    </UndefinedInterfaceMethod>
   </file>
   <file src="test/integration/Driver/Pdo/TableGatewayTest.php">
     <InvalidArgument>
@@ -806,33 +731,18 @@
     <InvalidClass>
       <code><![CDATA[\Mysqli]]></code>
     </InvalidClass>
-    <RedundantConditionGivenDocblockType>
-      <code><![CDATA[$this->adapters['mysqli'] instanceof \Mysqli]]></code>
-    </RedundantConditionGivenDocblockType>
-    <TooFewArguments>
-      <code><![CDATA[new Mysqli\Mysqli(new Mysqli\Connection($this->adapters['mysqli']))]]></code>
-      <code><![CDATA[new Mysqli\Mysqli(new Mysqli\Connection($this->adapters['mysqli']))]]></code>
-      <code><![CDATA[new Pdo\Pdo(new Pdo\Connection($this->adapters['pdo_mysql']))]]></code>
-      <code><![CDATA[new Pdo\Pdo(new Pdo\Connection($this->adapters['pdo_mysql']))]]></code>
-    </TooFewArguments>
-    <UnevaluatedCode>
-      <code><![CDATA[if (extension_loaded('mysqli')) {
-            $this->adapters['mysqli'] = new \mysqli(
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')
-            );
-        }]]></code>
-      <code><![CDATA[if (extension_loaded('pdo')) {
-            $this->adapters['pdo_mysql'] = new \PDO(
-                'mysql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME') . ';dbname='
-                . getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD')
-            );
-        }]]></code>
-    </UnevaluatedCode>
+    <PossiblyFalseArgument>
+      <code><![CDATA[$this->mysqliParams['database']]]></code>
+      <code><![CDATA[$this->mysqliParams['hostname']]]></code>
+      <code><![CDATA[$this->mysqliParams['password']]]></code>
+      <code><![CDATA[$this->mysqliParams['username']]]></code>
+      <code><![CDATA[$this->pdoParams['password']]]></code>
+      <code><![CDATA[$this->pdoParams['username']]]></code>
+    </PossiblyFalseArgument>
+    <PossiblyFalseOperand>
+      <code><![CDATA[$this->pdoParams['database']]]></code>
+      <code><![CDATA[$this->pdoParams['hostname']]]></code>
+    </PossiblyFalseOperand>
   </file>
   <file src="test/unit/Driver/Pdo/ConnectionIntegrationTest.php">
     <PossiblyUnusedProperty>
@@ -887,34 +797,18 @@
   </file>
   <file src="test/unit/Driver/Pdo/ResultTest.php">
     <ArgumentTypeCoercion>
-      <code><![CDATA['PDOStatement']]></code>
-      <code><![CDATA['PDOStatement']]></code>
-      <code><![CDATA['PDOStatement']]></code>
-      <code><![CDATA['PDOStatement']]></code>
       <code><![CDATA['stdClass']]></code>
       <code><![CDATA['stdClass']]></code>
     </ArgumentTypeCoercion>
-    <InvalidArgument>
-      <code><![CDATA[$stub]]></code>
-      <code><![CDATA[$stub]]></code>
-      <code><![CDATA[$stub]]></code>
-    </InvalidArgument>
     <InvalidArrayOffset>
       <code><![CDATA[$data[$position++]]]></code>
     </InvalidArrayOffset>
     <MissingClosureReturnType>
       <code><![CDATA[function () use ($data, &$position) {]]></code>
     </MissingClosureReturnType>
-  </file>
-  <file src="test/unit/Driver/Pdo/StatementIntegrationTest.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA['PDOStatement']]></code>
-    </ArgumentTypeCoercion>
-    <InvalidArgument>
-      <code><![CDATA[$this->pdoStatementMock = $this->getMockBuilder('PDOStatement')
-                ->onlyMethods(['execute', 'bindParam'])
-                ->getMock()]]></code>
-    </InvalidArgument>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[assert($stub instanceof PDOStatement)]]></code>
+    </RedundantConditionGivenDocblockType>
   </file>
   <file src="test/unit/Driver/Pdo/StatementTest.php">
     <PossiblyNullArgument>
@@ -923,10 +817,5 @@
     <UnevaluatedCode>
       <code><![CDATA[self::assertSame($stmt, $this->statement->getResource());]]></code>
     </UnevaluatedCode>
-  </file>
-  <file src="test/unit/Driver/TestAsset/PdoMock.php">
-    <ImplementedParamTypeMismatch>
-      <code><![CDATA[$attribute]]></code>
-    </ImplementedParamTypeMismatch>
   </file>
 </files>
