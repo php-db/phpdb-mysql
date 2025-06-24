@@ -36,9 +36,6 @@
     <ClassMustBeFinal>
       <code><![CDATA[Connection]]></code>
     </ClassMustBeFinal>
-    <InvalidArgument>
-      <code><![CDATA[$resultResource === true ? $this->resource : $resultResource]]></code>
-    </InvalidArgument>
     <InvalidReturnStatement>
       <code><![CDATA[$r[0]]]></code>
     </InvalidReturnStatement>
@@ -84,6 +81,9 @@
     <NullableReturnStatement>
       <code><![CDATA[$r[0]]]></code>
     </NullableReturnStatement>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$resultResource === true ? $this->resource : $resultResource]]></code>
+    </PossiblyInvalidArgument>
     <PossiblyInvalidMethodCall>
       <code><![CDATA[fetch_row]]></code>
     </PossiblyInvalidMethodCall>
@@ -130,11 +130,9 @@
       <code><![CDATA[Mysqli]]></code>
     </ClassMustBeFinal>
     <ImplementedParamTypeMismatch>
+      <code><![CDATA[$resource]]></code>
       <code><![CDATA[$sqlOrResource]]></code>
     </ImplementedParamTypeMismatch>
-    <InvalidArgument>
-      <code><![CDATA[$resource]]></code>
-    </InvalidArgument>
     <InvalidReturnStatement>
       <code><![CDATA[$this->getConnection()->getLastGeneratedValue()]]></code>
     </InvalidReturnStatement>
@@ -151,14 +149,13 @@
       <code><![CDATA[getProfiler]]></code>
       <code><![CDATA[getResultPrototype]]></code>
       <code><![CDATA[getStatementPrototype]]></code>
-      <code><![CDATA[registerConnection]]></code>
     </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code><![CDATA[$connection]]></code>
-    </PossiblyUnusedParam>
     <PossiblyUnusedReturnValue>
       <code><![CDATA[bool]]></code>
     </PossiblyUnusedReturnValue>
+    <UndefinedDocblockClass>
+      <code><![CDATA[\mysqli|mysqli_result|mysqli_stmt]]></code>
+    </UndefinedDocblockClass>
     <UnusedVariable>
       <code><![CDATA[$options]]></code>
     </UnusedVariable>
@@ -238,9 +235,6 @@
     <ClassMustBeFinal>
       <code><![CDATA[Statement]]></code>
     </ClassMustBeFinal>
-    <InvalidArgument>
-      <code><![CDATA[$this->resource]]></code>
-    </InvalidArgument>
     <MixedAssignment>
       <code><![CDATA[$args[]]]></code>
       <code><![CDATA[$value]]></code>

@@ -13,6 +13,7 @@ use Laminas\Db\Container\AdapterManager;
 use Laminas\Db\Container\ConfigProvider as LaminasDbConfigProvider;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
+use Psr\Container\ContainerInterface;
 
 use function getenv;
 
@@ -31,6 +32,8 @@ trait SetupTrait
     protected ?AdapterInterface $adapter;
 
     protected AdapterManager $adapterManager;
+
+    protected ContainerInterface $container;
 
     protected DriverInterface|string|null $driver = null;
 
@@ -86,8 +89,8 @@ trait SetupTrait
         );
 
         $this->config         = $serviceManagerConfig;
-        $container            = new ServiceManager($this->config);
-        $this->adapterManager = $container->get(AdapterManager::class);
+        $this->container      = new ServiceManager($this->config);
+        $this->adapterManager = $this->container->get(AdapterManager::class);
         $this->adapter        = $this->adapterManager->get(AdapterInterface::class);
 
         return $this->adapter;
