@@ -46,6 +46,7 @@ class Result implements Iterator, ResultInterface
      * Initialize
      *
      * @throws Exception\InvalidArgumentException
+     * psalm-suppress PossiblyUnusedMethod
      */
     public function initialize(
         mysqli|mysqli_result|mysqli_stmt $resource,
