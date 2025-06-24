@@ -27,7 +27,7 @@ final class IntegrationTestStartedListener implements StartedSubscriber
             return;
         }
 
-        if (getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL')) {
+        if (getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL')) {
             $this->fixtureLoaders[] = new MysqlFixtureLoader();
         }
 
