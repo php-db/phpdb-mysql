@@ -33,7 +33,7 @@
     <php>
         <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL" value="true"/>
         <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME" value="localhost"/>
-        <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME" value="user"/>
+        <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME" value="gha"/>
         <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD" value="password"/>
         <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE" value="laminasdb_test"/>
         <env name="TESTS_LAMINAS_DB_ADAPTER_MYSQL_PORT" value="3306"/>
