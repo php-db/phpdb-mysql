@@ -23,6 +23,7 @@ class Pdo extends AbstractPdo
     {
         /** @var Result $result */
         $result = clone $this->resultPrototype;
+
         /** @var null $rowCount */
         $rowCount = null;
 

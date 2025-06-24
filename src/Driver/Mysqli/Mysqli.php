@@ -67,16 +67,6 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
     }
 
     /**
-     * Register connection
-     *
-     * @deprecated as of 3.0.0, this method is no longer used.
-     */
-    public function registerConnection(ConnectionInterface $connection): DriverInterface
-    {
-        return $this;
-    }
-
-    /**
      * Get statement prototype
      */
     public function getStatementPrototype(): StatementInterface&Statement
@@ -138,7 +128,7 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
     /**
      * Create result
      *
-     * @param resource $resource
+     * @param \mysqli|mysqli_result|mysqli_stmt $resource
      */
     public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
     {
