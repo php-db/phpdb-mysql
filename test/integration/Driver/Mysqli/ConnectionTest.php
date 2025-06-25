@@ -22,16 +22,9 @@ final class ConnectionTest extends TestCase
     public function testConnectionOk(): void
     {
         /** @var array $config */
-        $config = $this->getConfig();
-
-        /** @var array $dbConfig */
-        $dbConfig = $config['db'] ?? [];
-
-        /** @var array $connectionConfig */
-        $connectionConfig = $dbConfig['connection'] ?? [];
-
-        $connection = new Connection($connectionConfig);
-        $connection->connect();
+        $config = ['db' => ['driver' => 'Mysqli']];
+        /** @var Connection $connection */
+        $connection = $this->getAdapter($config)->getDriver()->getConnection();
 
         self::assertTrue($connection->isConnected());
         $connection->disconnect();

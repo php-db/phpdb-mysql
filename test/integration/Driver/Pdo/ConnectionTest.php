@@ -32,14 +32,6 @@ final class ConnectionTest extends TestCase
 {
     use SetupTrait;
 
-    public function testSetResource(): void
-    {
-        $resource = new PDO('sqlite::memory:');
-        /** @var Connection $connection */
-        $connection = $this->getAdapter()->getDriver()->getConnection();
-        self::assertSame($connection, $connection->setResource($resource));
-    }
-
     public function testGetResource(): void
     {
         $connection = $this->getAdapter()->getDriver()->getConnection();

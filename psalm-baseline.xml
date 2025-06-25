@@ -633,11 +633,6 @@
       <code><![CDATA[AdapterInterface&Adapter]]></code>
     </MoreSpecificReturnType>
   </file>
-  <file src="test/integration/Driver/Mysqli/ConnectionTest.php">
-    <UnnecessaryVarAnnotation>
-      <code><![CDATA[array]]></code>
-    </UnnecessaryVarAnnotation>
-  </file>
   <file src="test/integration/Driver/Pdo/AbstractAdapterTestCase.php">
     <RedundantCondition>
       <code><![CDATA[(string) $connectionConfig['port']]]></code>
