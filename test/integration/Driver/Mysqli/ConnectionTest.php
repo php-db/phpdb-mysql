@@ -25,7 +25,7 @@ final class ConnectionTest extends TestCase
         $config = ['db' => ['driver' => 'Mysqli']];
         /** @var Connection $connection */
         $connection = $this->getAdapter($config)->getDriver()->getConnection();
-
+        $connection->connect();
         self::assertTrue($connection->isConnected());
         $connection->disconnect();
         self::assertFalse($connection->isConnected());
