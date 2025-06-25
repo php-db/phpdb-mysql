@@ -44,7 +44,7 @@ abstract class AbstractAdapterTestCase extends TestCase
 
     public function testDriverDisconnectAfterQuoteWithPlatform(): void
     {
-        $isTcpConnection = $this->isTcpConnection();
+        //$isTcpConnection = $this->isTcpConnection();
 
         /** @var AdapterInterface $adapter */
         $adapter = $this->getAdapter([
