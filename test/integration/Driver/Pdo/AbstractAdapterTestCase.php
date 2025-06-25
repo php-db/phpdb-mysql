@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
 
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Adapter\Driver\ConnectionInterface;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
+use Laminas\Db\Adapter\SchemaAwareInterface;
 use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +16,9 @@ use PHPUnit\Framework\TestCase;
 use function getmypid;
 use function shell_exec;
 
+#[CoversMethod(Adapter::class, 'getCurrentSchema')]
 #[CoversMethod(AdapterInterface::class, '__construct')]
+#[CoversMethod(SchemaAwareInterface::class, 'getCurrentSchema')]
 #[CoversMethod(ConnectionInterface::class, 'connect')]
 #[CoversMethod(ConnectionInterface::class, 'disconnect')]
 #[CoversMethod(ConnectionInterface::class, 'isConnected')]
@@ -27,6 +31,15 @@ abstract class AbstractAdapterTestCase extends TestCase
         /** @var ConnectionInterface $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $this->assertInstanceOf(ConnectionInterface::class, $connection);
+    }
+
+    public function testGetCurrentSchema(): void
+    {
+        /** @var AdapterInterface&SchemaAwareInterface $adapter */
+        $adapter = $this->getAdapter();
+        $schema  = $adapter->getCurrentSchema();
+        self::assertIsString($schema);
+        self::assertNotEmpty($schema);
     }
 
     public function testDriverDisconnectAfterQuoteWithPlatform(): void

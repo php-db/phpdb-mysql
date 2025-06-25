@@ -6,10 +6,12 @@ namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Db\Adapter\Driver\Pdo\Result;
 use Laminas\Db\Adapter\Driver\Pdo\Statement;
+use Laminas\Db\Adapter\Driver\PdoDriverInterface;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
 use Laminas\Db\Adapter\ParameterContainer;
 use Override;
+use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(Statement::class, 'execute')]
 final class StatementTest extends TestCase
 {
-    protected ?Pdo $pdo = null;
+    protected ?Pdo $pdo;
     protected Statement $statement;
 
     /**
@@ -52,6 +54,7 @@ final class StatementTest extends TestCase
 
     public function testSetDriver(): void
     {
+        self::assertInstanceOf(PdoDriverInterface::class, $this->pdo);
         self::assertEquals($this->statement, $this->statement->setDriver($this->pdo));
     }
 
@@ -72,10 +75,8 @@ final class StatementTest extends TestCase
 
     public function testGetResource(): void
     {
-        $this->markTestSkipped('Needs to be covered by integration group');
-        // $pdo  = new TestAsset\SqliteMemoryPdo();
-        // $stmt = $pdo->prepare('SELECT 1');
-        // $this->statement->setResource($stmt);
+        $stmt = $this->createMock(PDOStatement::class);
+        $this->statement->setResource($stmt);
 
         self::assertSame($stmt, $this->statement->getResource());
     }

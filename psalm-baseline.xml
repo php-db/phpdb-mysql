@@ -214,6 +214,9 @@
       <code><![CDATA[fetch_assoc]]></code>
       <code><![CDATA[result_metadata]]></code>
     </PossiblyUndefinedMethod>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[initialize]]></code>
+    </PossiblyUnusedMethod>
     <PossiblyUnusedProperty>
       <code><![CDATA[$numberOfRows]]></code>
     </PossiblyUnusedProperty>
@@ -653,6 +656,11 @@
       <code><![CDATA[SetUpTrait]]></code>
     </UndefinedTrait>
   </file>
+  <file src="test/integration/Driver/Pdo/ConnectionTest.php">
+    <RedundantCondition>
+      <code><![CDATA[assertIsInt]]></code>
+    </RedundantCondition>
+  </file>
   <file src="test/integration/Driver/Pdo/TableGatewayAndAdapterTest.php">
     <MixedReturnStatement>
       <code><![CDATA[array]]></code>
@@ -678,7 +686,7 @@
       <code><![CDATA[printf]]></code>
     </RedundantFunctionCall>
     <RiskyTruthyFalsyComparison>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_MYSQL')]]></code>
+      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL')]]></code>
     </RiskyTruthyFalsyComparison>
     <UndefinedDocblockClass>
       <code><![CDATA[$fixtureLoader]]></code>
@@ -738,57 +746,6 @@
       <code><![CDATA[$this->pdoParams['hostname']]]></code>
     </PossiblyFalseOperand>
   </file>
-  <file src="test/unit/Driver/Pdo/ConnectionIntegrationTest.php">
-    <PossiblyUnusedProperty>
-      <code><![CDATA[$variables]]></code>
-    </PossiblyUnusedProperty>
-    <UnevaluatedCode>
-      <code><![CDATA[$connection = $sqlsrv->getConnection();]]></code>
-      <code><![CDATA[$connection = $sqlsrv->getConnection();]]></code>
-      <code><![CDATA[$connection = new Connection($this->variables);]]></code>
-      <code><![CDATA[$connection = new Connection($this->variables);]]></code>
-      <code><![CDATA[$connection = new Connection($this->variables);]]></code>
-      <code><![CDATA[$connection = new Connection($this->variables);]]></code>
-      <code><![CDATA[$connection = new Connection($this->variables);]]></code>
-      <code><![CDATA[$connection = new Connection([]);]]></code>
-      <code><![CDATA[$connection = new Connection([]);]]></code>
-      <code><![CDATA[$connection->connect();]]></code>
-      <code><![CDATA[$connection->connect();]]></code>
-      <code><![CDATA[$connection->disconnect();]]></code>
-      <code><![CDATA[$connection->disconnect();]]></code>
-      <code><![CDATA[$connection->disconnect();]]></code>
-      <code><![CDATA[$connection->disconnect();]]></code>
-      <code><![CDATA[$connection->disconnect();]]></code>
-      <code><![CDATA[$connection->disconnect();]]></code>
-      <code><![CDATA[$connection->setResource($resource);]]></code>
-      <code><![CDATA[$resource   = new TestAsset\SqliteMemoryPdo();]]></code>
-      <code><![CDATA[$resource   = new TestAsset\SqliteMemoryPdo();]]></code>
-      <code><![CDATA[$result = $connection->execute('SELECT \'foo\'');]]></code>
-      <code><![CDATA[$sqlsrv     = new Pdo($this->variables);]]></code>
-      <code><![CDATA[$sqlsrv     = new Pdo($this->variables);]]></code>
-      <code><![CDATA[$statement = $connection->prepare('SELECT \'foo\'');]]></code>
-      <code><![CDATA[self::assertFalse($connection->isConnected());]]></code>
-      <code><![CDATA[self::assertFalse($connection->isConnected());]]></code>
-      <code><![CDATA[self::assertInstanceOf('PDO', $connection->getResource());]]></code>
-      <code><![CDATA[self::assertInstanceOf(Result::class, $result);]]></code>
-      <code><![CDATA[self::assertInstanceOf(Statement::class, $statement);]]></code>
-      <code><![CDATA[self::assertIsString($connection->getCurrentSchema());]]></code>
-      <code><![CDATA[self::assertSame($connection, $connection->connect());]]></code>
-      <code><![CDATA[self::assertSame($connection, $connection->connect());]]></code>
-      <code><![CDATA[self::assertSame($connection, $connection->connect());]]></code>
-      <code><![CDATA[self::assertSame($connection, $connection->setResource($resource));]]></code>
-      <code><![CDATA[self::assertTrue($connection->isConnected());]]></code>
-      <code><![CDATA[self::assertTrue($connection->isConnected());]]></code>
-      <code><![CDATA[self::assertTrue($connection->isConnected());]]></code>
-      <code><![CDATA[unset($connection);]]></code>
-      <code><![CDATA[unset($connection);]]></code>
-      <code><![CDATA[unset($connection);]]></code>
-      <code><![CDATA[unset($connection);]]></code>
-      <code><![CDATA[unset($connection);]]></code>
-      <code><![CDATA[unset($resource);]]></code>
-      <code><![CDATA[unset($resource);]]></code>
-    </UnevaluatedCode>
-  </file>
   <file src="test/unit/Driver/Pdo/ResultTest.php">
     <ArgumentTypeCoercion>
       <code><![CDATA['stdClass']]></code>
@@ -803,13 +760,5 @@
     <RedundantConditionGivenDocblockType>
       <code><![CDATA[assert($stub instanceof PDOStatement)]]></code>
     </RedundantConditionGivenDocblockType>
-  </file>
-  <file src="test/unit/Driver/Pdo/StatementTest.php">
-    <PossiblyNullArgument>
-      <code><![CDATA[$this->pdo]]></code>
-    </PossiblyNullArgument>
-    <UnevaluatedCode>
-      <code><![CDATA[self::assertSame($stmt, $this->statement->getResource());]]></code>
-    </UnevaluatedCode>
   </file>
 </files>

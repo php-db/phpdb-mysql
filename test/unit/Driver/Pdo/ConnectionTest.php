@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
+use Laminas\Db\Adapter\Driver\PdoConnectionInterface;
 use Laminas\Db\Adapter\Exception\InvalidConnectionParametersException;
 use Laminas\Db\Adapter\Exception\RuntimeException;
 use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
@@ -15,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Connection::class, 'getResource')]
 #[CoversMethod(Connection::class, 'getDsn')]
+#[CoversMethod(PdoConnectionInterface::class, 'getDsn')]
 final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
