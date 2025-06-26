@@ -634,16 +634,8 @@
     </MoreSpecificReturnType>
   </file>
   <file src="test/integration/Driver/Pdo/AbstractAdapterTestCase.php">
-    <RedundantCondition>
-      <code><![CDATA[(string) $connectionConfig['port']]]></code>
-    </RedundantCondition>
-    <TypeDoesNotContainNull>
-      <code><![CDATA['3306']]></code>
-    </TypeDoesNotContainNull>
     <UnnecessaryVarAnnotation>
       <code><![CDATA[ConnectionInterface]]></code>
-      <code><![CDATA[array]]></code>
-      <code><![CDATA[string]]></code>
     </UnnecessaryVarAnnotation>
   </file>
   <file src="test/integration/Driver/Pdo/AdapterTest.php">
