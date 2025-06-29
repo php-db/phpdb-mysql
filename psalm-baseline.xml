@@ -12,20 +12,10 @@
       <code><![CDATA[ResultSetInterface]]></code>
     </UnnecessaryVarAnnotation>
   </file>
-  <file src="src/Container/DriverFeatureFactory.php">
-    <UnusedClass>
-      <code><![CDATA[DriverFeatureFactory]]></code>
-    </UnusedClass>
-  </file>
   <file src="src/Container/MysqliResultFactory.php">
     <UnusedParam>
       <code><![CDATA[$container]]></code>
     </UnusedParam>
-  </file>
-  <file src="src/Container/MysqliStatementFactory.php">
-    <UndefinedVariable>
-      <code><![CDATA[$bufferResults]]></code>
-    </UndefinedVariable>
   </file>
   <file src="src/Container/PdoResultFactory.php">
     <UnusedParam>

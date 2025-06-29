@@ -22,7 +22,7 @@ final class MysqliStatementFactory
         $options = $dbConfig['options'] ?? [];
 
         /** @var bool $bufferResults */
-        $bufferResults = $options['buffer_results'] ?? $bufferResults;
+        $bufferResults = $options['buffer_results'] ?? false;
 
         return new Statement(bufferResults: $bufferResults);
     }
