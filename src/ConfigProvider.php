@@ -1,12 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Laminas\Db\Mysql;
+declare(strict_types=1);
 
-use Laminas\Db\Adapter\AbstractAdapterServiceFactory;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
-use Laminas\ServiceManager\Factory\InvokableFactory;
+namespace PhpDb\Adapter\Mysql;
+
+use PhpDb\Container\AdapterManager;
 
 readonly class ConfigProvider
 {
@@ -20,14 +18,10 @@ readonly class ConfigProvider
     public function getDependencies(): array
     {
         return [
-            'aliases' => [
-                PlatformInterface::class => Platform\Mysql::class,
-            ],
-            'factories' => [
-                AdapterInterface::class => AdapterServiceFactory::class,
-                //DriverInterface::class => Driver\Mysqli\DriverFactory::class,
-                DriverInterface::class   => Driver\Pdo\DriverFactory::class,
-                Platform\Mysql::class    => InvokableFactory::class,
+            'delegators' => [
+                AdapterManager::class => [
+                    Container\AdapterManagerDelegator::class,
+                ],
             ],
         ];
     }

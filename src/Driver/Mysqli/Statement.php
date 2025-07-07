@@ -1,182 +1,118 @@
 <?php
 
-namespace Laminas\Db\Mysql\Driver\Mysqli;
+declare(strict_types=1);
 
-use Laminas\Db\Adapter\Driver\StatementInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\ParameterContainer;
-use Laminas\Db\Adapter\Profiler;
+namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
+
 use mysqli_stmt;
+use Override;
+use PhpDb\Adapter\Driver\DriverAwareInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\ParameterContainer;
+use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
+use PhpDb\Adapter\StatementContainerInterface;
 
 use function array_unshift;
 use function call_user_func_array;
 use function is_array;
 
-class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
+class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
 {
-    /** @var \mysqli */
-    protected $mysqli;
+    protected \mysqli $mysqli;
 
-    /** @var Mysqli */
-    protected $driver;
+    protected Mysqli $driver;
 
-    /** @var Profiler\ProfilerInterface */
-    protected $profiler;
+    protected ?ProfilerInterface $profiler;
 
-    /** @var string */
-    protected $sql = '';
+    protected string $sql = '';
 
-    /**
-     * Parameter container
-     *
-     * @var ParameterContainer
-     */
-    protected $parameterContainer;
+    protected mysqli_stmt $resource;
 
-    /** @var mysqli_stmt */
-    protected $resource;
+    protected bool $isPrepared = false;
 
-    /**
-     * Is prepared
-     *
-     * @var bool
-     */
-    protected $isPrepared = false;
-
-    /** @var bool */
-    protected $bufferResults = false;
-
-    /**
-     * @param  bool $bufferResults
-     */
-    public function __construct($bufferResults = false)
-    {
-        $this->bufferResults = (bool) $bufferResults;
+    public function __construct(
+        protected ParameterContainer $parameterContainer = new ParameterContainer(),
+        protected bool $bufferResults = false
+    ) {
     }
 
-    /**
-     * Set driver
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function setDriver(Mysqli $driver)
+    #[Override]
+    public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
         $this->driver = $driver;
         return $this;
     }
 
-    /**
-     * @return $this Provides a fluent interface
-     */
-    public function setProfiler(Profiler\ProfilerInterface $profiler)
+    #[Override]
+    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;
         return $this;
     }
 
-    /**
-     * @return null|Profiler\ProfilerInterface
-     */
-    public function getProfiler()
+    public function getProfiler(): ?ProfilerInterface
     {
         return $this->profiler;
     }
 
-    /**
-     * Initialize
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function initialize(\mysqli $mysqli)
+    public function initialize(\mysqli $mysqli): static
     {
         $this->mysqli = $mysqli;
         return $this;
     }
 
-    /**
-     * Set sql
-     *
-     * @param  string $sql
-     * @return $this Provides a fluent interface
-     */
-    public function setSql($sql)
+    #[Override]
+    public function getSql(): ?string
+    {
+        return $this->sql;
+    }
+
+    #[Override]
+    public function setSql(?string $sql): StatementContainerInterface
     {
         $this->sql = $sql;
         return $this;
     }
 
-    /**
-     * Set Parameter container
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function setParameterContainer(ParameterContainer $parameterContainer)
-    {
+    #[Override]
+    public function setParameterContainer(
+        ParameterContainer $parameterContainer
+    ): StatementContainerInterface {
         $this->parameterContainer = $parameterContainer;
         return $this;
     }
 
-    /**
-     * Get resource
-     *
-     * @return mixed
-     */
-    public function getResource()
+    #[Override]
+    public function getResource(): mysqli_stmt
     {
         return $this->resource;
     }
 
-    /**
-     * Set resource
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function setResource(mysqli_stmt $mysqliStatement)
+    public function setResource(mysqli_stmt $mysqliStatement): StatementInterface
     {
         $this->resource   = $mysqliStatement;
         $this->isPrepared = true;
         return $this;
     }
 
-    /**
-     * Get sql
-     *
-     * @return string
-     */
-    public function getSql()
-    {
-        return $this->sql;
-    }
-
-    /**
-     * Get parameter count
-     *
-     * @return ParameterContainer
-     */
-    public function getParameterContainer()
+    #[Override]
+    public function getParameterContainer(): ?ParameterContainer
     {
         return $this->parameterContainer;
     }
 
-    /**
-     * Is prepared
-     *
-     * @return bool
-     */
-    public function isPrepared()
+    #[Override]
+    public function isPrepared(): bool
     {
         return $this->isPrepared;
     }
 
-    /**
-     * Prepare
-     *
-     * @param string $sql
-     * @return $this Provides a fluent interface
-     * @throws Exception\InvalidQueryException
-     * @throws Exception\RuntimeException
-     */
-    public function prepare($sql = null)
+    #[Override]
+    public function prepare(?string $sql = null): StatementInterface
     {
         if ($this->isPrepared) {
             throw new Exception\RuntimeException('This statement has already been prepared');
@@ -200,11 +136,10 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Execute
      *
-     * @param null|array|ParameterContainer $parameters
      * @throws Exception\RuntimeException
-     * @return mixed
      */
-    public function execute($parameters = null)
+    #[Override]
+    public function execute(ParameterContainer|array|null $parameters = null): ?ResultInterface
     {
         if (! $this->isPrepared) {
             $this->prepare();
@@ -229,15 +164,11 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         }
         /** END Standard ParameterContainer Merging Block */
 
-        if ($this->profiler) {
-            $this->profiler->profilerStart($this);
-        }
+        $this->profiler?->profilerStart($this);
 
         $return = $this->resource->execute();
 
-        if ($this->profiler) {
-            $this->profiler->profilerFinish();
-        }
+        $this->profiler?->profilerFinish();
 
         if ($return === false) {
             throw new Exception\RuntimeException($this->resource->error);
@@ -256,10 +187,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * Bind parameters from container
-     *
-     * @return void
      */
-    protected function bindParametersFromContainer()
+    protected function bindParametersFromContainer(): void
     {
         $parameters = $this->parameterContainer->getNamedArray();
         $type       = '';

@@ -1,12 +1,18 @@
 <?php
 
-namespace Laminas\Db\Mysql\Driver\Mysqli;
+declare(strict_types=1);
+
+namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
 
 use Exception as GenericException;
-use Laminas\Db\Adapter\Driver\AbstractConnection;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Exception\InvalidArgumentException;
+use Override;
+use PhpDb\Adapter\Driver\AbstractConnection;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\DriverAwareInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\Exception\InvalidArgumentException;
 
 use function constant;
 use function defined;
@@ -17,10 +23,9 @@ use function strtoupper;
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
-class Connection extends AbstractConnection
+class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    /** @var DriverInterface */
-    protected $driver;
+    protected Mysqli $driver;
 
     /** @var \mysqli */
     protected $resource;
@@ -28,11 +33,11 @@ class Connection extends AbstractConnection
     /**
      * Constructor
      *
-     * @param array|\mysqli|null $connectionInfo
      * @throws InvalidArgumentException
      */
-    public function __construct($connectionInfo = null)
-    {
+    public function __construct(
+        array|\mysqli|null $connectionInfo = null
+    ) {
         if (is_array($connectionInfo)) {
             $this->setConnectionParameters($connectionInfo);
         } elseif ($connectionInfo instanceof \mysqli) {
@@ -44,20 +49,16 @@ class Connection extends AbstractConnection
         }
     }
 
-    /**
-     * @return $this Provides a fluent interface
-     */
-    public function setDriver(DriverInterface $driver)
+    public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
         $this->driver = $driver;
 
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getCurrentSchema()
+    /** @inheritDoc */
+    #[Override]
+    public function getCurrentSchema(): string|bool
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -74,27 +75,27 @@ class Connection extends AbstractConnection
      *
      * @return $this Provides a fluent interface
      */
-    public function setResource(\mysqli $resource)
+    public function setResource(\mysqli $resource): static
     {
         $this->resource = $resource;
 
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function connect()
+    /** @inheritDoc */
+    #[Override]
+    public function connect(): ConnectionInterface
     {
         if ($this->resource instanceof \mysqli) {
             return $this;
         }
 
-        // localize
+        /** @var array $p */
         $p = $this->connectionParameters;
 
         // given a list of key names, test for existence in $p
-        $findParameterValue = function (array $names) use ($p) {
+        /** @var string[] $names */
+        $findParameterValue = function (array $names) use ($p): string|null {
             foreach ($names as $name) {
                 if (isset($p[$name])) {
                     return $p[$name];
@@ -104,12 +105,15 @@ class Connection extends AbstractConnection
             return null;
         };
 
+        /** @var string|null $hostname */
         $hostname = $findParameterValue(['hostname', 'host']);
         $username = $findParameterValue(['username', 'user']);
         $password = $findParameterValue(['password', 'passwd', 'pw']);
         $database = $findParameterValue(['database', 'dbname', 'db', 'schema']);
-        $port     = isset($p['port']) ? (int) $p['port'] : null;
-        $socket   = $p['socket'] ?? null;
+        /** @var int|null $port */
+        $port = isset($p['port']) ? (int) $p['port'] : null;
+        /** @var string|null $socket */
+        $socket = $p['socket'] ?? null;
 
         // phpcs:ignore WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
         $useSSL     = $p['use_ssl'] ?? 0;
@@ -145,8 +149,7 @@ class Connection extends AbstractConnection
             $this->resource->ssl_set($clientKey, $clientCert, $caCert, $caPath, $cipher);
             //MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT is not valid option, needs to be set as flag
             if (
-                isset($p['driver_options'])
-                && isset($p['driver_options'][MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT])
+                isset($p['driver_options'][MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT])
             ) {
                 $flags |= MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
             }
@@ -156,7 +159,7 @@ class Connection extends AbstractConnection
             $flags === null
                 ? $this->resource->real_connect($hostname, $username, $password, $database, $port, $socket)
                 : $this->resource->real_connect($hostname, $username, $password, $database, $port, $socket, $flags);
-        } catch (GenericException $e) {
+        } catch (GenericException) {
             throw new Exception\RuntimeException(
                 'Connection error',
                 $this->resource->connect_errno,
@@ -179,29 +182,26 @@ class Connection extends AbstractConnection
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isConnected()
+    /** @inheritDoc */
+    public function isConnected(): bool
     {
         return $this->resource instanceof \mysqli;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function disconnect()
+    /** @inheritDoc */
+    #[Override]
+    public function disconnect(): ConnectionInterface
     {
         if ($this->resource instanceof \mysqli) {
             $this->resource->close();
         }
         $this->resource = null;
+        return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function beginTransaction()
+    /** @inheritDoc */
+    #[Override]
+    public function beginTransaction(): ConnectionInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -213,10 +213,9 @@ class Connection extends AbstractConnection
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function commit()
+    /** @inheritDoc */
+    #[Override]
+    public function commit(): ConnectionInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -229,10 +228,9 @@ class Connection extends AbstractConnection
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function rollback()
+    /** @inheritDoc */
+    #[Override]
+    public function rollback(): ConnectionInterface
     {
         if (! $this->isConnected()) {
             throw new Exception\RuntimeException('Must be connected before you can rollback.');
@@ -254,21 +252,18 @@ class Connection extends AbstractConnection
      *
      * @throws Exception\InvalidQueryException
      */
-    public function execute($sql)
+    #[Override]
+    public function execute($sql): ?ResultInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
         }
 
-        if ($this->profiler) {
-            $this->profiler->profilerStart($sql);
-        }
+        $this->profiler?->profilerStart($sql);
 
         $resultResource = $this->resource->query($sql);
 
-        if ($this->profiler) {
-            $this->profiler->profilerFinish($sql);
-        }
+        $this->profiler?->profilerFinish($sql);
 
         // if the returnValue is something other than a mysqli_result, bypass wrapping it
         if ($resultResource === false) {
@@ -278,16 +273,17 @@ class Connection extends AbstractConnection
         return $this->driver->createResult($resultResource === true ? $this->resource : $resultResource);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getLastGeneratedValue($name = null)
+    /** @inheritDoc */
+    #[Override]
+    public function getLastGeneratedValue($name = null): string|int|bool|null
     {
         return $this->resource->insert_id;
     }
 
     /**
      * Create a new mysqli resource
+     *
+     * todo: why do we have this random method here?
      *
      * @return \mysqli
      */

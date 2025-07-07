@@ -1,19 +1,24 @@
 <?php
 
-namespace Laminas\Db\Mysql\Platform;
+declare(strict_types=1);
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Exception\InvalidArgumentException;
-use Laminas\Db\Adapter\Platform\AbstractPlatform;
-use Laminas\Db\Mysql\Driver\Mysqli\Driver as Mysqli;
-use Laminas\Db\Mysql\Driver\Pdo\Driver as Pdo;
+namespace PhpDb\Adapter\Mysql\Platform;
+
+use mysqli;
+use Override;
+use PDO;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Mysql as SqlPlatform;
+use PhpDb\Adapter\Platform\AbstractPlatform;
+use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 
 use function implode;
 use function str_replace;
 
 class Mysql extends AbstractPlatform
 {
+    public final const PLATFORM_NAME = 'MySQL';
+
     /**
      * {@inheritDoc}
      */
@@ -24,9 +29,6 @@ class Mysql extends AbstractPlatform
      */
     protected $quoteIdentifierTo = '``';
 
-    /** @var \mysqli|\PDO|Pdo\Pdo|Mysqli\Mysqli */
-    protected $driver;
-
     /**
      * NOTE: Include dashes for MySQL only, need tests for others platforms
      *
@@ -34,49 +36,34 @@ class Mysql extends AbstractPlatform
      */
     protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
-    public function __construct(?PlatformInterface $driver = null)
-    {
-        if ($driver) {
-            $this->setDriver($driver);
-        }
-    }
-
-    /**
-     * @param \Laminas\Db\Adapter\Driver\Mysqli\Mysqli|\Laminas\Db\Adapter\Driver\Pdo\Pdo|\mysqli|\PDO $driver
-     * @return $this Provides a fluent interface
-     * @throws InvalidArgumentException
-     */
-    public function setDriver($driver)
-    {
-        // handle Laminas\Db drivers
-        if (
-            $driver instanceof Mysqli\Mysqli
-            || ($driver instanceof Pdo\Pdo && $driver->getDatabasePlatformName() === 'Mysql')
-            || $driver instanceof \mysqli
-            || ($driver instanceof \PDO && $driver->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'mysql')
-        ) {
-            $this->driver = $driver;
-            return $this;
-        }
-
-        throw new Exception\InvalidArgumentException(
-            '$driver must be a Mysqli or Mysql PDO Laminas\Db\Adapter\Driver, Mysqli instance or MySQL PDO instance'
-        );
-    }
-
-    /**
-     * todo: if needed return Backed Enum
-     * {@inheritDoc}
-     */
-    public function getName()
-    {
-        return 'MySQL';
+    public function __construct(
+        protected readonly DriverInterface|mysqli|PDO $driver
+    ) {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function quoteIdentifierChain($identifierChain)
+    #[Override]
+    public function getName(): string
+    {
+        return self::PLATFORM_NAME;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    public function getSqlPlatformDecorator(): PlatformDecoratorInterface
+    {
+        return new SqlPlatform();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    public function quoteIdentifierChain(array|string $identifierChain): string
     {
         return '`' . implode('`.`', (array) str_replace('`', '``', $identifierChain)) . '`';
     }
@@ -84,7 +71,8 @@ class Mysql extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function quoteValue($value)
+    #[Override]
+    public function quoteValue(string $value): string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
 
@@ -94,29 +82,28 @@ class Mysql extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    public function quoteTrustedValue($value)
+    #[Override]
+    public function quoteTrustedValue(int|float|string|bool $value): ?string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
 
         return $quotedViaDriverValue ?? parent::quoteTrustedValue($value);
     }
 
-    /**
-     * @param  string $value
-     * @return string|null
-     */
-    protected function quoteViaDriver($value)
+    protected function quoteViaDriver(string $value): ?string
     {
         if ($this->driver instanceof DriverInterface) {
+            // todo: verify this can not return a PDOStatement instance
             $resource = $this->driver->getConnection()->getResource();
         } else {
             $resource = $this->driver;
         }
 
-        if ($resource instanceof \mysqli) {
+        if ($resource instanceof mysqli) {
             return '\'' . $resource->real_escape_string($value) . '\'';
         }
-        if ($resource instanceof \PDO) {
+
+        if ($resource instanceof PDO) {
             return $resource->quote($value);
         }
 
