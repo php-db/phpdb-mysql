@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDb\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\Pdo\AbstractPdo;
-use Laminas\Db\Adapter\Driver\Pdo\Result;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Mysql\DatabasePlatformNameTrait;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdo;
+use PhpDb\Adapter\Driver\Pdo\Result;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Mysql\DatabasePlatformNameTrait;
 use Override;
 use PDOStatement;
 

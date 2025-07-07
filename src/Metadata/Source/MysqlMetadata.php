@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Metadata\Source;
+namespace PhpDb\Adapter\Mysql\Metadata\Source;
 
 use DateTime;
 use Exception;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Metadata\Source\AbstractSource;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Metadata\Source\AbstractSource;
 
 use function array_change_key_case;
 use function array_walk;

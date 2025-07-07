@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\Adapter\Mysql\Container\MysqliConnectionFactory;
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Connection;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Mysql\Container\MysqliConnectionFactory;
+use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
 use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 

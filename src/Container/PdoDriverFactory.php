@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Container;
+namespace PhpDb\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\Adapter\Driver\Pdo\Result;
-use Laminas\Db\Adapter\Driver\Pdo\Statement;
-use Laminas\Db\Adapter\Driver\PdoDriverInterface;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Driver\StatementInterface;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
-use Laminas\Db\Container\AdapterManager;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\Pdo\Result;
+use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
+use PhpDb\Container\AdapterManager;
 use Psr\Container\ContainerInterface;
 
 final class PdoDriverFactory

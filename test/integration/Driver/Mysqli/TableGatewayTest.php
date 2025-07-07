@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Mysqli;
 
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Mysqli;
-use Laminas\Db\ResultSet\AbstractResultSet;
-use Laminas\Db\TableGateway\TableGateway;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Mysql\Driver\Mysqli\Mysqli;
+use PhpDb\ResultSet\AbstractResultSet;
+use PhpDb\TableGateway\TableGateway;
+use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 

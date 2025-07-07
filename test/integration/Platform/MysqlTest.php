@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Platform;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Platform;
 
-use Laminas\Db\Adapter\Driver\Pdo;
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
-use Laminas\Db\Adapter\Mysql\Platform\Mysql;
+use PhpDb\Adapter\Driver\Pdo;
+use PhpDb\Adapter\Mysql\Driver\Mysqli;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
+use PhpDb\Adapter\Mysql\Platform\Mysql;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
@@ -36,10 +36,10 @@ final class MysqlTest extends TestCase
 
         if (extension_loaded('mysqli')) {
             $this->mysqliParams = [
-                'hostname' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME'),
-                'username' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
-                'password' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD'),
-                'database' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
+                'hostname' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME'),
+                'username' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
+                'password' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
+                'database' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
             ];
 
             $this->adapters['mysqli'] = new \mysqli(
@@ -52,10 +52,10 @@ final class MysqlTest extends TestCase
 
         if (extension_loaded('pdo')) {
             $this->pdoParams = [
-                'hostname' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME'),
-                'username' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
-                'password' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD'),
-                'database' => getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
+                'hostname' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME'),
+                'username' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
+                'password' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
+                'database' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
             ];
 
             $this->adapters['pdo_mysql'] = new \PDO(

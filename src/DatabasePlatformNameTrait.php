@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql;
+namespace PhpDb\Adapter\Mysql;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Exception;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Exception;
 
 trait DatabasePlatformNameTrait
 {

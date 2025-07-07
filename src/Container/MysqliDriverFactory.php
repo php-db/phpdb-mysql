@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Container;
+namespace PhpDb\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver;
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli;
-use Laminas\Db\Container\AdapterManager;
+use PhpDb\Adapter\Driver;
+use PhpDb\Adapter\Mysql\Driver\Mysqli;
+use PhpDb\Container\AdapterManager;
 use Psr\Container\ContainerInterface;
 
 final class MysqliDriverFactory

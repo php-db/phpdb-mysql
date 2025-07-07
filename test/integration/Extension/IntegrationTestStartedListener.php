@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Extension;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Extension;
 
 use Exception;
-use LaminasIntegrationTest\Db\Adapter\Mysql\FixtureLoader\MysqlFixtureLoader;
-use LaminasIntegrationTest\Db\FixtureLoader\FixtureLoader;
+use PhpDbIntegrationTest\Adapter\Mysql\FixtureLoader\MysqlFixtureLoader;
+use PhpDbIntegrationTest\FixtureLoader\FixtureLoader;
 use PHPUnit\Event\TestSuite\Started;
 use PHPUnit\Event\TestSuite\StartedSubscriber;
 
@@ -27,7 +27,7 @@ final class IntegrationTestStartedListener implements StartedSubscriber
             return;
         }
 
-        if (getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL')) {
+        if (getenv('TESTS_PHPDB_ADAPTER_MYSQL')) {
             $this->fixtureLoaders[] = new MysqlFixtureLoader();
         }
 

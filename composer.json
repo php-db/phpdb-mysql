@@ -1,17 +1,19 @@
 {
-    "name": "laminas/laminas-db-adapter-mysql",
-    "description": "MySQL support for laminas-db",
+    "name": "php-db/phpdb-adapter-mysql",
+    "description": "MySQL support for php-db",
     "license": "BSD-3-Clause",
     "keywords": [
         "laminas",
+        "mezzio",
+        "php-db",
         "mysql",
         "db"
     ],
-    "homepage": "https://github.com/axleus/laminas-db-adapter-mysql/discussions",
+    "homepage": "https://github.com/php-db/phpdb-adapter-mysql/discussions",
     "support": {
-        "issues": "https://github.com/alxeus/laminas-db-adapter-mysql/issues",
-        "source": "https://github.com/axleus/laminas-db-adapter-mysql",
-        "forum": "https://github.com/axleus/laminas-db-adapter-mysql/discussions"
+        "issues": "https://github.com/php-db/phpdb-adapter-mysql/issues",
+        "source": "https://github.com/php-db/phpdb-adapter-mysql",
+        "forum": "https://github.com/php-db/phpdb-adapter-mysql/discussions"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -26,18 +28,12 @@
     },
     "extra": {
         "laminas": {
-            "config-provider": "Laminas\\Db\\Adapter\\Mysql\\ConfigProvider"
+            "config-provider": "PhpDb\\Adapter\\Mysql\\ConfigProvider"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/axleus/laminas-db"
-        }
-    ],
     "require": {
         "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
-        "laminas/laminas-db": "dev-adapter-migration-mysql-new"
+        "php-db/phpdb": "dev-adapter-migration-mysql-new"
     },
     "require-dev": {
         "ext-mysqli": "*",
@@ -54,13 +50,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Laminas\\Db\\Adapter\\Mysql\\": "src/"
+            "PhpDb\\Adapter\\Mysql\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LaminasTest\\Db\\Adapter\\Mysql\\": "test/unit/",
-            "LaminasIntegrationTest\\Db\\Adapter\\Mysql\\": "test/integration/"
+            "PhpDbTest\\Adapter\\Mysql\\": "test/unit/",
+            "PhpDbIntegrationTest\\Adapter\\Mysql\\": "test/integration/"
         }
     },
     "scripts": {

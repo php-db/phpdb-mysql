@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaminasTest\Db\Adapter\Mysql\TestAsset;
+namespace PhpDbTest\Adapter\Mysql\TestAsset;
 
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 
 /**
- * Test asset class used only by {@see \LaminasTest\Db\Adapter\Driver\Pdo\ConnectionTransactionsTest}
+ * Test asset class used only by {@see \PhpDbTest\Adapter\Driver\Pdo\ConnectionTransactionsTest}
  */
 final class ConnectionWrapper extends Connection
 {

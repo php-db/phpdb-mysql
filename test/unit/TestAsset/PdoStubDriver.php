@@ -1,6 +1,6 @@
 <?php
 
-namespace LaminasTest\Db\Adapter\Mysql\TestAsset;
+namespace PhpDbTest\Adapter\Mysql\TestAsset;
 
 use PDO;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql;
+namespace PhpDb\Adapter\Mysql;
 
-use Laminas\Db\Container\AdapterManager;
+use PhpDb\Container\AdapterManager;
 
 readonly class ConfigProvider
 {

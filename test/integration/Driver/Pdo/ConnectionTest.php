@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\AbstractConnection;
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\Adapter\Driver\Pdo\AbstractPdoConnection;
-use Laminas\Db\Adapter\Driver\Pdo\Result;
-use Laminas\Db\Adapter\Driver\Pdo\Statement;
-use Laminas\Db\Adapter\Driver\PdoConnectionInterface;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Driver\StatementInterface;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Adapter\Driver\AbstractConnection;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
+use PhpDb\Adapter\Driver\Pdo\Result;
+use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Driver\PdoConnectionInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
+use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;

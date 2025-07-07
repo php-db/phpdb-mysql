@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
 
-use Laminas\Db\Adapter\Driver\DriverAwareInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Driver\StatementInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\ParameterContainer;
-use Laminas\Db\Adapter\Profiler\ProfilerAwareInterface;
-use Laminas\Db\Adapter\Profiler\ProfilerInterface;
-use Laminas\Db\Adapter\StatementContainerInterface;
+use PhpDb\Adapter\Driver\DriverAwareInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\ParameterContainer;
+use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
+use PhpDb\Adapter\StatementContainerInterface;
 use mysqli_stmt;
 use Override;
 

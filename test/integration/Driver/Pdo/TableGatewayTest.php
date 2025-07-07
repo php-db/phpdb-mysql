@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Mysql\Metadata\Source\MysqlMetadata;
-use Laminas\Db\ResultSet\ResultSet;
-use Laminas\Db\Sql\TableIdentifier;
-use Laminas\Db\TableGateway\Feature\MetadataFeature;
-use Laminas\Db\TableGateway\TableGateway;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Mysql\Metadata\Source\MysqlMetadata;
+use PhpDb\ResultSet\ResultSet;
+use PhpDb\Sql\TableIdentifier;
+use PhpDb\TableGateway\Feature\MetadataFeature;
+use PhpDb\TableGateway\TableGateway;
 use Laminas\Stdlib\ArrayObject;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;

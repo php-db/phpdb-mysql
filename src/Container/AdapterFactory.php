@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Container;
+namespace PhpDb\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\PdoDriverInterface;
-use Laminas\Db\Adapter\Exception\RuntimeException;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
-use Laminas\Db\Adapter\Profiler\ProfilerInterface;
-use Laminas\Db\Container\AdapterManager;
-use Laminas\Db\ResultSet\ResultSetInterface;
+use PhpDb\Adapter\Adapter;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\Exception\RuntimeException;
+use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
+use PhpDb\Container\AdapterManager;
+use PhpDb\ResultSet\ResultSetInterface;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Psr\Container\ContainerInterface;
 

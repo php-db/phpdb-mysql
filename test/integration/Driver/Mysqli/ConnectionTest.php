@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Mysqli;
 
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Connection;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
+use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

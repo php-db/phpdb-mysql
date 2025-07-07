@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\Pdo\Result;
-use Laminas\Db\Adapter\Driver\Pdo\Statement;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo;
-use Laminas\Db\Exception\RuntimeException;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Pdo\Result;
+use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Mysql\Driver\Pdo;
+use PhpDb\Exception\RuntimeException;
 use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
-use Laminas\Db\Adapter\SchemaAwareInterface;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Adapter\Adapter;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
+use PhpDb\Adapter\SchemaAwareInterface;
+use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Mysql\Container\PlatformInterfaceFactory;
-use Laminas\Db\Adapter\Mysql\Platform\Mysql;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
+use PhpDb\Adapter\Mysql\Container\PlatformInterfaceFactory;
+use PhpDb\Adapter\Mysql\Platform\Mysql;
+use PhpDb\Adapter\Platform\PlatformInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;

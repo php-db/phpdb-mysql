@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
 
 use Exception as GenericException;
-use Laminas\Db\Adapter\Driver\AbstractConnection;
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\Adapter\Driver\DriverAwareInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Exception\InvalidArgumentException;
+use PhpDb\Adapter\Driver\AbstractConnection;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\DriverAwareInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\Exception\InvalidArgumentException;
 use Override;
 
 use function constant;

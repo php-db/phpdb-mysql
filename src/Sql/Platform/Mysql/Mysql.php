@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Sql\Platform\Mysql;
+namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql;
 
-use Laminas\Db\Sql\Ddl\AlterTable;
-use Laminas\Db\Sql\Ddl\CreateTable;
-use Laminas\Db\Sql\Platform\AbstractPlatform;
-use Laminas\Db\Sql\Select;
+use PhpDb\Sql\Ddl\AlterTable;
+use PhpDb\Sql\Ddl\CreateTable;
+use PhpDb\Sql\Platform\AbstractPlatform;
+use PhpDb\Sql\Select;
 
 class Mysql extends AbstractPlatform
 {

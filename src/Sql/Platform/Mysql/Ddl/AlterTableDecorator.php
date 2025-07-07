@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Sql\Platform\Mysql\Ddl;
+namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Ddl;
 
-use Laminas\Db\Adapter\Platform\PlatformInterface;
-use Laminas\Db\Sql\Ddl\AlterTable;
-use Laminas\Db\Sql\Platform\PlatformDecoratorInterface;
+use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Sql\Ddl\AlterTable;
+use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 
 use function count;
 use function range;

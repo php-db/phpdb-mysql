@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\Adapter\Driver\PdoConnectionInterface;
-use Laminas\Db\Adapter\Mysql\Container\PdoConnectionFactory;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Connection;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\PdoConnectionInterface;
+use PhpDb\Adapter\Mysql\Container\PdoConnectionFactory;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;

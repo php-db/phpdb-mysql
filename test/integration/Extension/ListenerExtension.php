@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Extension;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Extension;
 
 use PHPUnit\Runner\Extension\Extension;
 use PHPUnit\Runner\Extension\Facade;

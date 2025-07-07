@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\ResultSet\AbstractResultSet;
-use Laminas\Db\TableGateway\TableGateway;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\ResultSet\AbstractResultSet;
+use PhpDb\TableGateway\TableGateway;
+use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ use function array_fill;
 
 /**
  * Usually mysql has 151 max connections by default.
- * Set up a test where executed Laminas\Db\Adapter\Adapter::query and then using table gateway to fetch a row
+ * Set up a test where executed PhpDb\Adapter\Adapter::query and then using table gateway to fetch a row
  * On tear down disconnected from the database and set the driver adapter on null
  * Running many tests ended up in consuming all mysql connections and not releasing them
  */

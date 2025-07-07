@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Container;
+namespace PhpDb\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Mysql\Platform\Mysql;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
-use Laminas\Db\Container\AdapterManager;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Mysql\Platform\Mysql;
+use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Container\AdapterManager;
 use mysqli;
 use PDO;
 use Psr\Container\ContainerInterface;

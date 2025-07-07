@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
 use Exception;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\Driver\Pdo\Result as PdoResult;
-use Laminas\Db\Adapter\Driver\StatementInterface;
-use Laminas\Db\Adapter\Exception\RuntimeException;
-use Laminas\Db\ResultSet\ResultSet;
-use Laminas\Db\Sql\Sql;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Adapter\Adapter;
+use PhpDb\Adapter\Driver\Pdo\Result as PdoResult;
+use PhpDb\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Exception\RuntimeException;
+use PhpDb\ResultSet\ResultSet;
+use PhpDb\Sql\Sql;
+use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

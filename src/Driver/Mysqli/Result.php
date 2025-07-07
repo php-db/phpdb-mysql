@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
 
 use Iterator;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Exception;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Exception;
 use mysqli;
 use mysqli_result;
 use mysqli_stmt;

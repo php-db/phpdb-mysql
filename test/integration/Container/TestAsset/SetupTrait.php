@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset;
 
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Mysql\ConfigProvider;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo;
-use Laminas\Db\Container\AdapterManager;
-use Laminas\Db\Container\ConfigProvider as LaminasDbConfigProvider;
+use PhpDb\Adapter\Adapter;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Mysql\ConfigProvider;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
+use PhpDb\Container\AdapterManager;
+use PhpDb\Container\ConfigProvider as LaminasDbConfigProvider;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use Psr\Container\ContainerInterface;
@@ -49,11 +49,11 @@ trait SetupTrait
             'db' => [
                 'driver'     => $this->driver ?? Pdo::class,
                 'connection' => [
-                    'hostname'       => (string) getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME') ?: 'localhost',
-                    'username'       => (string) getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME'),
-                    'password'       => (string) getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD'),
-                    'database'       => (string) getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE'),
-                    'port'           => (string) getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PORT') ?: '3306',
+                    'hostname'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME') ?: 'localhost',
+                    'username'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
+                    'password'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
+                    'database'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
+                    'port'           => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PORT') ?: '3306',
                     'charset'        => 'utf8',
                     'driver_options' => [],
                 ],
@@ -63,7 +63,7 @@ trait SetupTrait
             ],
         ];
 
-        // merge service config from both Laminas\Db and Laminas\Db\Adapter\Mysql
+        // merge service config from both PhpDb and PhpDb\Adapter\Mysql
         $serviceManagerConfig = ArrayUtils::merge(
             (new LaminasDbConfigProvider())()['dependencies'],
             (new ConfigProvider())()['dependencies']

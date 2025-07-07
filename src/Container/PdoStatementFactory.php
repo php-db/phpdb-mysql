@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Container;
+namespace PhpDb\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver\Pdo\Statement;
-use Laminas\Db\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Driver\StatementInterface;
 use Psr\Container\ContainerInterface;
 
 final class PdoStatementFactory

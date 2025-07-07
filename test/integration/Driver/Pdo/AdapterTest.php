@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
-use LaminasIntegrationTest\Db\Adapter\Mysql\Container\TestAsset\SetUpTrait;
-use LaminasIntegrationTest\Db\Adapter\Mysql\Driver\Pdo\AbstractAdapterTestCase;
+use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetUpTrait;
+use PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo\AbstractAdapterTestCase;
 use PHPUnit\Framework\Attributes\CoversNothing;
 
 #[CoversNothing]

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaminasIntegrationTest\Db\Adapter\Mysql\Extension;
+namespace PhpDbIntegrationTest\Adapter\Mysql\Extension;
 
-use LaminasIntegrationTest\Db\FixtureLoader\FixtureLoader;
+use PhpDbIntegrationTest\FixtureLoader\FixtureLoader;
 use PHPUnit\Event\TestSuite\Finished;
 use PHPUnit\Event\TestSuite\FinishedSubscriber;
 

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Container;
+namespace PhpDb\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\Pdo\Result;
-use Laminas\Db\Adapter\Driver\Pdo\Statement as PdoStatement;
-use Laminas\Db\Adapter\Driver\PdoDriverInterface;
-use Laminas\Db\Adapter\Mysql\Driver;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
-use Laminas\Db\Adapter\Profiler;
-use Laminas\Db\Container\AdapterManager;
-use Laminas\Db\ResultSet;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Pdo\Result;
+use PhpDb\Adapter\Driver\Pdo\Statement as PdoStatement;
+use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\Mysql\Driver;
+use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Adapter\Profiler;
+use PhpDb\Container\AdapterManager;
+use PhpDb\ResultSet;
 use Laminas\ServiceManager\Factory\DelegatorFactoryInterface;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Psr\Container\ContainerInterface;

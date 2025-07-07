@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LaminasTest\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\Pdo\Statement;
-use Laminas\Db\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
-use LaminasTest\Db\Adapter\Mysql\Driver\Pdo\TestAsset;
+use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
+use PhpDbTest\Adapter\Mysql\Driver\Pdo\TestAsset;
 use Override;
 use PDO;
 use PDOStatement;

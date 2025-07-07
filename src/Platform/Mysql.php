@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Platform;
+namespace PhpDb\Adapter\Mysql\Platform;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Mysql\Sql\Platform\Mysql\Mysql as SqlPlatform;
-use Laminas\Db\Adapter\Platform\AbstractPlatform;
-use Laminas\Db\Sql\Platform\PlatformDecoratorInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Mysql as SqlPlatform;
+use PhpDb\Adapter\Platform\AbstractPlatform;
+use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use mysqli;
 use Override;
 use PDO;

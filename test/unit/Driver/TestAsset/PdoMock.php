@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasTest\Db\Adapter\Mysql\Driver\TestAsset;
+namespace PhpDbTest\Adapter\Mysql\Driver\TestAsset;
 
 use PDO;
 

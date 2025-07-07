@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Driver\Pdo;
+namespace PhpDb\Adapter\Mysql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\Adapter\Driver\Pdo\AbstractPdoConnection;
-use Laminas\Db\Adapter\Exception;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
+use PhpDb\Adapter\Exception;
 use Override;
 use PDO;
 use PDOException;

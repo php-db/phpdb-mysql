@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Adapter\Mysql\Container;
+namespace PhpDb\Adapter\Mysql\Container;
 
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Mysql\Driver\Mysqli\Result;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Mysql\Driver\Mysqli\Result;
 use Psr\Container\ContainerInterface;
 
 final class MysqliResultFactory

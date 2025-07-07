@@ -663,7 +663,7 @@
       <code><![CDATA[printf]]></code>
     </RedundantFunctionCall>
     <RiskyTruthyFalsyComparison>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL')]]></code>
     </RiskyTruthyFalsyComparison>
     <UndefinedDocblockClass>
       <code><![CDATA[$fixtureLoader]]></code>
@@ -690,20 +690,20 @@
   <file src="test/integration/FixtureLoader/MysqlFixtureLoader.php">
     <PossiblyFalseArgument>
       <code><![CDATA[file_get_contents($this->fixtureFile)]]></code>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')]]></code>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')]]></code>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')]]></code>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')]]></code>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PASSWORD')]]></code>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_USERNAME')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME')]]></code>
     </PossiblyFalseArgument>
     <PossiblyFalseOperand>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_DATABASE')]]></code>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_HOSTNAME')]]></code>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PORT')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_PORT')]]></code>
     </PossiblyFalseOperand>
     <RiskyTruthyFalsyComparison>
-      <code><![CDATA[getenv('TESTS_LAMINAS_DB_ADAPTER_MYSQL_PORT')]]></code>
+      <code><![CDATA[getenv('TESTS_PHPDB_ADAPTER_MYSQL_PORT')]]></code>
     </RiskyTruthyFalsyComparison>
   </file>
   <file src="test/integration/Platform/MysqlTest.php">
