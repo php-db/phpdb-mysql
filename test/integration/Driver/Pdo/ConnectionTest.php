@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
+use PDO;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
@@ -14,7 +15,6 @@ use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
-use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;

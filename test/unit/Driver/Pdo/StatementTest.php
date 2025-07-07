@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
 
+use Override;
+use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
 use PhpDb\Adapter\ParameterContainer;
-use Override;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
 
-use PhpDb\Adapter\Driver\Pdo\Statement;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
-use PhpDbTest\Adapter\Mysql\Driver\Pdo\TestAsset;
 use Override;
 use PDO;
 use PDOStatement;
+use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
+use PhpDbTest\Adapter\Mysql\Driver\Pdo\TestAsset;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

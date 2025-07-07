@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Adapter\Mysql\Platform;
 
+use Override;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Mysql\Driver\Pdo;
 use PhpDb\Adapter\Mysql\Platform\Mysql;
-use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 

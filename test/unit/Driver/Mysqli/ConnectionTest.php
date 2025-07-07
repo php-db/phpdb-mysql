@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Adapter\Mysql\Driver\Mysqli;
 
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
-use PhpDb\Exception\RuntimeException;
 use mysqli;
 use Override;
+use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
+use PhpDb\Exception\RuntimeException;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\MockObject\MockObject;

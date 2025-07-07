@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Container;
 
+use mysqli;
+use PDO;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Mysql\Platform\Mysql;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Container\AdapterManager;
-use mysqli;
-use PDO;
 use Psr\Container\ContainerInterface;
 
 final class PlatformInterfaceFactory

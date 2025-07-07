@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Container;
 
+use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
@@ -13,7 +14,6 @@ use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 use PhpDb\Container\AdapterManager;
 use PhpDb\ResultSet\ResultSetInterface;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Psr\Container\ContainerInterface;
 
 use function sprintf;

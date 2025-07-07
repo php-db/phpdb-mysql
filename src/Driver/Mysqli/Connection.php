@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
 
 use Exception as GenericException;
+use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverAwareInterface;
@@ -12,7 +13,6 @@ use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
 use PhpDb\Adapter\Exception\InvalidArgumentException;
-use Override;
 
 use function constant;
 use function defined;

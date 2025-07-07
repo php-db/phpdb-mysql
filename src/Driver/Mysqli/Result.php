@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
 
 use Iterator;
-use PhpDb\Adapter\Driver\ResultInterface;
-use PhpDb\Adapter\Exception;
 use mysqli;
 use mysqli_result;
 use mysqli_stmt;
 use Override;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Exception;
 // phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
 use ReturnTypeWillChange;
 

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Driver\Pdo;
 
+use Override;
+use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdo;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Mysql\DatabasePlatformNameTrait;
-use Override;
-use PDOStatement;
 
 class Pdo extends AbstractPdo
 {

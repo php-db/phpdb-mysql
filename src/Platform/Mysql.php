@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Platform;
 
+use mysqli;
+use Override;
+use PDO;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Mysql as SqlPlatform;
 use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
-use mysqli;
-use Override;
-use PDO;
 
 use function implode;
 use function str_replace;

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
+use Laminas\Stdlib\ArrayObject;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Mysql\Metadata\Source\MysqlMetadata;
 use PhpDb\ResultSet\ResultSet;
 use PhpDb\Sql\TableIdentifier;
 use PhpDb\TableGateway\Feature\MetadataFeature;
 use PhpDb\TableGateway\TableGateway;
-use Laminas\Stdlib\ArrayObject;
 use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;

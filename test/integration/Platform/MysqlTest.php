@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Adapter\Mysql\Platform;
 
+use Override;
 use PhpDb\Adapter\Driver\Pdo;
 use PhpDb\Adapter\Mysql\Driver\Mysqli;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
 use PhpDb\Adapter\Mysql\Platform\Mysql;
-use Override;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

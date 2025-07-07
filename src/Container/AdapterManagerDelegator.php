@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Container;
 
+use Laminas\ServiceManager\Factory\DelegatorFactoryInterface;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
@@ -14,8 +16,6 @@ use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler;
 use PhpDb\Container\AdapterManager;
 use PhpDb\ResultSet;
-use Laminas\ServiceManager\Factory\DelegatorFactoryInterface;
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use Psr\Container\ContainerInterface;
 
 final class AdapterManagerDelegator implements DelegatorFactoryInterface

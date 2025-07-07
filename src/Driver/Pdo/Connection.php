@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Driver\Pdo;
 
-use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
-use PhpDb\Adapter\Exception;
 use Override;
 use PDO;
 use PDOException;
 use PDOStatement;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
+use PhpDb\Adapter\Exception;
 
 use function array_diff_key;
 use function implode;

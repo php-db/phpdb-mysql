@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
 
+use mysqli_stmt;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
@@ -13,7 +14,6 @@ use PhpDb\Adapter\Exception;
 use PhpDb\Adapter\Mysql\DatabasePlatformNameTrait;
 use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
-use mysqli_stmt;
 
 use function array_intersect_key;
 use function array_merge;

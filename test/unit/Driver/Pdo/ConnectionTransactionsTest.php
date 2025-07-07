@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
 
+use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 use PhpDbTest\Adapter\Mysql\TestAsset\ConnectionWrapper;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;

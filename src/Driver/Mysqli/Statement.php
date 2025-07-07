@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
 
+use mysqli_stmt;
+use Override;
 use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
@@ -13,8 +15,6 @@ use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 use PhpDb\Adapter\StatementContainerInterface;
-use mysqli_stmt;
-use Override;
 
 use function array_unshift;
 use function call_user_func_array;
