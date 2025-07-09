@@ -1,3 +1,3 @@
-# axleus-repo-template
+# PhpDb Adapter Mysql
 
-This package provides MySQL support for Laminas Db.
+This package provides MySQL support for PhpDb.
