@@ -33,7 +33,7 @@
     },
     "require": {
         "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
-        "php-db/phpdb": "0.0.x-dev"
+        "php-db/phpdb": "0.x.2"
     },
     "require-dev": {
         "ext-mysqli": "*",
