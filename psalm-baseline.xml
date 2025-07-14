@@ -12,11 +12,6 @@
       <code><![CDATA[ConfigProvider]]></code>
     </InvalidClass>
   </file>
-  <file src="src/Container/MysqlMetadataFactory.php">
-    <UnusedClass>
-      <code><![CDATA[MysqlMetadataFactory]]></code>
-    </UnusedClass>
-  </file>
   <file src="src/Container/MysqliResultFactory.php">
     <UnusedParam>
       <code><![CDATA[$container]]></code>
