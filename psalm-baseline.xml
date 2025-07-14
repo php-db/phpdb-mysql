@@ -13,9 +13,6 @@
     </InvalidClass>
   </file>
   <file src="src/Container/MysqlMetadataFactory.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[$adapter]]></code>
-    </ArgumentTypeCoercion>
     <UnusedClass>
       <code><![CDATA[MysqlMetadataFactory]]></code>
     </UnusedClass>
@@ -656,9 +653,9 @@
     </PossiblyNullArgument>
   </file>
   <file src="test/integration/Driver/Pdo/TableGatewayTest.php">
-    <ArgumentTypeCoercion>
+    <InvalidArgument>
       <code><![CDATA[$adapter]]></code>
-    </ArgumentTypeCoercion>
+    </InvalidArgument>
     <PossiblyInvalidArgument>
       <code><![CDATA[testTableGatewayWithMetadataFeature]]></code>
     </PossiblyInvalidArgument>

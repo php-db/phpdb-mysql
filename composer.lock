@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "264038d9c88d0200472b68a7b1e3bcdc",
+    "content-hash": "a56a17093380a5b2977b09cf04899957",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -259,16 +259,16 @@
         },
         {
             "name": "php-db/phpdb",
-            "version": "0.0.1",
+            "version": "dev-x.x.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
-                "reference": "82b26147f3aab64c5f19402923a18acbb2991942"
+                "reference": "72985fad1331076ea8dee20890b7227e6460f1fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-db/phpdb/zipball/82b26147f3aab64c5f19402923a18acbb2991942",
-                "reference": "82b26147f3aab64c5f19402923a18acbb2991942",
+                "url": "https://api.github.com/repos/php-db/phpdb/zipball/72985fad1331076ea8dee20890b7227e6460f1fc",
+                "reference": "72985fad1331076ea8dee20890b7227e6460f1fc",
                 "shasum": ""
             },
             "require": {
@@ -292,6 +292,7 @@
                 "laminas/laminas-eventmanager": "Laminas\\EventManager component",
                 "laminas/laminas-hydrator": "(^5.0.0) Laminas\\Hydrator component for using HydratingResultSets"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -321,7 +322,7 @@
                 "issues": "https://github.com/php-db/phpdb/issues",
                 "source": "https://github.com/php-db/phpdb"
             },
-            "time": "2025-07-07T04:06:26+00:00"
+            "time": "2025-07-14T06:08:40+00:00"
         },
         {
             "name": "psr/container",
@@ -5557,7 +5558,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "php-db/phpdb": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
