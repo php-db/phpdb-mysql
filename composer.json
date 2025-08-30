@@ -62,7 +62,9 @@
     "scripts": {
         "check": [
             "@cs-check",
-            "@test"
+            "@static-analysis",
+            "@test",
+            "@test-integration"
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
@@ -70,7 +72,7 @@
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
         "static-analysis": "psalm --shepherd --stats",
-        "sa-update-baseline": "psalm --update-baseline",
+        "sa-set-baseline": "psalm --set-baseline",
         "sa-no-baseline": "psalm --shepherd --stats --ignore-baseline",
         "upload-coverage": "coveralls -v"
     }

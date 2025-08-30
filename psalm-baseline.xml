@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.12.1@e71404b0465be25cf7f8a631b298c01c5ddd864f">
+<files psalm-version="6.13.1@1e3b7f0a8ab32b23197b91107adc0a7ed8a05b51">
   <file src="src/Container/AdapterFactory.php">
     <UnnecessaryVarAnnotation>
       <code><![CDATA[PlatformInterface]]></code>
@@ -458,6 +458,23 @@
                         PREG_PATTERN_ORDER
                     )]]></code>
     </RiskyTruthyFalsyComparison>
+    <UndefinedDocblockClass>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+      <code><![CDATA[$this->data]]></code>
+    </UndefinedDocblockClass>
   </file>
   <file src="src/Platform/Mysql.php">
     <ArgumentTypeCoercion>
