@@ -7,7 +7,7 @@ namespace PhpDbIntegrationTest\Adapter\Mysql\FixtureLoader;
 // phpcs:ignore WebimpressCodingStandard.NamingConventions.Interface.Suffix
 interface FixtureLoader
 {
-    public function createDatabase();
+    public function createDatabase(): void;
 
-    public function dropDatabase();
+    public function dropDatabase(): void;
 }
