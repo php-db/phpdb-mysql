@@ -698,12 +698,6 @@
       <code><![CDATA[private array $fixtureLoaders = [];]]></code>
     </UndefinedDocblockClass>
   </file>
-  <file src="test/integration/FixtureLoader/FixtureLoader.php">
-    <MissingReturnType>
-      <code><![CDATA[createDatabase]]></code>
-      <code><![CDATA[dropDatabase]]></code>
-    </MissingReturnType>
-  </file>
   <file src="test/integration/FixtureLoader/MysqlFixtureLoader.php">
     <PossiblyFalseArgument>
       <code><![CDATA[file_get_contents($this->fixtureFile)]]></code>

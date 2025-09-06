@@ -12,7 +12,7 @@ use function getenv;
 use function print_r;
 use function sprintf;
 
-final class MysqlFixtureLoader implements FixtureLoader
+final class MysqlFixtureLoader implements FixtureLoaderInterface
 {
     private string $fixtureFile = __DIR__ . '/../TestFixtures/mysql.sql';
 
