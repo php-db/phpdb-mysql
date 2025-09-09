@@ -14,6 +14,7 @@ use PhpDb\Adapter\Mysql\Driver;
 use PhpDb\Adapter\Mysql\Metadata\Source\MysqlMetadata;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler;
+use PhpDb\Container\AdapterAbstractServiceFactory;
 use PhpDb\Container\AdapterManager;
 use PhpDb\Container\MetadataFactory;
 use PhpDb\Metadata\MetadataInterface;
@@ -32,6 +33,9 @@ final class ConfigProvider
     public function getDependencies(): array
     {
         return [
+            'abstract_factories' => [
+                AdapterAbstractServiceFactory::class,
+            ],
             'aliases'    => [
                 MetadataInterface::class => MysqlMetadata::class,
             ],
@@ -65,6 +69,9 @@ final class ConfigProvider
                 PdoDriverInterface::class           => Driver\Pdo\Pdo::class,
                 Profiler\ProfilerInterface::class   => Profiler\Profiler::class,
                 ResultSet\ResultSetInterface::class => ResultSet\ResultSet::class,
+                'ConnectionFactoryFactory'          => Container\ConnectionFactoryFactory::class,
+                'DriverFactoryFactory'              => Container\DriverFactoryFactory::class,
+                'PlatformFactoryFactory'            => Container\PlatformFactoryFactory::class,
             ],
             'factories' => [
                 AdapterInterface::class         => Container\AdapterFactory::class,
@@ -79,6 +86,11 @@ final class ConfigProvider
                 PlatformInterface::class        => Container\PlatformInterfaceFactory::class,
                 Profiler\Profiler::class        => InvokableFactory::class,
                 ResultSet\ResultSet::class      => InvokableFactory::class,
+            ],
+            'invokables' => [
+                Container\ConnectionFactoryFactory::class => Container\ConnectionFactoryFactory::class,
+                Container\DriverFactoryFactory::class     => Container\DriverFactoryFactory::class,
+                Container\PlatformFactoryFactory::class   => Container\PlatformFactoryFactory::class,
             ],
         ];
     }

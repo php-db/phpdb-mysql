@@ -41,4 +41,27 @@ final class MysqliDriverFactory
             $options
         );
     }
+
+    public static function createFromConfig(
+        ContainerInterface $container,
+        string $requestedName,
+    ): Driver\DriverInterface&Mysqli\Mysqli {
+
+        /** @var AdapterManager $adapterManager */
+        $adapterManager    = $container->get(AdapterManager::class);
+        $connectionFactory = ($adapterManager->get('ConnectionFactoryFactory'))($container, $requestedName);
+        /** @var array $config */
+        $config = $container->get('config');
+        /** @var array $dbConfig */
+        $dbConfig = $config['db'] ?? [];
+        /** @var array $adapterConfig */
+        $adapterConfig = $dbConfig['adapters'][$requestedName] ?? [];
+
+        return new Mysqli\Mysqli(
+            $connectionFactory::createFromConfig($container, $requestedName),
+            $adapterManager->get(Mysqli\Statement::class),
+            $adapterManager->get(Mysqli\Result::class),
+            $adapterConfig['options'] ?? []
+        );
+    }
 }
