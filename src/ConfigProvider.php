@@ -16,6 +16,9 @@ use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler;
 use PhpDb\Container\AdapterAbstractServiceFactory;
 use PhpDb\Container\AdapterManager;
+use PhpDb\Container\ConnectionInterfaceFactoryFactoryInterface;
+use PhpDb\Container\DriverInterfaceFactoryFactoryInterface;
+use PhpDb\Container\PlatformInterfaceFactoryFactoryInterface;
 use PhpDb\Container\MetadataFactory;
 use PhpDb\Metadata\MetadataInterface;
 use PhpDb\ResultSet;
@@ -54,24 +57,24 @@ final class ConfigProvider
     {
         return [
             'aliases'   => [
-                'MySqli'                            => Driver\Mysqli\Mysqli::class,
-                'MySQLi'                            => Driver\Mysqli\Mysqli::class,
-                'Mysqli'                            => Driver\Mysqli\Mysqli::class,
-                'mysqli'                            => Driver\Mysqli\Mysqli::class,
-                'PDO_MySQL'                         => Driver\Pdo\Pdo::class,
-                'Pdo_MySQL'                         => Driver\Pdo\Pdo::class,
-                'Pdo_Mysql'                         => Driver\Pdo\Pdo::class,
-                'pdo_mysql'                         => Driver\Pdo\Pdo::class,
-                'pdomysql'                          => Driver\Pdo\Pdo::class,
-                'pdodriver'                         => Driver\Pdo\Pdo::class,
-                'pdo'                               => Driver\Pdo\Pdo::class,
-                DriverInterface::class              => Driver\Mysqli\Mysqli::class,
-                PdoDriverInterface::class           => Driver\Pdo\Pdo::class,
-                Profiler\ProfilerInterface::class   => Profiler\Profiler::class,
-                ResultSet\ResultSetInterface::class => ResultSet\ResultSet::class,
-                'ConnectionFactoryFactory'          => Container\ConnectionFactoryFactory::class,
-                'DriverFactoryFactory'              => Container\DriverFactoryFactory::class,
-                'PlatformFactoryFactory'            => Container\PlatformFactoryFactory::class,
+                'MySqli'                                          => Driver\Mysqli\Mysqli::class,
+                'MySQLi'                                          => Driver\Mysqli\Mysqli::class,
+                'Mysqli'                                          => Driver\Mysqli\Mysqli::class,
+                'mysqli'                                          => Driver\Mysqli\Mysqli::class,
+                'PDO_MySQL'                                       => Driver\Pdo\Pdo::class,
+                'Pdo_MySQL'                                       => Driver\Pdo\Pdo::class,
+                'Pdo_Mysql'                                       => Driver\Pdo\Pdo::class,
+                'pdo_mysql'                                       => Driver\Pdo\Pdo::class,
+                'pdomysql'                                        => Driver\Pdo\Pdo::class,
+                'pdodriver'                                       => Driver\Pdo\Pdo::class,
+                'pdo'                                             => Driver\Pdo\Pdo::class,
+                DriverInterface::class                            => Driver\Mysqli\Mysqli::class,
+                PdoDriverInterface::class                         => Driver\Pdo\Pdo::class,
+                Profiler\ProfilerInterface::class                 => Profiler\Profiler::class,
+                ResultSet\ResultSetInterface::class               => ResultSet\ResultSet::class,
+                ConnectionInterfaceFactoryFactoryInterface::class => Container\ConnectionInterfaceFactoryFactory::class,
+                DriverInterfaceFactoryFactoryInterface::class     => Container\DriverInterfaceFactoryFactory::class,
+                PlatformInterfaceFactoryFactoryInterface::class   => Container\PlatformInterfaceFactoryFactory::class,
             ],
             'factories' => [
                 AdapterInterface::class         => Container\AdapterFactory::class,
@@ -88,9 +91,9 @@ final class ConfigProvider
                 ResultSet\ResultSet::class      => InvokableFactory::class,
             ],
             'invokables' => [
-                Container\ConnectionFactoryFactory::class => Container\ConnectionFactoryFactory::class,
-                Container\DriverFactoryFactory::class     => Container\DriverFactoryFactory::class,
-                Container\PlatformFactoryFactory::class   => Container\PlatformFactoryFactory::class,
+                Container\ConnectionInterfaceFactoryFactory::class => Container\ConnectionInterfaceFactoryFactory::class,
+                Container\DriverInterfaceFactoryFactory::class     => Container\DriverInterfaceFactoryFactory::class,
+                Container\PlatformInterfaceFactoryFactory::class   => Container\PlatformInterfaceFactoryFactory::class,
             ],
         ];
     }

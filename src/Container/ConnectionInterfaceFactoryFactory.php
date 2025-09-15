@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Container;
 
-use PhpDb\Container\AdapterManager;
 use PhpDb\Adapter\Mysql\Container\MysqliConnectionFactory;
 use PhpDb\Adapter\Mysql\Container\PdoConnectionFactory;
 use PhpDb\Adapter\Mysql\Driver\Mysqli\Mysqli;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
+use PhpDb\Container\AdapterManager;
+use PhpDb\Container\ConnectionInterfaceFactoryFactoryInterface as FactoryFactoryInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 
 use function array_key_exists;
 use function sprintf;
 
-final class ConnectionFactoryFactory
+final class ConnectionInterfaceFactoryFactory implements FactoryFactoryInterface
 {
     public function __invoke(
-        ContainerInterface $container,
-        string $requestedName
+        ?ContainerInterface $container = null,
+        ?string $requestedName = null
     ): callable {
         $adapterConfig = $container->get('config')['db']['adapters'] ?? [];
         if (! isset($adapterConfig[$requestedName]['driver'])) {

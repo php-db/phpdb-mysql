@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDb\Adapter\Mysql\Container;
 
 use PhpDb\Adapter\Driver;
+use PhpDb\Adapter\Mysql\Container\ConnectionInterfaceFactoryFactory as ConnectionFactoryFactory;
 use PhpDb\Adapter\Mysql\Driver\Mysqli;
 use PhpDb\Container\AdapterManager;
 use Psr\Container\ContainerInterface;
@@ -49,7 +50,7 @@ final class MysqliDriverFactory
 
         /** @var AdapterManager $adapterManager */
         $adapterManager    = $container->get(AdapterManager::class);
-        $connectionFactory = ($adapterManager->get('ConnectionFactoryFactory'))($container, $requestedName);
+        $connectionFactory = ($adapterManager->get(ConnectionInterfaceFactoryFactory::class))($container, $requestedName);
         /** @var array $config */
         $config = $container->get('config');
         /** @var array $dbConfig */
