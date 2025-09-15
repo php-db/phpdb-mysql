@@ -2,4 +2,4 @@
 
 echo "Configure MySQL test database"
 
-mysql --user=gha --password=password -e "create database phpdb_test;"
+mysql --user=root --password=Password123 -e "create database laminasdb_test;"
