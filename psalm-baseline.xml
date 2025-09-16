@@ -134,9 +134,6 @@
     </PossiblyUnusedMethod>
   </file>
   <file src="src/Driver/Mysqli/Connection.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[Connection]]></code>
-    </ClassMustBeFinal>
     <InvalidReturnStatement>
       <code><![CDATA[$r[0]]]></code>
     </InvalidReturnStatement>
@@ -390,9 +387,6 @@
     </TypeDoesNotContainType>
   </file>
   <file src="src/Driver/Pdo/Pdo.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[Pdo]]></code>
-    </ClassMustBeFinal>
     <ImplementedParamTypeMismatch>
       <code><![CDATA[$resource]]></code>
     </ImplementedParamTypeMismatch>
@@ -579,9 +573,6 @@
     <ArgumentTypeCoercion>
       <code><![CDATA[$value]]></code>
     </ArgumentTypeCoercion>
-    <ClassMustBeFinal>
-      <code><![CDATA[Mysql]]></code>
-    </ClassMustBeFinal>
   </file>
   <file src="src/Sql/Platform/Mysql/Ddl/AlterTableDecorator.php">
     <LessSpecificImplementedReturnType>
