@@ -42,10 +42,11 @@ final class PdoDriverFactory
         ContainerInterface $container,
         string $requestedName,
     ): PdoDriverInterface&PdoDriver {
-
         /** @var AdapterManager $adapterManager */
         $adapterManager    = $container->get(AdapterManager::class);
-        $connectionFactory = ($adapterManager->get(ConnectionInterfaceFactoryFactory::class ))($container, $requestedName);
+        $connectionFactory = (
+            $adapterManager->get(ConnectionInterfaceFactoryFactory::class)
+        )($container, $requestedName);
         /** @var array $config */
         $config = $container->get('config');
         /** @var array $dbConfig */

@@ -20,7 +20,7 @@ use function array_unshift;
 use function call_user_func_array;
 use function is_array;
 
-class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
+final class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
 {
     protected \mysqli $mysqli;
 

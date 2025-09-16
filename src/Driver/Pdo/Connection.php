@@ -18,7 +18,7 @@ use function is_int;
 use function is_string;
 use function strtolower;
 
-class Connection extends AbstractPdoConnection
+final class Connection extends AbstractPdoConnection
 {
     /**
      * {@inheritDoc}

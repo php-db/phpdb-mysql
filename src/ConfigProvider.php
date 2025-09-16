@@ -18,8 +18,8 @@ use PhpDb\Container\AdapterAbstractServiceFactory;
 use PhpDb\Container\AdapterManager;
 use PhpDb\Container\ConnectionInterfaceFactoryFactoryInterface;
 use PhpDb\Container\DriverInterfaceFactoryFactoryInterface;
-use PhpDb\Container\PlatformInterfaceFactoryFactoryInterface;
 use PhpDb\Container\MetadataFactory;
+use PhpDb\Container\PlatformInterfaceFactoryFactoryInterface;
 use PhpDb\Metadata\MetadataInterface;
 use PhpDb\ResultSet;
 
@@ -39,13 +39,13 @@ final class ConfigProvider
             'abstract_factories' => [
                 AdapterAbstractServiceFactory::class,
             ],
-            'aliases'    => [
+            'aliases'            => [
                 MetadataInterface::class => MysqlMetadata::class,
             ],
-            'factories'  => [
+            'factories'          => [
                 MysqlMetadata::class => MetadataFactory::class,
             ],
-            'delegators' => [
+            'delegators'         => [
                 AdapterManager::class => [
                     Container\AdapterManagerDelegator::class,
                 ],
@@ -56,7 +56,7 @@ final class ConfigProvider
     public function getAdapterManagerConfig(): array
     {
         return [
-            'aliases'   => [
+            'aliases'    => [
                 'MySqli'                                          => Driver\Mysqli\Mysqli::class,
                 'MySQLi'                                          => Driver\Mysqli\Mysqli::class,
                 'Mysqli'                                          => Driver\Mysqli\Mysqli::class,
@@ -76,7 +76,7 @@ final class ConfigProvider
                 DriverInterfaceFactoryFactoryInterface::class     => Container\DriverInterfaceFactoryFactory::class,
                 PlatformInterfaceFactoryFactoryInterface::class   => Container\PlatformInterfaceFactoryFactory::class,
             ],
-            'factories' => [
+            'factories'  => [
                 AdapterInterface::class         => Container\AdapterFactory::class,
                 Driver\Mysqli\Mysqli::class     => Container\MysqliDriverFactory::class,
                 Driver\Mysqli\Connection::class => Container\MysqliConnectionFactory::class,
@@ -91,9 +91,12 @@ final class ConfigProvider
                 ResultSet\ResultSet::class      => InvokableFactory::class,
             ],
             'invokables' => [
-                Container\ConnectionInterfaceFactoryFactory::class => Container\ConnectionInterfaceFactoryFactory::class,
-                Container\DriverInterfaceFactoryFactory::class     => Container\DriverInterfaceFactoryFactory::class,
-                Container\PlatformInterfaceFactoryFactory::class   => Container\PlatformInterfaceFactoryFactory::class,
+                Container\ConnectionInterfaceFactoryFactory::class
+                    => Container\ConnectionInterfaceFactoryFactory::class,
+                Container\DriverInterfaceFactoryFactory::class
+                    => Container\DriverInterfaceFactoryFactory::class,
+                Container\PlatformInterfaceFactoryFactory::class
+                    => Container\PlatformInterfaceFactoryFactory::class,
             ],
         ];
     }
