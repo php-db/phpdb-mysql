@@ -15,7 +15,7 @@ use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use function implode;
 use function str_replace;
 
-final class Mysql extends AbstractPlatform
+class Mysql extends AbstractPlatform
 {
     public final const PLATFORM_NAME = 'MySQL';
 
