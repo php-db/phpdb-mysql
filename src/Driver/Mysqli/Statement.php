@@ -1,4 +1,4 @@
-<?php
+final <?php
 
 declare(strict_types=1);
 
@@ -52,11 +52,6 @@ class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwa
     {
         $this->profiler = $profiler;
         return $this;
-    }
-
-    public function getProfiler(): ?ProfilerInterface
-    {
-        return $this->profiler;
     }
 
     public function initialize(\mysqli $mysqli): static

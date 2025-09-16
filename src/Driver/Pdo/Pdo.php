@@ -1,4 +1,4 @@
-<?php
+final <?php
 
 declare(strict_types=1);
 
@@ -24,10 +24,8 @@ class Pdo extends AbstractPdo
         /** @var Result $result */
         $result = clone $this->resultPrototype;
 
-        /** @var null $rowCount */
         $rowCount = null;
 
-        /** @var string|int|bool|null $lastGeneratedValue */
         $lastGeneratedValue = $this->getLastGeneratedValue();
 
         $result->initialize($resource, $lastGeneratedValue, $rowCount);

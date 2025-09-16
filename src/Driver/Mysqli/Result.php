@@ -1,4 +1,4 @@
-<?php
+final <?php
 
 declare(strict_types=1);
 
@@ -126,9 +126,13 @@ class Result implements Iterator, ResultInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @return int|numeric-string
+     *
+     * @psalm-return int<-1, max>|numeric-string
      */
     #[Override]
-    public function getAffectedRows(): int
+    public function getAffectedRows(): int|string
     {
         if ($this->resource instanceof mysqli || $this->resource instanceof mysqli_stmt) {
             return $this->resource->affected_rows;
@@ -179,7 +183,6 @@ class Result implements Iterator, ResultInterface
                 $this->statementBindValues['keys'][] = $col->name;
             }
             $this->statementBindValues['values'] = array_fill(0, count($this->statementBindValues['keys']), null);
-            $refs                                = [];
             foreach ($this->statementBindValues['values'] as $i => &$f) {
                 $refs[$i] = &$f;
             }

@@ -1,4 +1,4 @@
-<?php
+final <?php
 
 declare(strict_types=1);
 
@@ -297,54 +297,6 @@ class MysqlMetadata extends AbstractSource
 
         $this->data['constraints'][$schema][$table] = $constraints;
         // phpcs:enable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
-    }
-
-    protected function loadConstraintDataNames(string $schema): void
-    {
-        if (isset($this->data['constraint_names'][$schema])) {
-            return;
-        }
-
-        $this->prepareDataHierarchy('constraint_names', $schema);
-
-        $p = $this->adapter->getPlatform();
-
-        $isColumns = [
-            ['TC', 'TABLE_NAME'],
-            ['TC', 'CONSTRAINT_NAME'],
-            ['TC', 'CONSTRAINT_TYPE'],
-        ];
-
-        array_walk($isColumns, function (&$c) use ($p) {
-            $c = $p->quoteIdentifierChain($c);
-        });
-
-        $sql = 'SELECT ' . implode(', ', $isColumns)
-        . ' FROM ' . $p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'TABLES']) . 'T'
-        . ' INNER JOIN ' . $p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'TABLE_CONSTRAINTS']) . 'TC'
-        . ' ON ' . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-        . '  = ' . $p->quoteIdentifierChain(['TC', 'TABLE_SCHEMA'])
-        . ' AND ' . $p->quoteIdentifierChain(['T', 'TABLE_NAME'])
-        . '  = ' . $p->quoteIdentifierChain(['TC', 'TABLE_NAME'])
-        . ' WHERE ' . $p->quoteIdentifierChain(['T', 'TABLE_TYPE'])
-        . ' IN (\'BASE TABLE\', \'VIEW\')';
-
-        if ($schema !== self::DEFAULT_SCHEMA) {
-            $sql .= ' AND ' . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-            . ' = ' . $p->quoteTrustedValue($schema);
-        } else {
-            $sql .= ' AND ' . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-            . ' != \'INFORMATION_SCHEMA\'';
-        }
-
-        $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
-
-        $data = [];
-        foreach ($results->toArray() as $row) {
-            $data[] = array_change_key_case($row, CASE_LOWER);
-        }
-
-        $this->data['constraint_names'][$schema] = $data;
     }
 
     protected function loadConstraintDataKeys(string $schema): void

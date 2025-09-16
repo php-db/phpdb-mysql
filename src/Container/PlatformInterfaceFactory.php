@@ -33,9 +33,4 @@ final class PlatformInterfaceFactory
 
         return new Mysql($driverInstance);
     }
-
-    public static function fromDriver(DriverInterface $driverInstance): PlatformInterface&Mysql
-    {
-        return new Mysql($driverInstance);
-    }
 }

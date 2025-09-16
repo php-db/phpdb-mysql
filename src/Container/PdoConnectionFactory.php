@@ -23,12 +23,4 @@ final class PdoConnectionFactory
 
         return new Connection($connectionConfig);
     }
-
-    public static function createFromConfig(
-        ContainerInterface $container,
-        string $requestedName
-    ): ConnectionInterface&Connection {
-        $adapterConfig = $container->get('config')['db']['adapters'][$requestedName] ?? [];
-        return new Connection($adapterConfig['connection'] ?? []);
-    }
 }

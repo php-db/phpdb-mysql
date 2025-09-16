@@ -1,4 +1,4 @@
-<?php
+final <?php
 
 declare(strict_types=1);
 
@@ -56,9 +56,13 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @return float|int|null|string
+     */
     #[Override]
-    public function getCurrentSchema(): string|bool
+    public function getCurrentSchema(): float|int|string|null|bool
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -90,7 +94,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             return $this;
         }
 
-        /** @var array $p */
         $p = $this->connectionParameters;
 
         // given a list of key names, test for existence in $p
@@ -105,12 +108,10 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             return null;
         };
 
-        /** @var string|null $hostname */
         $hostname = $findParameterValue(['hostname', 'host']);
         $username = $findParameterValue(['username', 'user']);
         $password = $findParameterValue(['password', 'passwd', 'pw']);
         $database = $findParameterValue(['database', 'dbname', 'db', 'schema']);
-        /** @var int|null $port */
         $port = isset($p['port']) ? (int) $p['port'] : null;
         /** @var string|null $socket */
         $socket = $p['socket'] ?? null;
