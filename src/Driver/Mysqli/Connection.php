@@ -23,7 +23,7 @@ use function strtoupper;
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
-final class Connection extends AbstractConnection implements DriverAwareInterface
+class Connection extends AbstractConnection implements DriverAwareInterface
 {
     protected Mysqli $driver;
 
