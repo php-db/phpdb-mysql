@@ -8,6 +8,10 @@
             "php": "8.1"
         },
         {
+            "name": "Psalm",
+            "php": "8.1"
+        },
+        {
             "name": "PHPUnit",
             "php": "8.4",
             "dependencies": "lowest"
