@@ -55,6 +55,7 @@ final class AdapterFactory
             ));
         }
 
+        /** @var PlatformInterface $platformInstance */
         $platformInstance = $adapterManager->get(PlatformInterface::class);
 
         if (! $adapterManager->has(ResultSetInterface::class)) {
@@ -64,8 +65,10 @@ final class AdapterFactory
             ));
         }
 
+        /** @var ResultSetInterface $resultSetInstance */
         $resultSetInstance = $adapterManager->get(ResultSetInterface::class);
 
+        /** @var ProfilerInterface|null $profilerInstanceOrNull */
         $profilerInstanceOrNull = $adapterManager->has(ProfilerInterface::class)
                 ? $adapterManager->get(ProfilerInterface::class)
                 : null;

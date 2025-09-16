@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpDb\Adapter\Mysql\Container;
 
 use Laminas\ServiceManager\Factory\DelegatorFactoryInterface;
-use PhpDb\Adapter\Mysql\ConfigProvider;
+use PhpDB\Adapter\Mysql\ConfigProvider;
 use PhpDb\Container\AdapterManager;
 use Psr\Container\ContainerInterface;
 

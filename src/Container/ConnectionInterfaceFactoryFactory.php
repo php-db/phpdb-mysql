@@ -24,7 +24,7 @@ final class ConnectionInterfaceFactoryFactory implements FactoryFactoryInterface
     ): callable {
         $adapterConfig = $container->get('config')['db']['adapters'] ?? [];
         if (! isset($adapterConfig[$requestedName]['driver'])) {
-            throw new RuntimeException(sprintf(
+            throw new \RuntimeException(sprintf(
                 'Named adapter "%s" is not configured with a driver',
                 $requestedName
             ));

@@ -25,6 +25,7 @@ abstract class AbstractAdapterTestCase extends TestCase
 
     public function testConnection(): void
     {
+        /** @var ConnectionInterface $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $this->assertInstanceOf(ConnectionInterface::class, $connection);
     }

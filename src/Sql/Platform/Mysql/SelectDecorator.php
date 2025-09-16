@@ -1,4 +1,4 @@
-final <?php
+<?php
 
 declare(strict_types=1);
 
@@ -17,17 +17,12 @@ class SelectDecorator extends Select implements PlatformDecoratorInterface
 
     /**
      * @param Select $subject
-     *
-     * @return void
      */
     public function setSubject($subject)
     {
         $this->subject = $subject;
     }
 
-    /**
-     * @return void
-     */
     protected function localizeVariables()
     {
         parent::localizeVariables();

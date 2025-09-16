@@ -1,4 +1,4 @@
-final <?php
+<?php
 
 declare(strict_types=1);
 
@@ -39,6 +39,7 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
     ) {
         $this->checkEnvironment();
 
+        $options = array_intersect_key(array_merge($this->options, $options), $this->options);
 
         if ($this->connection instanceof DriverAwareInterface) {
             $this->connection->setDriver($this);
@@ -58,6 +59,24 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
             $this->statementPrototype->setProfiler($profiler);
         }
         return $this;
+    }
+
+    public function getProfiler(): ?ProfilerInterface
+    {
+        return $this->profiler;
+    }
+
+    /**
+     * Get statement prototype
+     */
+    public function getStatementPrototype(): StatementInterface&Statement
+    {
+        return $this->statementPrototype;
+    }
+
+    public function getResultPrototype(): ResultInterface&Result
+    {
+        return $this->resultPrototype;
     }
 
     public function checkEnvironment(): bool
@@ -137,10 +156,8 @@ class Mysqli implements DriverInterface, ProfilerAwareInterface
 
     /**
      * Get last generated value
-     *
-     * @return bool|int|null|string
      */
-    public function getLastGeneratedValue(): bool|int|string|null|string|null|false
+    public function getLastGeneratedValue(): int|string|null|false
     {
         return $this->getConnection()->getLastGeneratedValue();
     }
