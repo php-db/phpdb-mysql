@@ -11,8 +11,8 @@ use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Mysql\ConfigProvider;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
-use PhpDb\Container\AdapterManager;
 use PhpDb\ConfigProvider as LaminasDbConfigProvider;
+use PhpDb\Container\AdapterManager;
 use Psr\Container\ContainerInterface;
 
 use function getenv;
