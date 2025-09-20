@@ -18,7 +18,7 @@ use function array_fill;
 use function call_user_func_array;
 use function count;
 
-class Result implements Iterator, ResultInterface
+final class Result implements Iterator, ResultInterface
 {
     protected mysqli|mysqli_result|mysqli_stmt $resource;
 

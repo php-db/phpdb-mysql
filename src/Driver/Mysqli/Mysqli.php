@@ -20,7 +20,7 @@ use function array_merge;
 use function extension_loaded;
 use function is_string;
 
-class Mysqli implements DriverInterface, ProfilerAwareInterface
+final class Mysqli implements DriverInterface, ProfilerAwareInterface
 {
     use DatabasePlatformNameTrait;
 

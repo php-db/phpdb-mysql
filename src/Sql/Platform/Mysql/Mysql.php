@@ -9,7 +9,7 @@ use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Platform\AbstractPlatform;
 use PhpDb\Sql\Select;
 
-class Mysql extends AbstractPlatform
+final class Mysql extends AbstractPlatform
 {
     public function __construct()
     {

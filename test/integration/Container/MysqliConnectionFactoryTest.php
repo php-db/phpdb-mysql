@@ -28,7 +28,7 @@ final class MysqliConnectionFactoryTest extends TestCase
         ]);
 
         $factory    = new MysqliConnectionFactory();
-        $connection = $factory($this->container);
+        $connection = $factory($this->container, Connection::class);
 
         self::assertInstanceOf(ConnectionInterface::class, $connection);
         self::assertInstanceOf(Connection::class, $connection);
