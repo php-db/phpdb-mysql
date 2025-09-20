@@ -35,6 +35,12 @@
             </errorLevel>
         </MissingOverrideAttribute>
 
+        <ClassMustBeFinal>
+            <errorLevel type="suppress">
+                <directory name="src" />
+            </errorLevel>
+        </ClassMustBeFinal>
+
         <PossiblyNullReference>
             <errorLevel type="suppress">
                 <directory name="test" />

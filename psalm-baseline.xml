@@ -7,25 +7,133 @@
       <code><![CDATA[ResultSetInterface]]></code>
     </UnnecessaryVarAnnotation>
   </file>
-  <file src="src/Container/AdapterManagerDelegator.php">
-    <InvalidClass>
-      <code><![CDATA[ConfigProvider]]></code>
-    </InvalidClass>
+  <file src="src/Container/ConnectionInterfaceFactoryFactory.php">
+    <MixedArgument>
+      <code><![CDATA[$adapterServices['aliases']]]></code>
+      <code><![CDATA[$configuredDriver]]></code>
+      <code><![CDATA[$configuredDriver]]></code>
+    </MixedArgument>
+    <MixedArrayAccess>
+      <code><![CDATA[$adapterServices['aliases']]]></code>
+      <code><![CDATA[$adapterServices['aliases']]]></code>
+      <code><![CDATA[$adapterServices['aliases'][$configuredDriver]]]></code>
+      <code><![CDATA[$container->get('config')[AdapterManager::class]]]></code>
+    </MixedArrayAccess>
+    <MixedArrayOffset>
+      <code><![CDATA[$adapterServices['aliases'][$configuredDriver]]]></code>
+    </MixedArrayOffset>
+    <MixedAssignment>
+      <code><![CDATA[$adapterConfig]]></code>
+      <code><![CDATA[$adapterServices]]></code>
+      <code><![CDATA[$aliasTo]]></code>
+      <code><![CDATA[$aliasTo]]></code>
+      <code><![CDATA[$configuredDriver]]></code>
+    </MixedAssignment>
+    <PossiblyNullArgument>
+      <code><![CDATA[$requestedName]]></code>
+    </PossiblyNullArgument>
+    <PossiblyNullReference>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+    </PossiblyNullReference>
+  </file>
+  <file src="src/Container/DriverInterfaceFactoryFactory.php">
+    <MixedArrayAccess>
+      <code><![CDATA[$adapterServices['aliases']]]></code>
+      <code><![CDATA[$adapterServices['aliases'][$configuredDriver]]]></code>
+      <code><![CDATA[$adapterServices['factories']]]></code>
+      <code><![CDATA[$adapterServices['factories'][$aliasTo]]]></code>
+      <code><![CDATA[$container->get('config')[AdapterManager::class]]]></code>
+    </MixedArrayAccess>
+    <MixedArrayOffset>
+      <code><![CDATA[$adapterServices['aliases'][$configuredDriver]]]></code>
+      <code><![CDATA[$adapterServices['factories'][$aliasTo]]]></code>
+    </MixedArrayOffset>
+    <MixedAssignment>
+      <code><![CDATA[$adapterConfig]]></code>
+      <code><![CDATA[$adapterServices]]></code>
+      <code><![CDATA[$aliasTo]]></code>
+      <code><![CDATA[$configuredDriver]]></code>
+      <code><![CDATA[$driverFactory]]></code>
+    </MixedAssignment>
+    <MixedMethodCall>
+      <code><![CDATA[new $driverFactory()]]></code>
+    </MixedMethodCall>
+    <PossiblyNullArgument>
+      <code><![CDATA[$requestedName]]></code>
+    </PossiblyNullArgument>
+    <PossiblyNullReference>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+    </PossiblyNullReference>
+    <UndefinedVariable>
+      <code><![CDATA[$aliasTo]]></code>
+    </UndefinedVariable>
+  </file>
+  <file src="src/Container/MysqliConnectionFactory.php">
+    <MixedArgument>
+      <code><![CDATA[$adapterConfig['connection'] ?? []]]></code>
+    </MixedArgument>
+    <MixedArrayAccess>
+      <code><![CDATA[$adapterConfig['connection']]]></code>
+    </MixedArrayAccess>
+    <MixedAssignment>
+      <code><![CDATA[$adapterConfig]]></code>
+    </MixedAssignment>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[createFromConfig]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Container/MysqliDriverFactory.php">
+    <MixedArgument>
+      <code><![CDATA[$adapterConfig['options'] ?? []]]></code>
+      <code><![CDATA[$connectionFactory::createFromConfig($container, $requestedName)]]></code>
+    </MixedArgument>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[createFromConfig]]></code>
+    </PossiblyUnusedMethod>
+    <UndefinedClass>
+      <code><![CDATA[$connectionFactory::createFromConfig($container, $requestedName)]]></code>
+    </UndefinedClass>
   </file>
   <file src="src/Container/MysqliResultFactory.php">
     <UnusedParam>
       <code><![CDATA[$container]]></code>
     </UnusedParam>
   </file>
+  <file src="src/Container/PdoConnectionFactory.php">
+    <MixedArgument>
+      <code><![CDATA[$adapterConfig['connection'] ?? []]]></code>
+    </MixedArgument>
+    <MixedArrayAccess>
+      <code><![CDATA[$adapterConfig['connection']]]></code>
+    </MixedArrayAccess>
+    <MixedAssignment>
+      <code><![CDATA[$adapterConfig]]></code>
+    </MixedAssignment>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[createFromConfig]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Container/PdoDriverFactory.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[createFromConfig]]></code>
+    </PossiblyUnusedMethod>
+    <UndefinedClass>
+      <code><![CDATA[$connectionFactory::createFromConfig($container, $requestedName)]]></code>
+    </UndefinedClass>
+  </file>
   <file src="src/Container/PdoResultFactory.php">
     <UnusedParam>
       <code><![CDATA[$container]]></code>
     </UnusedParam>
   </file>
+  <file src="src/Container/PlatformInterfaceFactory.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[fromDriver]]></code>
+    </PossiblyUnusedMethod>
+  </file>
   <file src="src/Driver/Mysqli/Connection.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[Connection]]></code>
-    </ClassMustBeFinal>
     <InvalidReturnStatement>
       <code><![CDATA[$r[0]]]></code>
     </InvalidReturnStatement>
@@ -116,9 +224,6 @@
     </UnnecessaryVarAnnotation>
   </file>
   <file src="src/Driver/Mysqli/Mysqli.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[Mysqli]]></code>
-    </ClassMustBeFinal>
     <ImplementedParamTypeMismatch>
       <code><![CDATA[$resource]]></code>
       <code><![CDATA[$sqlOrResource]]></code>
@@ -151,9 +256,6 @@
     </UnusedVariable>
   </file>
   <file src="src/Driver/Mysqli/Result.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[Result]]></code>
-    </ClassMustBeFinal>
     <InvalidReturnStatement>
       <code><![CDATA[$this->resource->affected_rows]]></code>
       <code><![CDATA[$this->resource->num_rows]]></code>
@@ -225,9 +327,6 @@
     </UnusedVariable>
   </file>
   <file src="src/Driver/Mysqli/Statement.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[Statement]]></code>
-    </ClassMustBeFinal>
     <MixedAssignment>
       <code><![CDATA[$args[]]]></code>
       <code><![CDATA[$value]]></code>
@@ -288,9 +387,6 @@
     </TypeDoesNotContainType>
   </file>
   <file src="src/Driver/Pdo/Pdo.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[Pdo]]></code>
-    </ClassMustBeFinal>
     <ImplementedParamTypeMismatch>
       <code><![CDATA[$resource]]></code>
     </ImplementedParamTypeMismatch>
@@ -303,9 +399,6 @@
     </UnnecessaryVarAnnotation>
   </file>
   <file src="src/Metadata/Source/MysqlMetadata.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[MysqlMetadata]]></code>
-    </ClassMustBeFinal>
     <MissingClosureParamType>
       <code><![CDATA[$c]]></code>
       <code><![CDATA[$c]]></code>
@@ -480,14 +573,8 @@
     <ArgumentTypeCoercion>
       <code><![CDATA[$value]]></code>
     </ArgumentTypeCoercion>
-    <ClassMustBeFinal>
-      <code><![CDATA[Mysql]]></code>
-    </ClassMustBeFinal>
   </file>
   <file src="src/Sql/Platform/Mysql/Ddl/AlterTableDecorator.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[AlterTableDecorator]]></code>
-    </ClassMustBeFinal>
     <LessSpecificImplementedReturnType>
       <code><![CDATA[array]]></code>
       <code><![CDATA[array]]></code>
@@ -546,9 +633,6 @@
     </UnusedReturnValue>
   </file>
   <file src="src/Sql/Platform/Mysql/Ddl/CreateTableDecorator.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[CreateTableDecorator]]></code>
-    </ClassMustBeFinal>
     <MixedArgument>
       <code><![CDATA[$coValue]]></code>
       <code><![CDATA[$coValue]]></code>
@@ -585,15 +669,7 @@
       <code><![CDATA[int]]></code>
     </UnusedReturnValue>
   </file>
-  <file src="src/Sql/Platform/Mysql/Mysql.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[Mysql]]></code>
-    </ClassMustBeFinal>
-  </file>
   <file src="src/Sql/Platform/Mysql/SelectDecorator.php">
-    <ClassMustBeFinal>
-      <code><![CDATA[SelectDecorator]]></code>
-    </ClassMustBeFinal>
     <InvalidArrayOffset>
       <code><![CDATA[$this->processInfo['paramPrefix']]]></code>
       <code><![CDATA[$this->processInfo['paramPrefix']]]></code>
