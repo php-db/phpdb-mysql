@@ -32,16 +32,16 @@
         }
     },
     "require": {
-        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+        "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
         "php-db/phpdb": "^0.1.0"
     },
     "require-dev": {
         "ext-mysqli": "*",
         "ext-pdo_mysql": "*",
         "laminas/laminas-coding-standard": "^3.0.1",
-        "phpunit/phpunit": "^11.5.15",
-        "psalm/plugin-phpunit": "^0.19.2",
-        "vimeo/psalm": "^6.8.8"
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^11.5.15"
     },
     "suggest": {
         "ext-mysqli": "Required for MySQLi support",
@@ -71,9 +71,8 @@
         "test": "phpunit --colors=always --testsuite \"unit test\"",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
-        "static-analysis": "psalm --shepherd --stats",
-        "sa-set-baseline": "psalm --set-baseline",
-        "sa-no-baseline": "psalm --shepherd --stats --ignore-baseline",
+        "static-analysis": "vendor/bin/phpstan analyse --memory-limit=256M",
+        "sa-update-baseline": "vendor/bin/phpstan analyse --generate-baseline",
         "upload-coverage": "coveralls -v"
     }
 }

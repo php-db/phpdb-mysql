@@ -19,6 +19,7 @@ final class PdoStubDriver extends PDO
     /**
      * @param string $user
      * @param string $password
+     * @phpstan-ignore constructor.unusedParameter, constructor.unusedParameter, constructor.unusedParameter
      */
     public function __construct(string $dsn, $user, $password)
     {

@@ -11,8 +11,8 @@ use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Mysql\ConfigProvider;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
+use PhpDb\ConfigProvider as LaminasDbConfigProvider;
 use PhpDb\Container\AdapterManager;
-use PhpDb\Container\ConfigProvider as LaminasDbConfigProvider;
 use Psr\Container\ContainerInterface;
 
 use function getenv;
@@ -43,7 +43,7 @@ trait SetupTrait
         parent::setUp();
     }
 
-    protected function getAdapter(array $config = []): AdapterInterface&Adapter
+    protected function getAdapter(array $config = []): AdapterInterface
     {
         $connectionConfig = [
             'db' => [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Mysqli;
 
+use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Mysql\Driver\Mysqli\Mysqli;
 use PhpDb\ResultSet\AbstractResultSet;
@@ -24,7 +25,7 @@ final class TableGatewayTest extends TestCase
      */
     public function testSelectWithEmptyCurrentWithBufferResult(): void
     {
-        /** @var AdapterInterface $adapter */
+        /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
             'db' => [
                 'driver'  => Mysqli::class,
@@ -49,7 +50,7 @@ final class TableGatewayTest extends TestCase
      */
     public function testSelectWithEmptyCurrentWithoutBufferResult(): void
     {
-        /** @var AdapterInterface $adapter */
+        /** @var AdapterInterface&Adapter $adapter */
         $adapter      = $this->getAdapter([
             'db' => [
                 'driver'  => 'mysqli',

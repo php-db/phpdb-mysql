@@ -65,7 +65,7 @@ final class ConnectionTest extends TestCase
     public function testNonSecureConnection(): void
     {
         $mysqli = $this->createMockMysqli(0);
-        /** @var Connection $connection */
+        /** @var Connection&MockObject $connection */
         $connection = $this->createMockConnection(
             $mysqli,
             [
@@ -83,7 +83,7 @@ final class ConnectionTest extends TestCase
     public function testSslConnection(): void
     {
         $mysqli = $this->createMockMysqli(MYSQLI_CLIENT_SSL);
-        /** @var Connection $connection */
+        /** @var Connection&MockObject $connection */
         $connection = $this->createMockConnection(
             $mysqli,
             [
@@ -102,7 +102,7 @@ final class ConnectionTest extends TestCase
     public function testSslConnectionNoVerify(): void
     {
         $mysqli = $this->createMockMysqli(MYSQLI_CLIENT_SSL | MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
-        /** @var Connection $connection */
+        /** @var Connection&MockObject $connection */
         $connection = $this->createMockConnection(
             $mysqli,
             [

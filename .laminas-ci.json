@@ -1,16 +1,12 @@
 {
-    "ignore_php_platform_requirements": {
-        "8.4": true
-    },
-    "exclude": [
+    "additional_checks": [
         {
-            "name": "PHPUnit",
-            "php": "8.1"
-        },
-        {
-            "name": "PHPUnit",
-            "php": "8.4",
-            "dependencies": "lowest"
+            "name": "PhpStan",
+            "job": {
+                "php": "8.2",
+                "dependencies": "latest",
+                "command": "composer require --dev phpstan/phpstan && vendor/bin/phpstan analyse"
+            }
         }
     ]
 }
