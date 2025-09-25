@@ -10,7 +10,7 @@ use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\Select;
 
-class SelectDecorator extends Select implements PlatformDecoratorInterface
+final class SelectDecorator extends Select implements PlatformDecoratorInterface
 {
     /** @var Select */
     protected $subject;

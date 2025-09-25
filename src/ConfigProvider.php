@@ -14,8 +14,12 @@ use PhpDb\Adapter\Mysql\Driver;
 use PhpDb\Adapter\Mysql\Metadata\Source\MysqlMetadata;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler;
+use PhpDb\Container\AdapterAbstractServiceFactory;
 use PhpDb\Container\AdapterManager;
+use PhpDb\Container\ConnectionInterfaceFactoryFactoryInterface;
+use PhpDb\Container\DriverInterfaceFactoryFactoryInterface;
 use PhpDb\Container\MetadataFactory;
+use PhpDb\Container\PlatformInterfaceFactoryFactoryInterface;
 use PhpDb\Metadata\MetadataInterface;
 use PhpDb\ResultSet;
 
@@ -32,13 +36,16 @@ final class ConfigProvider
     public function getDependencies(): array
     {
         return [
-            'aliases'    => [
+            'abstract_factories' => [
+                AdapterAbstractServiceFactory::class,
+            ],
+            'aliases'            => [
                 MetadataInterface::class => MysqlMetadata::class,
             ],
-            'factories'  => [
+            'factories'          => [
                 MysqlMetadata::class => MetadataFactory::class,
             ],
-            'delegators' => [
+            'delegators'         => [
                 AdapterManager::class => [
                     Container\AdapterManagerDelegator::class,
                 ],
@@ -49,24 +56,27 @@ final class ConfigProvider
     public function getAdapterManagerConfig(): array
     {
         return [
-            'aliases'   => [
-                'MySqli'                            => Driver\Mysqli\Mysqli::class,
-                'MySQLi'                            => Driver\Mysqli\Mysqli::class,
-                'Mysqli'                            => Driver\Mysqli\Mysqli::class,
-                'mysqli'                            => Driver\Mysqli\Mysqli::class,
-                'PDO_MySQL'                         => Driver\Pdo\Pdo::class,
-                'Pdo_MySQL'                         => Driver\Pdo\Pdo::class,
-                'Pdo_Mysql'                         => Driver\Pdo\Pdo::class,
-                'pdo_mysql'                         => Driver\Pdo\Pdo::class,
-                'pdomysql'                          => Driver\Pdo\Pdo::class,
-                'pdodriver'                         => Driver\Pdo\Pdo::class,
-                'pdo'                               => Driver\Pdo\Pdo::class,
-                DriverInterface::class              => Driver\Mysqli\Mysqli::class,
-                PdoDriverInterface::class           => Driver\Pdo\Pdo::class,
-                Profiler\ProfilerInterface::class   => Profiler\Profiler::class,
-                ResultSet\ResultSetInterface::class => ResultSet\ResultSet::class,
+            'aliases'    => [
+                'MySqli'                                          => Driver\Mysqli\Mysqli::class,
+                'MySQLi'                                          => Driver\Mysqli\Mysqli::class,
+                'Mysqli'                                          => Driver\Mysqli\Mysqli::class,
+                'mysqli'                                          => Driver\Mysqli\Mysqli::class,
+                'PDO_MySQL'                                       => Driver\Pdo\Pdo::class,
+                'Pdo_MySQL'                                       => Driver\Pdo\Pdo::class,
+                'Pdo_Mysql'                                       => Driver\Pdo\Pdo::class,
+                'pdo_mysql'                                       => Driver\Pdo\Pdo::class,
+                'pdomysql'                                        => Driver\Pdo\Pdo::class,
+                'pdodriver'                                       => Driver\Pdo\Pdo::class,
+                'pdo'                                             => Driver\Pdo\Pdo::class,
+                DriverInterface::class                            => Driver\Mysqli\Mysqli::class,
+                PdoDriverInterface::class                         => Driver\Pdo\Pdo::class,
+                Profiler\ProfilerInterface::class                 => Profiler\Profiler::class,
+                ResultSet\ResultSetInterface::class               => ResultSet\ResultSet::class,
+                ConnectionInterfaceFactoryFactoryInterface::class => Container\ConnectionInterfaceFactoryFactory::class,
+                DriverInterfaceFactoryFactoryInterface::class     => Container\DriverInterfaceFactoryFactory::class,
+                PlatformInterfaceFactoryFactoryInterface::class   => Container\PlatformInterfaceFactoryFactory::class,
             ],
-            'factories' => [
+            'factories'  => [
                 AdapterInterface::class         => Container\AdapterFactory::class,
                 Driver\Mysqli\Mysqli::class     => Container\MysqliDriverFactory::class,
                 Driver\Mysqli\Connection::class => Container\MysqliConnectionFactory::class,
@@ -79,6 +89,14 @@ final class ConfigProvider
                 PlatformInterface::class        => Container\PlatformInterfaceFactory::class,
                 Profiler\Profiler::class        => InvokableFactory::class,
                 ResultSet\ResultSet::class      => InvokableFactory::class,
+            ],
+            'invokables' => [
+                Container\ConnectionInterfaceFactoryFactory::class
+                    => Container\ConnectionInterfaceFactoryFactory::class,
+                Container\DriverInterfaceFactoryFactory::class
+                    => Container\DriverInterfaceFactoryFactory::class,
+                Container\PlatformInterfaceFactoryFactory::class
+                    => Container\PlatformInterfaceFactoryFactory::class,
             ],
         ];
     }

@@ -18,7 +18,7 @@ use function strtoupper;
 use function substr_replace;
 use function uksort;
 
-class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterface
+final class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterface
 {
     /** @var AlterTable */
     protected $subject;
