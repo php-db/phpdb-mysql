@@ -62,7 +62,7 @@ final class ConnectionTest extends TestCase
         /** @var ConnectionInterface&PdoConnectionInterface&AbstractConnection&AbstractPdoConnection&Connection $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $connection->connect();
-        $lastId = $connection->getLastGeneratedValue();
+        $lastId = (int) $connection->getLastGeneratedValue();
         self::assertIsInt($lastId);
         $connection->disconnect();
     }
