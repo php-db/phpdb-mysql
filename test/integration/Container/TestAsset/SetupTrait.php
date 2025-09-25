@@ -6,7 +6,6 @@ namespace PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset;
 
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
-use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Mysql\ConfigProvider;
