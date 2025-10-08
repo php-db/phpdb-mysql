@@ -35,8 +35,6 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: 'password'
           MYSQL_ROOT_HOST: '%'
-          MYSQL_USER: 'gha'
-          MYSQL_PASSWORD: 'password'
           MYSQL_DATABASE: 'phpdb_test'
         options: >-
           --health-cmd="mysqladmin ping"
