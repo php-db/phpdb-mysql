@@ -33,7 +33,6 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: 'password'
           MYSQL_ROOT_HOST: '%'
           MYSQL_DATABASE: 'phpdb_test'
         options: >-
