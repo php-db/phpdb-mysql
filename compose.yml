@@ -20,7 +20,7 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE:-phpdb_test}
-      - MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
     volumes:
       - ./test/integration/TestFixtures/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
     healthcheck:
