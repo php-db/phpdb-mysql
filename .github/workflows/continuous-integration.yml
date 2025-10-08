@@ -35,6 +35,7 @@ jobs:
         env:
           MYSQL_ROOT_HOST: '%'
           MYSQL_DATABASE: 'phpdb_test'
+          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval 10s
