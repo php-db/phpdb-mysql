@@ -41,7 +41,7 @@
         "laminas/laminas-coding-standard": "^3.0.1",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^11.5.15"
+        "phpunit/phpunit": "^11.5.42"
     },
     "suggest": {
         "ext-mysqli": "Required for MySQLi support",
