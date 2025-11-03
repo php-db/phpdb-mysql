@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
 
 use Laminas\Stdlib\ArrayObject;
+use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Mysql\Metadata\Source\MysqlMetadata;
+use PhpDb\Adapter\SchemaAwareInterface;
 use PhpDb\ResultSet\ResultSet;
 use PhpDb\Sql\TableIdentifier;
 use PhpDb\TableGateway\Feature\MetadataFeature;
@@ -28,7 +30,7 @@ final class TableGatewayTest extends TestCase
 
     public function testConstructor(): void
     {
-        /** @var AdapterInterface $adapter */
+        /** @var AdapterInterface&Adapter $adapter */
         $adapter      = $this->getAdapter();
         $tableGateway = new TableGateway('test', $adapter);
         $this->assertInstanceOf(TableGateway::class, $tableGateway);
@@ -110,7 +112,7 @@ final class TableGatewayTest extends TestCase
     #[DataProvider('tableProvider')]
     public function testTableGatewayWithMetadataFeature(array|string|TableIdentifier $table): void
     {
-        /** @var AdapterInterface $adapter */
+        /** @var AdapterInterface&SchemaAwareInterface&Adapter $adapter */
         $adapter      = $this->getAdapter(['db' => ['driver' => 'pdo']]);
         $tableGateway = new TableGateway(
             $table,

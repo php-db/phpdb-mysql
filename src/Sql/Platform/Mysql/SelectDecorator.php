@@ -17,10 +17,12 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
 
     /**
      * @param Select $subject
+     * @return $this
      */
     public function setSubject($subject)
     {
         $this->subject = $subject;
+        return $this;
     }
 
     protected function localizeVariables()

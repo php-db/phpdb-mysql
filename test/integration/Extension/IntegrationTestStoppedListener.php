@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Adapter\Mysql\Extension;
 
-use PhpDbIntegrationTest\FixtureLoader\FixtureLoader;
+use PhpDbIntegrationTest\Adapter\Mysql\FixtureLoader\FixtureLoaderInterface;
 use PHPUnit\Event\TestSuite\Finished;
 use PHPUnit\Event\TestSuite\FinishedSubscriber;
 
@@ -12,7 +12,7 @@ use function printf;
 
 final class IntegrationTestStoppedListener implements FinishedSubscriber
 {
-    /** @var FixtureLoader[] */
+    /** @var FixtureLoaderInterface[] */
     private array $fixtureLoaders = [];
 
     public function notify(Finished $event): void

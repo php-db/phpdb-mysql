@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhpDbIntegrationTest\Adapter\Mysql\Extension;
 
 use Exception;
+use PhpDbIntegrationTest\Adapter\Mysql\FixtureLoader\FixtureLoaderInterface;
 use PhpDbIntegrationTest\Adapter\Mysql\FixtureLoader\MysqlFixtureLoader;
-use PhpDbIntegrationTest\FixtureLoader\FixtureLoader;
 use PHPUnit\Event\TestSuite\Started;
 use PHPUnit\Event\TestSuite\StartedSubscriber;
 
@@ -15,7 +15,7 @@ use function printf;
 
 final class IntegrationTestStartedListener implements StartedSubscriber
 {
-    /** @var FixtureLoader[] */
+    /** @var FixtureLoaderInterface[] */
     private array $fixtureLoaders = [];
 
     /**

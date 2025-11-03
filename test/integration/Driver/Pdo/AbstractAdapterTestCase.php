@@ -32,7 +32,7 @@ abstract class AbstractAdapterTestCase extends TestCase
 
     public function testGetCurrentSchema(): void
     {
-        /** @var AdapterInterface&SchemaAwareInterface $adapter */
+        /** @var AdapterInterface&SchemaAwareInterface&Adapter $adapter */
         $adapter = $this->getAdapter();
         $schema  = $adapter->getCurrentSchema();
         self::assertIsString($schema);
@@ -43,7 +43,7 @@ abstract class AbstractAdapterTestCase extends TestCase
     {
         $isTcpConnection = $this->isTcpConnection();
 
-        /** @var AdapterInterface $adapter */
+        /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
             'db' => [
                 'driver' => Pdo::class,

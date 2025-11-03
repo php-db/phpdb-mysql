@@ -31,13 +31,11 @@ jobs:
           job: ${{ matrix.job }}
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: 'password'
           MYSQL_ROOT_HOST: '%'
-          MYSQL_USER: 'gha'
-          MYSQL_PASSWORD: 'password'
-          MYSQL_DATABASE: 'laminasdb_test'
+          MYSQL_DATABASE: 'phpdb_test'
+          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval 10s
