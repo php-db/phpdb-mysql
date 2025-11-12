@@ -24,7 +24,7 @@ class Connection extends AbstractPdoConnection
      * {@inheritDoc}
      */
     #[Override]
-    public function getCurrentSchema(): string|bool
+    public function getCurrentSchema(): string|false
     {
         if (! $this->isConnected()) {
             $this->connect();
