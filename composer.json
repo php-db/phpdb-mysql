@@ -66,6 +66,10 @@
             "@test",
             "@test-integration"
         ],
+        "unit-test": [
+            "@test",
+            "@test-integration"
+        ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always --testsuite \"unit test\"",
