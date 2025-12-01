@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Container;
 
-use PhpDb\Container\AdapterManager;
 use PhpDb\Container\DriverInterfaceFactoryFactoryInterface as FactoryFactoryInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -24,7 +23,7 @@ final class DriverInterfaceFactoryFactory implements FactoryFactoryInterface
                 $requestedName
             ));
         }
-        $adapterServices = $container->get('config')[AdapterManager::class];
+        $adapterServices = $container->get('config');
 
         $configuredDriver = $adapterConfig[$requestedName]['driver'];
         $aliasTo        ??= $adapterServices['aliases'][$configuredDriver] ?? $configuredDriver;

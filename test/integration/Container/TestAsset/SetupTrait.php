@@ -11,7 +11,6 @@ use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Mysql\ConfigProvider;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
 use PhpDb\ConfigProvider as LaminasDbConfigProvider;
-use PhpDb\Container\AdapterManager;
 use Psr\Container\ContainerInterface;
 
 use function getenv;
@@ -29,8 +28,6 @@ trait SetupTrait
     protected array $config = ['db' => []];
 
     protected ?AdapterInterface $adapter;
-
-    protected AdapterManager $adapterManager;
 
     protected ContainerInterface $container;
 
@@ -87,10 +84,9 @@ trait SetupTrait
             ]
         );
 
-        $this->config         = $serviceManagerConfig;
-        $this->container      = new ServiceManager($this->config);
-        $this->adapterManager = $this->container->get(AdapterManager::class);
-        $this->adapter        = $this->adapterManager->get(AdapterInterface::class);
+        $this->config    = $serviceManagerConfig;
+        $this->container = new ServiceManager($this->config);
+        $this->adapter   = $this->container->get(AdapterInterface::class);
 
         return $this->adapter;
     }

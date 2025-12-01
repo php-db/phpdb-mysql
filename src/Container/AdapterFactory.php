@@ -12,7 +12,6 @@ use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
-use PhpDb\Container\AdapterManager;
 use PhpDb\ResultSet\ResultSetInterface;
 use Psr\Container\ContainerInterface;
 
@@ -22,9 +21,6 @@ final class AdapterFactory
 {
     public function __invoke(ContainerInterface $container): AdapterInterface
     {
-        /** @var AdapterManager $adapterManager */
-        $adapterManager = $container->get(AdapterManager::class);
-
         /** @var array $config */
         $config = $container->get('config');
 
@@ -38,7 +34,7 @@ final class AdapterFactory
         /** @var string $driver */
         $driver = $dbConfig['driver'];
 
-        if (! $adapterManager->has($driver)) {
+        if (! $container->has($driver)) {
             throw new ServiceNotFoundException(sprintf(
                 'Database driver "%s" is not registered in the adapter manager.',
                 $driver
@@ -46,9 +42,9 @@ final class AdapterFactory
         }
 
         /** @var DriverInterface|PdoDriverInterface $driverInstance */
-        $driverInstance = $adapterManager->get($driver);
+        $driverInstance = $container->get($driver);
 
-        if (! $adapterManager->has(PlatformInterface::class)) {
+        if (! $container->has(PlatformInterface::class)) {
             throw new ServiceNotFoundException(sprintf(
                 'Database platform "%s" is not registered in the adapter manager.',
                 PlatformInterface::class
@@ -56,9 +52,9 @@ final class AdapterFactory
         }
 
         /** @var PlatformInterface $platformInstance */
-        $platformInstance = $adapterManager->get(PlatformInterface::class);
+        $platformInstance = $container->get(PlatformInterface::class);
 
-        if (! $adapterManager->has(ResultSetInterface::class)) {
+        if (! $container->has(ResultSetInterface::class)) {
             throw new ServiceNotFoundException(sprintf(
                 'ResultSet "%s" is not registered in the adapter manager.',
                 ResultSetInterface::class
@@ -66,11 +62,11 @@ final class AdapterFactory
         }
 
         /** @var ResultSetInterface $resultSetInstance */
-        $resultSetInstance = $adapterManager->get(ResultSetInterface::class);
+        $resultSetInstance = $container->get(ResultSetInterface::class);
 
         /** @var ProfilerInterface|null $profilerInstanceOrNull */
-        $profilerInstanceOrNull = $adapterManager->has(ProfilerInterface::class)
-                ? $adapterManager->get(ProfilerInterface::class)
+        $profilerInstanceOrNull = $container->has(ProfilerInterface::class)
+                ? $container->get(ProfilerInterface::class)
                 : null;
 
         return new Adapter(

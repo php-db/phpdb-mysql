@@ -15,10 +15,8 @@ use PhpDb\Adapter\Mysql\Metadata\Source\MysqlMetadata;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler;
 use PhpDb\Container\AdapterAbstractServiceFactory;
-use PhpDb\Container\AdapterManager;
 use PhpDb\Container\ConnectionInterfaceFactoryFactoryInterface;
 use PhpDb\Container\DriverInterfaceFactoryFactoryInterface;
-use PhpDb\Container\MetadataFactory;
 use PhpDb\Container\PlatformInterfaceFactoryFactoryInterface;
 use PhpDb\Metadata\MetadataInterface;
 use PhpDb\ResultSet;
@@ -28,8 +26,7 @@ final class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'dependencies'        => $this->getDependencies(),
-            AdapterManager::class => $this->getAdapterManagerConfig(),
+            'dependencies' => $this->getDependencies(),
         ];
     }
 
@@ -40,23 +37,6 @@ final class ConfigProvider
                 AdapterAbstractServiceFactory::class,
             ],
             'aliases'            => [
-                MetadataInterface::class => MysqlMetadata::class,
-            ],
-            'factories'          => [
-                MysqlMetadata::class => MetadataFactory::class,
-            ],
-            'delegators'         => [
-                AdapterManager::class => [
-                    Container\AdapterManagerDelegator::class,
-                ],
-            ],
-        ];
-    }
-
-    public function getAdapterManagerConfig(): array
-    {
-        return [
-            'aliases'    => [
                 'MySqli'                                          => Driver\Mysqli\Mysqli::class,
                 'MySQLi'                                          => Driver\Mysqli\Mysqli::class,
                 'Mysqli'                                          => Driver\Mysqli\Mysqli::class,
@@ -74,9 +54,10 @@ final class ConfigProvider
                 ResultSet\ResultSetInterface::class               => ResultSet\ResultSet::class,
                 ConnectionInterfaceFactoryFactoryInterface::class => Container\ConnectionInterfaceFactoryFactory::class,
                 DriverInterfaceFactoryFactoryInterface::class     => Container\DriverInterfaceFactoryFactory::class,
+                MetadataInterface::class                          => MysqlMetadata::class,
                 PlatformInterfaceFactoryFactoryInterface::class   => Container\PlatformInterfaceFactoryFactory::class,
             ],
-            'factories'  => [
+            'factories'          => [
                 AdapterInterface::class         => Container\AdapterFactory::class,
                 Driver\Mysqli\Mysqli::class     => Container\MysqliDriverFactory::class,
                 Driver\Mysqli\Connection::class => Container\MysqliConnectionFactory::class,
@@ -84,19 +65,20 @@ final class ConfigProvider
                 Driver\Mysqli\Statement::class  => Container\MysqliStatementFactory::class,
                 Driver\Pdo\Pdo::class           => Container\PdoDriverFactory::class,
                 Driver\Pdo\Connection::class    => Container\PdoConnectionFactory::class,
-                Result::class                   => Container\PdoResultFactory::class,
+                MysqlMetadata::class            => Container\MetadataInterfaceFactory::class,
                 PdoStatement::class             => Container\PdoStatementFactory::class,
                 PlatformInterface::class        => Container\PlatformInterfaceFactory::class,
                 Profiler\Profiler::class        => InvokableFactory::class,
+                Result::class                   => Container\PdoResultFactory::class,
                 ResultSet\ResultSet::class      => InvokableFactory::class,
             ],
-            'invokables' => [
+            'invokables'         => [
                 Container\ConnectionInterfaceFactoryFactory::class
-                    => Container\ConnectionInterfaceFactoryFactory::class,
+                => Container\ConnectionInterfaceFactoryFactory::class,
                 Container\DriverInterfaceFactoryFactory::class
-                    => Container\DriverInterfaceFactoryFactory::class,
+                => Container\DriverInterfaceFactoryFactory::class,
                 Container\PlatformInterfaceFactoryFactory::class
-                    => Container\PlatformInterfaceFactoryFactory::class,
+                => Container\PlatformInterfaceFactoryFactory::class,
             ],
         ];
     }
