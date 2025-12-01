@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Container;
 
-use Laminas\ServiceManager\Factory\FactoryInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
 use Psr\Container\ContainerInterface;
 
-final class MysqliConnectionFactory implements FactoryInterface
+final class MysqliConnectionFactory
 {
     public function __invoke(
         ContainerInterface $container,
