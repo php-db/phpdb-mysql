@@ -7,18 +7,6 @@ parameters:
 			path: src/Container/DriverInterfaceFactoryFactory.php
 
 		-
-			message: '#^Cannot call static method createFromConfig\(\) on callable\.$#'
-			identifier: staticMethod.nonObject
-			count: 1
-			path: src/Container/MysqliDriverFactory.php
-
-		-
-			message: '#^Cannot call static method createFromConfig\(\) on callable\.$#'
-			identifier: staticMethod.nonObject
-			count: 1
-			path: src/Container/PdoDriverFactory.php
-
-		-
 			message: '#^Method PhpDb\\Adapter\\Profiler\\ProfilerInterface\:\:profilerFinish\(\) invoked with 1 parameter, 0 required\.$#'
 			identifier: arguments.count
 			count: 1

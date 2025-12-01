@@ -12,25 +12,20 @@ use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
-use PhpDb\Container\AdapterManager;
 use Psr\Container\ContainerInterface;
 
 final class PdoDriverFactory
 {
     public function __invoke(ContainerInterface $container): PdoDriverInterface&PdoDriver
     {
-        /** @var AdapterManager $adapterManager */
-        $adapterManager = $container->get(AdapterManager::class);
-
         /** @var ConnectionInterface&Connection $connectionInstance */
-        $connectionInstance = $adapterManager->get(Connection::class);
+        $connectionInstance = $container->get(Connection::class);
 
         /** @var StatementInterface&Statement $statementInstance */
-        $statementInstance = $adapterManager->get(Statement::class);
+        $statementInstance = $container->get(Statement::class);
 
         /** @var ResultInterface&Result $resultInstance */
-        $resultInstance = $adapterManager->get(Result::class);
-
+        $resultInstance = $container->get(Result::class);
         return new PdoDriver(
             $connectionInstance,
             $statementInstance,
@@ -42,10 +37,8 @@ final class PdoDriverFactory
         ContainerInterface $container,
         string $requestedName,
     ): PdoDriverInterface&PdoDriver {
-        /** @var AdapterManager $adapterManager */
-        $adapterManager    = $container->get(AdapterManager::class);
         $connectionFactory = (
-            $adapterManager->get(ConnectionInterfaceFactoryFactory::class)
+            $container->get(ConnectionInterfaceFactoryFactory::class)
         )($container, $requestedName);
         /** @var array $config */
         $config = $container->get('config');
@@ -60,10 +53,10 @@ final class PdoDriverFactory
         $connectionInstance = $connectionFactory::createFromConfig($container, $requestedName);
 
         /** @var StatementInterface&Statement $statementInstance */
-        $statementInstance = $adapterManager->get(Statement::class);
+        $statementInstance = $container->get(Statement::class);
 
         /** @var ResultInterface&Result $resultInstance */
-        $resultInstance = $adapterManager->get(Result::class);
+        $resultInstance = $container->get(Result::class);
 
         return new PdoDriver(
             $connectionInstance,

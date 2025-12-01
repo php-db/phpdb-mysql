@@ -8,7 +8,6 @@ use PhpDb\Adapter\Mysql\Container\MysqliConnectionFactory;
 use PhpDb\Adapter\Mysql\Container\PdoConnectionFactory;
 use PhpDb\Adapter\Mysql\Driver\Mysqli\Mysqli;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
-use PhpDb\Container\AdapterManager;
 use PhpDb\Container\ConnectionInterfaceFactoryFactoryInterface as FactoryFactoryInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -29,7 +28,7 @@ final class ConnectionInterfaceFactoryFactory implements FactoryFactoryInterface
                 $requestedName
             ));
         }
-        $adapterServices  = $container->get('config')[AdapterManager::class];
+        $adapterServices  = $container->get('config');
         $configuredDriver = $adapterConfig[$requestedName]['driver'];
         if (array_key_exists($configuredDriver, $adapterServices['aliases'])) {
             $aliasTo = $adapterServices['aliases'][$configuredDriver];
