@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql;
 
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
@@ -61,24 +60,28 @@ final class ConfigProvider
                 AdapterInterface::class         => Container\AdapterFactory::class,
                 Driver\Mysqli\Mysqli::class     => Container\MysqliDriverFactory::class,
                 Driver\Mysqli\Connection::class => Container\MysqliConnectionFactory::class,
-                Driver\Mysqli\Result::class     => Container\MysqliResultFactory::class,
                 Driver\Mysqli\Statement::class  => Container\MysqliStatementFactory::class,
                 Driver\Pdo\Pdo::class           => Container\PdoDriverFactory::class,
                 Driver\Pdo\Connection::class    => Container\PdoConnectionFactory::class,
                 MysqlMetadata::class            => Container\MetadataInterfaceFactory::class,
                 PdoStatement::class             => Container\PdoStatementFactory::class,
                 PlatformInterface::class        => Container\PlatformInterfaceFactory::class,
-                Profiler\Profiler::class        => InvokableFactory::class,
-                Result::class                   => Container\PdoResultFactory::class,
-                ResultSet\ResultSet::class      => InvokableFactory::class,
             ],
             'invokables'         => [
                 Container\ConnectionInterfaceFactoryFactory::class
-                => Container\ConnectionInterfaceFactoryFactory::class,
+                    => Container\ConnectionInterfaceFactoryFactory::class,
                 Container\DriverInterfaceFactoryFactory::class
-                => Container\DriverInterfaceFactoryFactory::class,
+                    => Container\DriverInterfaceFactoryFactory::class,
                 Container\PlatformInterfaceFactoryFactory::class
-                => Container\PlatformInterfaceFactoryFactory::class,
+                    => Container\PlatformInterfaceFactoryFactory::class,
+                Driver\Mysqli\Result::class
+                    => Driver\Mysqli\Result::class,
+                Profiler\Profiler::class
+                    => Profiler\Profiler::class,
+                Result::class
+                    => Result::class,
+                ResultSet\ResultSet::class
+                    => ResultSet\ResultSet::class,
             ],
         ];
     }

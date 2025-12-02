@@ -32,9 +32,9 @@ final class Mysqli implements DriverInterface, ProfilerAwareInterface
     ];
 
     public function __construct(
-        protected readonly ConnectionInterface&Connection $connection,
-        protected readonly StatementInterface&Statement $statementPrototype,
-        protected readonly ResultInterface $resultPrototype,
+        protected ConnectionInterface&Connection $connection,
+        protected StatementInterface&Statement $statementPrototype = new Statement(),
+        protected ResultInterface $resultPrototype = new Result(),
         array $options = []
     ) {
         $this->checkEnvironment();
