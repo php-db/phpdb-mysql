@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3d68e25b79f19fd20226d1d4b0571a6b",
+    "content-hash": "d61006c1368bfd4bb5a4117ae165f158",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -259,16 +259,16 @@
         },
         {
             "name": "php-db/phpdb",
-            "version": "0.3.2",
+            "version": "0.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
-                "reference": "b3df2ff1f3d776f42f8d926b23535e4143a93996"
+                "reference": "3d3a3b65c3fc4634ae4a3f0622c08a8e122237a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-db/phpdb/zipball/b3df2ff1f3d776f42f8d926b23535e4143a93996",
-                "reference": "b3df2ff1f3d776f42f8d926b23535e4143a93996",
+                "url": "https://api.github.com/repos/php-db/phpdb/zipball/3d3a3b65c3fc4634ae4a3f0622c08a8e122237a0",
+                "reference": "3d3a3b65c3fc4634ae4a3f0622c08a8e122237a0",
                 "shasum": ""
             },
             "require": {
@@ -322,7 +322,7 @@
                 "issues": "https://github.com/php-db/phpdb/issues",
                 "source": "https://github.com/php-db/phpdb"
             },
-            "time": "2025-12-01T04:51:41+00:00"
+            "time": "2025-12-02T05:29:22+00:00"
         },
         {
             "name": "psr/container",
@@ -1196,16 +1196,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.44",
+            "version": "11.5.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c346885c95423eda3f65d85a194aaa24873cda82"
+                "reference": "faf5fff4fb9beb290affa53f812b05380819c51a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c346885c95423eda3f65d85a194aaa24873cda82",
-                "reference": "c346885c95423eda3f65d85a194aaa24873cda82",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/faf5fff4fb9beb290affa53f812b05380819c51a",
+                "reference": "faf5fff4fb9beb290affa53f812b05380819c51a",
                 "shasum": ""
             },
             "require": {
@@ -1277,7 +1277,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.44"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.45"
             },
             "funding": [
                 {
@@ -1301,7 +1301,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-13T07:17:35+00:00"
+            "time": "2025-12-01T07:38:43+00:00"
         },
         {
             "name": "sebastian/cli-parser",
