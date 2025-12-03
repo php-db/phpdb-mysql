@@ -12,7 +12,6 @@ use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
-use PhpDb\ResultSet\ResultSet;
 use PhpDb\ResultSet\ResultSetInterface;
 use Psr\Container\ContainerInterface;
 
@@ -38,7 +37,7 @@ final class AdapterFactory
 
         if (! $container->has($driver)) {
             throw new ServiceNotFoundException(sprintf(
-                'Database driver "%s" is not registered in the adapter manager.',
+                'Database driver "%s" is not registered in the container.',
                 $driver
             ));
         }
@@ -48,7 +47,7 @@ final class AdapterFactory
 
         if (! $container->has(PlatformInterface::class)) {
             throw new ServiceNotFoundException(sprintf(
-                'Database platform "%s" is not registered in the adapter manager.',
+                'Database platform "%s" is not registered in the container.',
                 PlatformInterface::class
             ));
         }
@@ -56,20 +55,24 @@ final class AdapterFactory
         /** @var PlatformInterface $platformInstance */
         $platformInstance = $container->get(PlatformInterface::class);
 
-        /** @var ResultSetInterface $resultSetInstance */
-        $resultSetInstance = $container->has(ResultSetInterface::class)
-                ? $container->get(ResultSetInterface::class)
-                : null;
-
         /** @var ProfilerInterface|null $profilerInstanceOrNull */
         $profilerInstanceOrNull = $container->has(ProfilerInterface::class)
                 ? $container->get(ProfilerInterface::class)
                 : null;
 
+        // If its not provided, use the default ResultSet
+        if (! $container->has(ResultSetInterface::class)) {
+            return new Adapter(
+                driver: $driverInstance,
+                platform: $platformInstance,
+                profiler: $profilerInstanceOrNull
+            );
+        }
+
         return new Adapter(
             driver: $driverInstance,
             platform: $platformInstance,
-            queryResultSetPrototype: $resultSetInstance ?? new ResultSet(),
+            queryResultSetPrototype: $container->get(ResultSetInterface::class),
             profiler: $profilerInstanceOrNull
         );
     }

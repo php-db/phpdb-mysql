@@ -7,6 +7,7 @@ namespace PhpDb\Adapter\Mysql\Container;
 use PhpDb\Adapter\Driver;
 use PhpDb\Adapter\Mysql\Driver\Mysqli;
 use Psr\Container\ContainerInterface;
+use RuntimeException;
 
 /** @internal */
 final class MysqliDriverFactory
@@ -25,18 +26,32 @@ final class MysqliDriverFactory
         /** @var Driver\ConnectionInterface&Mysqli\Connection $connectionInstance */
         $connectionInstance = $container->get(Mysqli\Connection::class);
 
-        /** @var Driver\StatementInterface&Mysqli\Statement $statementInstance */
-        $statementInstance = $container->get(Mysqli\Statement::class);
+        $hasStatement = $container->has(Mysqli\Statement::class);
+        $hasResult    = $container->has(Mysqli\Result::class);
 
-        /** @var Driver\ResultInterface&Mysqli\Result $resultInstance */
-        $resultInstance = $container->has(Mysqli\Result::class) ? $container->get(Mysqli\Result::class) : null;
-
-        return new Mysqli\Mysqli(
-            connection: $connectionInstance,
-            statementPrototype: $statementInstance,
-            resultPrototype: $resultInstance ?? new Mysqli\Result(),
-            options: $options
-        );
+        return match (true) {
+            ! $hasStatement && ! $hasResult => new Mysqli\Mysqli(
+                connection: $connectionInstance,
+                options: $options,
+            ),
+            $hasStatement && ! $hasResult => new Mysqli\Mysqli(
+                connection: $connectionInstance,
+                statementPrototype: $container->get(Mysqli\Statement::class),
+                options: $options,
+            ),
+            ! $hasStatement && $hasResult => new Mysqli\Mysqli(
+                connection: $connectionInstance,
+                resultPrototype: $container->get(Mysqli\Result::class),
+                options: $options,
+            ),
+            $hasStatement && $hasResult => new Mysqli\Mysqli(
+                connection: $connectionInstance,
+                statementPrototype: $container->get(Mysqli\Statement::class),
+                resultPrototype: $container->get(Mysqli\Result::class),
+                options: $options,
+            ),
+            default => throw new RuntimeException('Unable to create PdoDriver from configuration.'),
+        };
     }
 
     public static function createFromConfig(
@@ -53,11 +68,34 @@ final class MysqliDriverFactory
         /** @var array $adapterConfig */
         $adapterConfig = $dbConfig['adapters'][$requestedName] ?? [];
 
-        return new Mysqli\Mysqli(
-            $connectionFactory::createFromConfig($container, $requestedName),
-            $container->get(Mysqli\Statement::class),
-            $container->get(Mysqli\Result::class),
-            $adapterConfig['options'] ?? []
-        );
+        /** @var Driver\ConnectionInterface&Mysqli\Connection $connectionInstance */
+        $connectionInstance = $connectionFactory::createFromConfig($container, $requestedName);
+
+        $hasStatement = $container->has(Mysqli\Statement::class);
+        $hasResult    = $container->has(Mysqli\Result::class);
+
+        return match (true) {
+            ! $hasStatement && ! $hasResult => new Mysqli\Mysqli(
+                connection: $connectionInstance,
+                options: $adapterConfig['options'] ?? [],
+            ),
+            $hasStatement && ! $hasResult => new Mysqli\Mysqli(
+                connection: $connectionInstance,
+                statementPrototype: $container->get(Mysqli\Statement::class),
+                options: $adapterConfig['options'] ?? [],
+            ),
+            ! $hasStatement && $hasResult => new Mysqli\Mysqli(
+                connection: $connectionInstance,
+                resultPrototype: $container->get(Mysqli\Result::class),
+                options: $adapterConfig['options'] ?? [],
+            ),
+            $hasStatement && $hasResult => new Mysqli\Mysqli(
+                connection: $connectionInstance,
+                statementPrototype: $container->get(Mysqli\Statement::class),
+                resultPrototype: $container->get(Mysqli\Result::class),
+                options: $adapterConfig['options'] ?? [],
+            ),
+            default => throw new RuntimeException('Unable to create PdoDriver from configuration.'),
+        };
     }
 }

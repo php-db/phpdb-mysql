@@ -8,11 +8,10 @@ use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Driver\ResultInterface;
-use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
 use Psr\Container\ContainerInterface;
+use RuntimeException;
 
 final class PdoDriverFactory
 {
@@ -21,17 +20,28 @@ final class PdoDriverFactory
         /** @var ConnectionInterface&Connection $connectionInstance */
         $connectionInstance = $container->get(Connection::class);
 
-        /** @var (StatementInterface&Statement)|null $statementInstance */
-        $statementInstance = $container->has(Statement::class) ? $container->get(Statement::class) : null;
+        $hasStatement = $container->has(Statement::class);
+        $hasResult    = $container->has(Result::class);
 
-        /** @var (ResultInterface&Result)|null $resultInstance */
-        $resultInstance = $container->has(Result::class) ? $container->get(Result::class) : null;
-
-        return new PdoDriver(
-            connection: $connectionInstance,
-            statementPrototype: $statementInstance ?? new Statement(),
-            resultPrototype: $resultInstance ?? new Result(),
-        );
+        return match (true) {
+            ! $hasStatement && ! $hasResult => new PdoDriver(
+                connection: $connectionInstance,
+            ),
+            $hasStatement && ! $hasResult => new PdoDriver(
+                connection: $connectionInstance,
+                statementPrototype: $container->get(Statement::class),
+            ),
+            ! $hasStatement && $hasResult => new PdoDriver(
+                connection: $connectionInstance,
+                resultPrototype: $container->get(Result::class),
+            ),
+            $hasStatement && $hasResult => new PdoDriver(
+                connection: $connectionInstance,
+                statementPrototype: $container->get(Statement::class),
+                resultPrototype: $container->get(Result::class),
+            ),
+            default => throw new RuntimeException('Unable to create PdoDriver'),
+        };
     }
 
     public static function createFromConfig(
@@ -45,21 +55,31 @@ final class PdoDriverFactory
         $config = $container->get('config');
         /** @var array $dbConfig */
         $dbConfig = $config['db'] ?? [];
-        /** @var array $adapterConfig */
-        $adapterConfig = $dbConfig['adapters'][$requestedName] ?? [];
 
         /** @var ConnectionInterface&Connection $connectionInstance */
         $connectionInstance = $connectionFactory::createFromConfig($container, $requestedName);
 
-        /** @var (StatementInterface&Statement)|null $statementInstance */
-        $statementInstance = $container->has(Statement::class) ? $container->get(Statement::class) : null;
+        $hasStatement = $container->has(Statement::class);
+        $hasResult    = $container->has(Result::class);
 
-        /** @var (ResultInterface&Result)|null $resultInstance */
-        $resultInstance = $container->has(Result::class) ? $container->get(Result::class) : null;
-        return new PdoDriver(
-            $connectionInstance,
-            $statementInstance ?? new Statement(),
-            $resultInstance ?? new Result(),
-        );
+        return match (true) {
+            ! $hasStatement && ! $hasResult => new PdoDriver(
+                connection: $connectionInstance,
+            ),
+            $hasStatement && ! $hasResult => new PdoDriver(
+                connection: $connectionInstance,
+                statementPrototype: $container->get(Statement::class),
+            ),
+            ! $hasStatement && $hasResult => new PdoDriver(
+                connection: $connectionInstance,
+                resultPrototype: $container->get(Result::class),
+            ),
+            $hasStatement && $hasResult => new PdoDriver(
+                connection: $connectionInstance,
+                statementPrototype: $container->get(Statement::class),
+                resultPrototype: $container->get(Result::class),
+            ),
+            default => throw new RuntimeException('Unable to create PdoDriver from configuration.'),
+        };
     }
 }
