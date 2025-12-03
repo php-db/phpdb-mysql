@@ -8,6 +8,7 @@ use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\StatementInterface;
 use Psr\Container\ContainerInterface;
 
+/** @internal */
 final class PdoStatementFactory
 {
     public function __invoke(ContainerInterface $container): StatementInterface&Statement

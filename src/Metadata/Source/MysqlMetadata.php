@@ -20,6 +20,7 @@ use function str_replace;
 use const CASE_LOWER;
 use const PREG_PATTERN_ORDER;
 
+/** @internal */
 final class MysqlMetadata extends AbstractSource
 {
     /**

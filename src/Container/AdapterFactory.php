@@ -17,6 +17,7 @@ use Psr\Container\ContainerInterface;
 
 use function sprintf;
 
+/** @internal */
 final class AdapterFactory
 {
     public function __invoke(ContainerInterface $container): AdapterInterface

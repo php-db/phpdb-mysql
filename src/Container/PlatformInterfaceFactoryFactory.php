@@ -7,6 +7,7 @@ namespace PhpDb\Adapter\Mysql\Container;
 use PhpDb\Adapter\Mysql\Container\PlatformInterfaceFactory;
 use PhpDb\Container\PlatformInterfaceFactoryFactoryInterface as FactoryFactoryInterface;
 
+/** @internal */
 final class PlatformInterfaceFactoryFactory implements FactoryFactoryInterface
 {
     public function __invoke(): callable

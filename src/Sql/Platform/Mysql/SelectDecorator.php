@@ -10,6 +10,8 @@ use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\Select;
 
+
+/** @internal */
 final class SelectDecorator extends Select implements PlatformDecoratorInterface
 {
     /** @var Select */

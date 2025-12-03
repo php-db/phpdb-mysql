@@ -8,6 +8,7 @@ use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Mysql\Driver\Mysqli\Statement;
 use Psr\Container\ContainerInterface;
 
+/** @internal */
 final class MysqliStatementFactory
 {
     public function __invoke(ContainerInterface $container): StatementInterface&Statement

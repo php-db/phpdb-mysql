@@ -15,6 +15,7 @@ use RuntimeException;
 use function array_key_exists;
 use function sprintf;
 
+/** @internal */
 final class ConnectionInterfaceFactoryFactory implements FactoryFactoryInterface
 {
     public function __invoke(

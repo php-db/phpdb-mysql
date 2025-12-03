@@ -8,6 +8,7 @@ use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
 use Psr\Container\ContainerInterface;
 
+/** @internal */
 final class PdoConnectionFactory
 {
     public function __invoke(ContainerInterface $container): ConnectionInterface&Connection

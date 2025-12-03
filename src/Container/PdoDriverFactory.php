@@ -21,15 +21,16 @@ final class PdoDriverFactory
         /** @var ConnectionInterface&Connection $connectionInstance */
         $connectionInstance = $container->get(Connection::class);
 
-        /** @var StatementInterface&Statement $statementInstance */
-        $statementInstance = $container->get(Statement::class);
+        /** @var (StatementInterface&Statement)|null $statementInstance */
+        $statementInstance = $container->has(Statement::class) ? $container->get(Statement::class) : null;
 
-        /** @var ResultInterface&Result $resultInstance */
-        $resultInstance = $container->get(Result::class);
+        /** @var (ResultInterface&Result)|null $resultInstance */
+        $resultInstance = $container->has(Result::class) ? $container->get(Result::class) : null;
+
         return new PdoDriver(
-            $connectionInstance,
-            $statementInstance,
-            $resultInstance
+            connection: $connectionInstance,
+            statementPrototype: $statementInstance ?? new Statement(),
+            resultPrototype: $resultInstance ?? new Result(),
         );
     }
 
@@ -46,23 +47,19 @@ final class PdoDriverFactory
         $dbConfig = $config['db'] ?? [];
         /** @var array $adapterConfig */
         $adapterConfig = $dbConfig['adapters'][$requestedName] ?? [];
-        /** @var array $options */
-        $options = $adapterConfig['options'] ?? [];
 
         /** @var ConnectionInterface&Connection $connectionInstance */
         $connectionInstance = $connectionFactory::createFromConfig($container, $requestedName);
 
-        /** @var StatementInterface&Statement $statementInstance */
-        $statementInstance = $container->get(Statement::class);
+        /** @var (StatementInterface&Statement)|null $statementInstance */
+        $statementInstance = $container->has(Statement::class) ? $container->get(Statement::class) : null;
 
-        /** @var ResultInterface&Result $resultInstance */
-        $resultInstance = $container->get(Result::class);
-
+        /** @var (ResultInterface&Result)|null $resultInstance */
+        $resultInstance = $container->has(Result::class) ? $container->get(Result::class) : null;
         return new PdoDriver(
             $connectionInstance,
-            $statementInstance,
-            $resultInstance,
-            $options
+            $statementInstance ?? new Statement(),
+            $resultInstance ?? new Result(),
         );
     }
 }

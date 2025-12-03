@@ -10,6 +10,7 @@ use PhpDb\Adapter\SchemaAwareInterface;
 use PhpDb\Metadata\MetadataInterface;
 use Psr\Container\ContainerInterface;
 
+/** @internal */
 final class MysqlMetadataFactory
 {
     public function __invoke(ContainerInterface $container): MetadataInterface&MysqlMetadata

@@ -10,6 +10,7 @@ use RuntimeException;
 
 use function sprintf;
 
+/** @internal */
 final class DriverInterfaceFactoryFactory implements FactoryFactoryInterface
 {
     public function __invoke(

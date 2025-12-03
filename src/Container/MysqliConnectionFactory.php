@@ -8,6 +8,7 @@ use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
 use Psr\Container\ContainerInterface;
 
+/** @internal */
 final class MysqliConnectionFactory
 {
     public function __invoke(

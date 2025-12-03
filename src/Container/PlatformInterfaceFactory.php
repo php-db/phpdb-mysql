@@ -11,6 +11,7 @@ use PhpDb\Adapter\Mysql\Platform\Mysql;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use Psr\Container\ContainerInterface;
 
+/** @internal */
 final class PlatformInterfaceFactory
 {
     public function __invoke(ContainerInterface $container): PlatformInterface&Mysql
