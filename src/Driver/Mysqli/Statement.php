@@ -22,11 +22,12 @@ use function is_array;
 
 final class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
 {
+    protected bool $bufferResults;
     protected \mysqli $mysqli;
 
     protected Mysqli $driver;
 
-    protected ?ProfilerInterface $profiler;
+    protected ?ProfilerInterface $profiler = null;
 
     protected string $sql = '';
 
@@ -36,8 +37,14 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
     public function __construct(
         protected ParameterContainer $parameterContainer = new ParameterContainer(),
-        protected bool $bufferResults = false
+        array|bool $options = false
     ) {
+        if (is_array($options)) {
+            $this->bufferResults = $options['buffer_results'] ?? false;
+        } else {
+            // Provide backward compatibility for boolean parameter
+            $this->bufferResults = $options;
+        }
     }
 
     #[Override]

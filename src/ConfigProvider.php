@@ -6,6 +6,7 @@ namespace PhpDb\Adapter\Mysql;
 
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Pdo\Statement as PdoStatement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Mysql\Driver;
 use PhpDb\Adapter\Mysql\Metadata\Source\MysqlMetadata;
@@ -58,13 +59,12 @@ final class ConfigProvider
                 AdapterInterface::class         => Container\AdapterFactory::class,
                 Driver\Mysqli\Mysqli::class     => Container\MysqliDriverFactory::class,
                 Driver\Mysqli\Connection::class => Container\MysqliConnectionFactory::class,
+                Driver\Mysqli\Statement::class  => Container\StatementInterfaceFactory::class,
                 Driver\Pdo\Pdo::class           => Container\PdoDriverFactory::class,
                 Driver\Pdo\Connection::class    => Container\PdoConnectionFactory::class,
+                PdoStatement::class             => Container\StatementInterfaceFactory::class,
                 MysqlMetadata::class            => Container\MetadataInterfaceFactory::class,
                 PlatformInterface::class        => Container\PlatformInterfaceFactory::class,
-                // Uncomment to override the default implementations
-                //Driver\Mysqli\Statement::class  => Container\MysqliStatementFactory::class,
-                //PdoStatement::class             => Container\PdoStatementFactory::class,
             ],
             'invokables'         => [
                 Container\ConnectionInterfaceFactoryFactory::class

@@ -12,6 +12,7 @@ use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
+use PhpDb\ResultSet\ResultSet;
 use PhpDb\ResultSet\ResultSetInterface;
 use Psr\Container\ContainerInterface;
 
@@ -55,15 +56,10 @@ final class AdapterFactory
         /** @var PlatformInterface $platformInstance */
         $platformInstance = $container->get(PlatformInterface::class);
 
-        if (! $container->has(ResultSetInterface::class)) {
-            throw new ServiceNotFoundException(sprintf(
-                'ResultSet "%s" is not registered in the adapter manager.',
-                ResultSetInterface::class
-            ));
-        }
-
         /** @var ResultSetInterface $resultSetInstance */
-        $resultSetInstance = $container->get(ResultSetInterface::class);
+        $resultSetInstance = $container->has(ResultSetInterface::class)
+                ? $container->get(ResultSetInterface::class)
+                : null;
 
         /** @var ProfilerInterface|null $profilerInstanceOrNull */
         $profilerInstanceOrNull = $container->has(ProfilerInterface::class)
@@ -71,10 +67,10 @@ final class AdapterFactory
                 : null;
 
         return new Adapter(
-            $driverInstance,
-            $platformInstance,
-            $resultSetInstance,
-            $profilerInstanceOrNull
+            driver: $driverInstance,
+            platform: $platformInstance,
+            queryResultSetPrototype: $resultSetInstance ?? new ResultSet(),
+            profiler: $profilerInstanceOrNull
         );
     }
 }

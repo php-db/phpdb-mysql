@@ -29,13 +29,13 @@ final class MysqliDriverFactory
         $statementInstance = $container->get(Mysqli\Statement::class);
 
         /** @var Driver\ResultInterface&Mysqli\Result $resultInstance */
-        $resultInstance = $container->get(Mysqli\Result::class);
+        $resultInstance = $container->has(Mysqli\Result::class) ? $container->get(Mysqli\Result::class) : null;
 
         return new Mysqli\Mysqli(
-            $connectionInstance,
-            $statementInstance,
-            $resultInstance,
-            $options
+            connection: $connectionInstance,
+            statementPrototype: $statementInstance,
+            resultPrototype: $resultInstance ?? new Mysqli\Result(),
+            options: $options
         );
     }
 

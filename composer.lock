@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d61006c1368bfd4bb5a4117ae165f158",
+    "content-hash": "2e24c61f11a516336e72fb1866f80fc1",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -259,16 +259,16 @@
         },
         {
             "name": "php-db/phpdb",
-            "version": "0.3.3",
+            "version": "0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
-                "reference": "3d3a3b65c3fc4634ae4a3f0622c08a8e122237a0"
+                "reference": "fb2c35d973410594294ba07d5e24fa5f832fdd6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-db/phpdb/zipball/3d3a3b65c3fc4634ae4a3f0622c08a8e122237a0",
-                "reference": "3d3a3b65c3fc4634ae4a3f0622c08a8e122237a0",
+                "url": "https://api.github.com/repos/php-db/phpdb/zipball/fb2c35d973410594294ba07d5e24fa5f832fdd6f",
+                "reference": "fb2c35d973410594294ba07d5e24fa5f832fdd6f",
                 "shasum": ""
             },
             "require": {
@@ -322,7 +322,7 @@
                 "issues": "https://github.com/php-db/phpdb/issues",
                 "source": "https://github.com/php-db/phpdb"
             },
-            "time": "2025-12-02T05:29:22+00:00"
+            "time": "2025-12-03T07:48:50+00:00"
         },
         {
             "name": "psr/container",
