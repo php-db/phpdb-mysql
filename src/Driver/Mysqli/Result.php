@@ -275,12 +275,10 @@ final class Result implements Iterator, ResultInterface
 
     /**
      * Valid
-     *
-     * @return bool
      */
     #[ReturnTypeWillChange]
     #[Override]
-    public function valid()
+    public function valid(): bool
     {
         if ($this->currentComplete) {
             return true;
@@ -320,11 +318,9 @@ final class Result implements Iterator, ResultInterface
 
     /**
      * Get generated value
-     *
-     * @return mixed|null
      */
     #[Override]
-    public function getGeneratedValue()
+    public function getGeneratedValue(): mixed
     {
         return $this->generatedValue;
     }

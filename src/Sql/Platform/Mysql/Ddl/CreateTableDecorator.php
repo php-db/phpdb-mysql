@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Ddl;
 
+use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
+use PhpDb\Sql\PreparableSqlInterface;
+use PhpDb\Sql\SqlInterface;
 
 use function count;
 use function range;
@@ -21,8 +24,7 @@ use function uksort;
 /** @internal */
 final class CreateTableDecorator extends CreateTable implements PlatformDecoratorInterface
 {
-    /** @var CreateTable */
-    protected $subject;
+    protected SqlInterface|PreparableSqlInterface|null $subject = null;
 
     /** @var int[] */
     protected $columnOptionSortOrder = [
@@ -41,18 +43,15 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
      * @param CreateTable $subject
      * @return $this Provides a fluent interface
      */
-    public function setSubject($subject)
-    {
+    public function setSubject(
+        SqlInterface|PreparableSqlInterface|null $subject
+    ): PlatformDecoratorInterface {
         $this->subject = $subject;
 
         return $this;
     }
 
-    /**
-     * @param string $sql
-     * @return array
-     */
-    protected function getSqlInsertOffsets($sql)
+    protected function getSqlInsertOffsets(string $sql): array
     {
         $sqlLength   = strlen($sql);
         $insertStart = [];
@@ -82,13 +81,11 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         return $insertStart;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function processColumns(?PlatformInterface $platform = null)
+    #[Override]
+    protected function processColumns(?PlatformInterface $platform = null): array
     {
         if (! $this->columns) {
-            return;
+            return [];
         }
 
         $sqls = [];
@@ -153,11 +150,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         return [$sqls];
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    private function normalizeColumnOption($name)
+    private function normalizeColumnOption(string $name): string
     {
         return strtolower(str_replace(['-', '_', ' '], '', $name));
     }
@@ -165,10 +158,9 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
     /**
      * @param string $columnA
      * @param string $columnB
-     * @return int
      */
     // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod
-    private function compareColumnOptions($columnA, $columnB)
+    private function compareColumnOptions($columnA, $columnB): int
     {
         $columnA = $this->normalizeColumnOption($columnA);
         $columnA = $this->columnOptionSortOrder[$columnA] ?? count($this->columnOptionSortOrder);
