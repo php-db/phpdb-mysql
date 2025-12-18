@@ -99,6 +99,7 @@ class Mysql extends AbstractPlatform
             $resource = $this->driver;
         }
 
+        // todo: Refactor using match
         if ($resource instanceof mysqli) {
             return '\'' . $resource->real_escape_string($value) . '\'';
         }
