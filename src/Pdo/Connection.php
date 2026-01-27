@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Pdo;
+namespace PhpDb\Mysql\Pdo;
 
 use Override;
 use PDO;

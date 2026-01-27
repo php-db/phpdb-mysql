@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql;
+namespace PhpDb\Mysql\Sql;
 
 use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Platform\AbstractPlatform;
 use PhpDb\Sql\Select;
 
-final class Mysql extends AbstractPlatform
+final class Platform extends AbstractPlatform
 {
     public function __construct()
     {

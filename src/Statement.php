@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Mysql;
 
 use mysqli_stmt;
 use Override;
@@ -24,7 +24,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 {
     protected \mysqli $mysqli;
 
-    protected Mysqli $driver;
+    protected Driver $driver;
 
     protected ?ProfilerInterface $profiler;
 

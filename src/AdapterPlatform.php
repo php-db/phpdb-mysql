@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Platform;
+namespace PhpDb\Mysql;
 
 use mysqli;
 use Override;
 use PDO;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Mysql as SqlPlatform;
 use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 
 use function implode;
 use function str_replace;
 
-class Mysql extends AbstractPlatform
+class AdapterPlatform extends AbstractPlatform
 {
     public final const PLATFORM_NAME = 'MySQL';
 
@@ -54,7 +53,7 @@ class Mysql extends AbstractPlatform
     #[Override]
     public function getSqlPlatformDecorator(): PlatformDecoratorInterface
     {
-        return new SqlPlatform();
+        return new Sql\Platform();
     }
 
     /**

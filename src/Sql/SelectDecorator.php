@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql;
+namespace PhpDb\Mysql\Sql;
 
 use Override;
 use PhpDb\Adapter\Driver\DriverInterface;

@@ -28,7 +28,7 @@
     },
     "extra": {
         "laminas": {
-            "config-provider": "PhpDb\\Adapter\\Mysql\\ConfigProvider"
+            "config-provider": "PhpDb\\Mysql\\ConfigProvider"
         }
     },
     "require": {
@@ -50,13 +50,13 @@
     },
     "autoload": {
         "psr-4": {
-            "PhpDb\\Adapter\\Mysql\\": "src/"
+            "PhpDb\\Mysql\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhpDbTest\\Adapter\\Mysql\\": "test/unit/",
-            "PhpDbIntegrationTest\\Adapter\\Mysql\\": "test/integration/"
+            "PhpDbTest\\Mysql\\": "test/unit/",
+            "PhpDbIntegrationTest\\Mysql\\": "test/integration/"
         }
     },
     "scripts": {

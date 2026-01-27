@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Mysql;
 
 use Iterator;
 use mysqli;

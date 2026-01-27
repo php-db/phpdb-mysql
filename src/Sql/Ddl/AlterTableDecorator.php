@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Ddl;
+namespace PhpDb\Mysql\Sql\Ddl;
 
 use PhpDb\Adapter\Platform\PlatformInterface;
-use PhpDb\Sql\Ddl\CreateTable;
+use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\PreparableSqlInterface;
 use PhpDb\Sql\SqlInterface;
@@ -20,12 +20,24 @@ use function strtoupper;
 use function substr_replace;
 use function uksort;
 
-final class CreateTableDecorator extends CreateTable implements PlatformDecoratorInterface
+final class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterface
 {
     protected SqlInterface|PreparableSqlInterface|null $subject;
 
-    /** @var int[] */
-    protected $columnOptionSortOrder = [
+    /** @var array{
+     *  unsigned: int,
+     *  zerofill: int,
+     *  identity: int,
+     *  serial: int,
+     *  autoincrement: int,
+     *  comment: int,
+     *  columnformat: int,
+     *  format: int,
+     *  storage: int,
+     *  after: int
+     * } $columnOptionSortOrder
+     */
+    protected array $columnOptionSortOrder = [
         'unsigned'      => 0,
         'zerofill'      => 1,
         'identity'      => 2,
@@ -35,21 +47,18 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         'columnformat'  => 4,
         'format'        => 4,
         'storage'       => 5,
+        'after'         => 6,
     ];
 
     public function setSubject(
-        PreparableSqlInterface|SqlInterface|null $subject
+        SqlInterface|PreparableSqlInterface|null $subject
     ): PlatformDecoratorInterface {
         $this->subject = $subject;
 
         return $this;
     }
 
-    /**
-     * @param string $sql
-     * @return array
-     */
-    protected function getSqlInsertOffsets($sql)
+    protected function getSqlInsertOffsets(string $sql): array
     {
         $sqlLength   = strlen($sql);
         $insertStart = [];
@@ -61,11 +70,11 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                 switch ($needle) {
                     case 'REFERENCES':
                         $insertStart[2] = ! isset($insertStart[2]) ? $insertPos : $insertStart[2];
-                        // no break
+                    // no break
                     case 'PRIMARY':
                     case 'UNIQUE':
                         $insertStart[1] = ! isset($insertStart[1]) ? $insertPos : $insertStart[1];
-                        // no break
+                    // no break
                     default:
                         $insertStart[0] = ! isset($insertStart[0]) ? $insertPos : $insertStart[0];
                 }
@@ -79,19 +88,12 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         return $insertStart;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function processColumns(?PlatformInterface $platform = null): ?array
+    protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
     {
-        if (! $this->columns) {
-            return null;
-        }
-
         $sqls = [];
 
-        foreach ($this->columns as $i => $column) {
-            $sql           = $this->processExpression($column, $platform);
+        foreach ($this->addColumns as $i => $column) {
+            $sql           = $this->processExpression($column, $adapterPlatform);
             $insertStart   = $this->getSqlInsertOffsets($sql);
             $columnOptions = $column->getOptions();
 
@@ -120,7 +122,71 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                         $j      = 1;
                         break;
                     case 'comment':
-                        $insert = ' COMMENT ' . $platform->quoteValue($coValue);
+                        $insert = ' COMMENT ' . $adapterPlatform->quoteValue($coValue);
+                        $j      = 2;
+                        break;
+                    case 'columnformat':
+                    case 'format':
+                        $insert = ' COLUMN_FORMAT ' . strtoupper($coValue);
+                        $j      = 2;
+                        break;
+                    case 'storage':
+                        $insert = ' STORAGE ' . strtoupper($coValue);
+                        $j      = 2;
+                        break;
+                    case 'after':
+                        $insert = ' AFTER ' . $adapterPlatform->quoteIdentifier($coValue);
+                        $j      = 2;
+                }
+
+                if ($insert) {
+                    $j                = $j ?? 0;
+                    $sql              = substr_replace($sql, $insert, $insertStart[$j], 0);
+                    $insertStartCount = count($insertStart);
+                    for (; $j < $insertStartCount; ++$j) {
+                        $insertStart[$j] += strlen($insert);
+                    }
+                }
+            }
+            $sqls[$i] = $sql;
+        }
+        return [$sqls];
+    }
+
+    protected function processChangeColumns(?PlatformInterface $adapterPlatform = null): array
+    {
+        $sqls = [];
+        foreach ($this->changeColumns as $name => $column) {
+            $sql           = $this->processExpression($column, $adapterPlatform);
+            $insertStart   = $this->getSqlInsertOffsets($sql);
+            $columnOptions = $column->getOptions();
+
+            uksort($columnOptions, [$this, 'compareColumnOptions']);
+
+            foreach ($columnOptions as $coName => $coValue) {
+                $insert = '';
+
+                if (! $coValue) {
+                    continue;
+                }
+
+                switch ($this->normalizeColumnOption($coName)) {
+                    case 'unsigned':
+                        $insert = ' UNSIGNED';
+                        $j      = 0;
+                        break;
+                    case 'zerofill':
+                        $insert = ' ZEROFILL';
+                        $j      = 0;
+                        break;
+                    case 'identity':
+                    case 'serial':
+                    case 'autoincrement':
+                        $insert = ' AUTO_INCREMENT';
+                        $j      = 1;
+                        break;
+                    case 'comment':
+                        $insert = ' COMMENT ' . $adapterPlatform->quoteValue($coValue);
                         $j      = 2;
                         break;
                     case 'columnformat':
@@ -143,8 +209,10 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                     }
                 }
             }
-
-            $sqls[$i] = $sql;
+            $sqls[] = [
+                $adapterPlatform->quoteIdentifier($name),
+                $sql,
+            ];
         }
 
         return [$sqls];

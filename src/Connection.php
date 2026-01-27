@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Mysql;
 
 use Exception as GenericException;
 use Override;
@@ -25,7 +25,7 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    protected Mysqli $driver;
+    protected Driver $driver;
 
     /** @var \mysqli */
     protected $resource;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Metadata\Source;
+namespace PhpDb\Mysql\Metadata;
 
 use DateTime;
 use Exception;
@@ -20,7 +20,7 @@ use function str_replace;
 use const CASE_LOWER;
 use const PREG_PATTERN_ORDER;
 
-final class MysqlMetadata extends AbstractSource
+final class Source extends AbstractSource
 {
     /**
      * @throws Exception

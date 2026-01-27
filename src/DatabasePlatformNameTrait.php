@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql;
+namespace PhpDb\Mysql;
 
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Exception;
