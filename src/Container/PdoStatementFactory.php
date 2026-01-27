@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Container;
+namespace PhpDb\Mysql\Container;
 
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\StatementInterface;

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Container;
+namespace PhpDb\Mysql\Container;
 
 use PhpDb\Adapter\Driver\StatementInterface;
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Statement;
+use PhpDb\Mysql\Statement;
 use Psr\Container\ContainerInterface;
 
-final class MysqliStatementFactory
+final class StatementInterfaceFactory
 {
     public function __invoke(ContainerInterface $container): StatementInterface&Statement
     {

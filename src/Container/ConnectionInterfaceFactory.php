@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Container;
+namespace PhpDb\Mysql\Container;
 
 use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
+use PhpDb\Mysql\Connection;
 use Psr\Container\ContainerInterface;
 
 final class ConnectionInterfaceFactory
