@@ -8,7 +8,7 @@ use PhpDb\Adapter\Driver;
 use PhpDb\Adapter\Mysql\Driver\Mysqli;
 use Psr\Container\ContainerInterface;
 
-final class MysqliDriverFactory
+final class DriverInterfaceFactory
 {
     public function __invoke(ContainerInterface $container): Driver\DriverInterface&Mysqli\Mysqli
     {
@@ -35,28 +35,6 @@ final class MysqliDriverFactory
             $statementInstance,
             $resultInstance,
             $options
-        );
-    }
-
-    public static function createFromConfig(
-        ContainerInterface $container,
-        string $requestedName,
-    ): Driver\DriverInterface&Mysqli\Mysqli {
-        $connectionFactory = (
-            $container->get(ConnectionInterfaceFactoryFactory::class)
-        )($container, $requestedName);
-        /** @var array $config */
-        $config = $container->get('config');
-        /** @var array $dbConfig */
-        $dbConfig = $config['db'] ?? [];
-        /** @var array $adapterConfig */
-        $adapterConfig = $dbConfig['adapters'][$requestedName] ?? [];
-
-        return new Mysqli\Mysqli(
-            $connectionFactory::createFromConfig($container, $requestedName),
-            $container->get(Mysqli\Statement::class),
-            $container->get(Mysqli\Result::class),
-            $adapterConfig['options'] ?? []
         );
     }
 }

@@ -86,6 +86,9 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         return $this;
     }
 
+    /**
+     * @phpstan-ignore method.childReturnType
+     */
     #[Override]
     public function getResource(): mysqli_stmt
     {

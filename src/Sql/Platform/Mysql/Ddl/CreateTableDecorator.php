@@ -7,6 +7,8 @@ namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Ddl;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
+use PhpDb\Sql\PreparableSqlInterface;
+use PhpDb\Sql\SqlInterface;
 
 use function count;
 use function range;
@@ -20,8 +22,7 @@ use function uksort;
 
 final class CreateTableDecorator extends CreateTable implements PlatformDecoratorInterface
 {
-    /** @var CreateTable */
-    protected $subject;
+    protected SqlInterface|PreparableSqlInterface|null $subject;
 
     /** @var int[] */
     protected $columnOptionSortOrder = [
@@ -36,12 +37,9 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         'storage'       => 5,
     ];
 
-    /**
-     * @param CreateTable $subject
-     * @return $this Provides a fluent interface
-     */
-    public function setSubject($subject)
-    {
+    public function setSubject(
+        PreparableSqlInterface|SqlInterface|null $subject
+    ): PlatformDecoratorInterface {
         $this->subject = $subject;
 
         return $this;
@@ -84,10 +82,10 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
     /**
      * {@inheritDoc}
      */
-    protected function processColumns(?PlatformInterface $platform = null)
+    protected function processColumns(?PlatformInterface $platform = null): ?array
     {
         if (! $this->columns) {
-            return;
+            return null;
         }
 
         $sqls = [];

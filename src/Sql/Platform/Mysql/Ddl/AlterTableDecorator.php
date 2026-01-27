@@ -7,6 +7,8 @@ namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Ddl;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
+use PhpDb\Sql\PreparableSqlInterface;
+use PhpDb\Sql\SqlInterface;
 
 use function count;
 use function range;
@@ -20,8 +22,7 @@ use function uksort;
 
 final class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterface
 {
-    /** @var AlterTable */
-    protected $subject;
+    protected SqlInterface|PreparableSqlInterface|null $subject;
 
     /** @var array{
      *  unsigned: int,
@@ -36,7 +37,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
      *  after: int
      * } $columnOptionSortOrder
      */
-    protected $columnOptionSortOrder = [
+    protected array $columnOptionSortOrder = [
         'unsigned'      => 0,
         'zerofill'      => 1,
         'identity'      => 2,
@@ -49,22 +50,15 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         'after'         => 6,
     ];
 
-    /**
-     * @param AlterTable $subject
-     * @return $this Provides a fluent interface
-     */
-    public function setSubject($subject)
-    {
+    public function setSubject(
+        SqlInterface|PreparableSqlInterface|null $subject
+    ): PlatformDecoratorInterface {
         $this->subject = $subject;
 
         return $this;
     }
 
-    /**
-     * @param string $sql
-     * @return array
-     */
-    protected function getSqlInsertOffsets($sql)
+    protected function getSqlInsertOffsets(string $sql): array
     {
         $sqlLength   = strlen($sql);
         $insertStart = [];
@@ -94,10 +88,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return $insertStart;
     }
 
-    /**
-     * @return array
-     */
-    protected function processAddColumns(?PlatformInterface $adapterPlatform = null)
+    protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
     {
         $sqls = [];
 
@@ -162,10 +153,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return [$sqls];
     }
 
-    /**
-     * @return array
-     */
-    protected function processChangeColumns(?PlatformInterface $adapterPlatform = null)
+    protected function processChangeColumns(?PlatformInterface $adapterPlatform = null): array
     {
         $sqls = [];
         foreach ($this->changeColumns as $name => $column) {

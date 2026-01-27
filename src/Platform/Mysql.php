@@ -22,19 +22,17 @@ class Mysql extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    protected $quoteIdentifier = ['`', '`'];
+    protected array $quoteIdentifier = ['`', '`'];
 
     /**
      * {@inheritDoc}
      */
-    protected $quoteIdentifierTo = '``';
+    protected string $quoteIdentifierTo = '``';
 
     /**
      * NOTE: Include dashes for MySQL only, need tests for others platforms
-     *
-     * @var string
      */
-    protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
+    protected string $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
     public function __construct(
         protected readonly DriverInterface|mysqli|PDO $driver

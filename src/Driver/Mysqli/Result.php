@@ -320,11 +320,9 @@ final class Result implements Iterator, ResultInterface
 
     /**
      * Get generated value
-     *
-     * @return mixed|null
      */
     #[Override]
-    public function getGeneratedValue()
+    public function getGeneratedValue(): string|int|false|null
     {
         return $this->generatedValue;
     }

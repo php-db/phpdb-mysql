@@ -1,20 +1,8 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Variable \$aliasTo on left side of \?\?\= is never defined\.$#'
-			identifier: nullCoalesce.variable
-			count: 1
-			path: src/Container/DriverInterfaceFactoryFactory.php
-
-		-
 			message: '#^Method PhpDb\\Adapter\\Profiler\\ProfilerInterface\:\:profilerFinish\(\) invoked with 1 parameter, 0 required\.$#'
 			identifier: arguments.count
-			count: 1
-			path: src/Driver/Mysqli/Connection.php
-
-		-
-			message: '#^PHPDoc type mysqli of property PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Connection\:\:\$resource is not covariant with PHPDoc type resource\|null of overridden property PhpDb\\Adapter\\Driver\\AbstractConnection\:\:\$resource\.$#'
-			identifier: property.phpDocType
 			count: 1
 			path: src/Driver/Mysqli/Connection.php
 
@@ -145,27 +133,9 @@ parameters:
 			path: src/Driver/Mysqli/Statement.php
 
 		-
-			message: '#^Return type \(mysqli_stmt\) of method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Statement\:\:getResource\(\) should be compatible with return type \(resource\) of method PhpDb\\Adapter\\Driver\\StatementInterface\:\:getResource\(\)$#'
-			identifier: method.childReturnType
-			count: 1
-			path: src/Driver/Mysqli/Statement.php
-
-		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: src/Driver/Pdo/Connection.php
-
-		-
-			message: '#^Parameter \#1 \$name \(string\) of method PhpDb\\Adapter\\Mysql\\Driver\\Pdo\\Connection\:\:getLastGeneratedValue\(\) should be compatible with parameter \$name \(null\) of method PhpDb\\Adapter\\Driver\\ConnectionInterface\:\:getLastGeneratedValue\(\)$#'
-			identifier: method.childParameterType
-			count: 2
-			path: src/Driver/Pdo/Connection.php
-
-		-
-			message: '#^Parameter \#2 \$parameters of class PhpDb\\Adapter\\Exception\\InvalidConnectionParametersException constructor expects int, array given\.$#'
-			identifier: argument.type
-			count: 2
 			path: src/Driver/Pdo/Connection.php
 
 		-
@@ -199,37 +169,7 @@ parameters:
 			path: src/Metadata/Source/MysqlMetadata.php
 
 		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Sql\\Platform\\Mysql\\Ddl\\CreateTableDecorator\:\:processColumns\(\) never returns null so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: src/Sql/Platform/Mysql/Ddl/CreateTableDecorator.php
-
-		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Sql\\Platform\\Mysql\\Ddl\\CreateTableDecorator\:\:processColumns\(\) should return array\<array\<string\>\>\|null but empty return statement found\.$#'
-			identifier: return.empty
-			count: 1
-			path: src/Sql/Platform/Mysql/Ddl/CreateTableDecorator.php
-
-		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Sql\\Platform\\Mysql\\SelectDecorator\:\:processLimit\(\) should return array\<string\>\|null but returns array\<int, int\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Sql/Platform/Mysql/SelectDecorator.php
-
-		-
-			message: '#^Offset ''paramPrefix'' does not exist on string\.$#'
-			identifier: offsetAccess.notFound
-			count: 2
-			path: src/Sql/Platform/Mysql/SelectDecorator.php
-
-		-
 			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with int will always evaluate to true\.$#'
 			identifier: staticMethod.alreadyNarrowedType
 			count: 1
 			path: test/integration/Driver/Pdo/ConnectionTest.php
-
-		-
-			message: '#^Method PhpDbIntegrationTest\\Adapter\\Mysql\\Driver\\Pdo\\TableGatewayTest\:\:testInsertWithExtendedCharsetFieldName\(\) never returns string so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: test/integration/Driver/Pdo/TableGatewayTest.php
