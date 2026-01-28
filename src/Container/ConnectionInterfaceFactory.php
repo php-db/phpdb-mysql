@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDb\Mysql\Container;
 
 use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Mysql\Connection;
 use Psr\Container\ContainerInterface;
 
@@ -15,23 +16,13 @@ final class ConnectionInterfaceFactory
         string $requestedName,
         ?array $options = null
     ): ConnectionInterface&Connection {
-        /** @var array $config */
-        $config = $container->get('config');
+        if (! is_array($options['connection']) || $options['connection'] === []) {
+            throw new InvalidConnectionParametersException(
+                'Connection configuration must be an array of parameters passed via $options["connection"]',
+                $options['connection']
+            );
+        }
 
-        /** @var array $dbConfig */
-        $dbConfig = $config['db'] ?? [];
-
-        /** @var array $connectionConfig */
-        $connectionConfig = $dbConfig['connection'] ?? [];
-
-        return new Connection($connectionConfig);
-    }
-
-    public static function createFromConfig(
-        ContainerInterface $container,
-        string $requestedName
-    ): ConnectionInterface&Connection {
-        $adapterConfig = $container->get('config')['db']['adapters'][$requestedName] ?? [];
-        return new Connection($adapterConfig['connection'] ?? []);
+        return new Connection($options['connection']);
     }
 }

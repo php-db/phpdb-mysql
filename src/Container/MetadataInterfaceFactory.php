@@ -11,9 +11,14 @@ use Psr\Container\ContainerInterface;
 
 final class MetadataInterfaceFactory
 {
-    public function __invoke(ContainerInterface $container): MetadataInterface&Metadata\Source
-    {
-        $adapterInterface = $container->get(AdapterInterface::class);
-        return new Metadata\Source($adapterInterface);
+    public const ADAPTER_SERVICE_NAME = 'adapter_service_name';
+    public function __invoke(
+        ContainerInterface $container,
+        string $requestedName,
+        ?array $options = null
+    ): MetadataInterface&Metadata\Source {
+        $adapterServiceName = $options[self::ADAPTER_SERVICE_NAME] ?? AdapterInterface::class;
+
+        return new Metadata\Source($container->get($adapterServiceName));
     }
 }

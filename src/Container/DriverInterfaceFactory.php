@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Container;
 
+use Laminas\ServiceManager\ServiceManager;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Exception\ContainerException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
 use PhpDb\Mysql\Result;
@@ -13,24 +16,32 @@ use Psr\Container\ContainerInterface;
 
 final class DriverInterfaceFactory
 {
-    public function __invoke(ContainerInterface $container): DriverInterface&Driver
-    {
-        /** @var array $config */
-        $config = $container->get('config');
-
-        /** @var array $dbConfig */
-        $dbConfig = $config['db'] ?? [];
-
-        /** @var array $options */
-        $options = $dbConfig['options'] ?? [];
+    public function __invoke(
+        ContainerInterface&ServiceManager $container,
+        string $requestedName,
+        ?array $options = null
+    ): DriverInterface&Driver {
+        if (! isset($options['connection'])) {
+            throw ContainerException::forService(
+                Driver::class,
+                self::class,
+                '$options["connection"] must containe an array of connection configuration.'
+            );
+        }
 
         /** @var Driver\ConnectionInterface&Connection $connectionInstance */
-        $connectionInstance = $container->get(Connection::class);
+        $connectionInstance = $container->build(Connection::class, $options);
 
         /** @var Driver\StatementInterface&Statement $statementInstance */
-        $statementInstance = $container->get(Statement::class);
+        $statementInstance = $container->build(
+            Statement::class,
+            $options['options'] ?? []
+        );
+
         /** @var Driver\ResultInterface&Result $resultInstance */
-        $resultInstance = $container->get(Result::class);
+        $resultInstance = $container->has(ResultInterface::class)
+            ? $container->get(ResultInterface::class)
+            : new Result();
 
         return new Driver(
             $connectionInstance,

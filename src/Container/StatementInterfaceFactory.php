@@ -10,20 +10,11 @@ use Psr\Container\ContainerInterface;
 
 final class StatementInterfaceFactory
 {
-    public function __invoke(ContainerInterface $container): StatementInterface&Statement
-    {
-        /** @var array $config */
-        $config = $container->get('config');
-
-        /** @var array $dbConfig */
-        $dbConfig = $config['db'] ?? [];
-
-        /** @var array $options */
-        $options = $dbConfig['options'] ?? [];
-
-        /** @var bool $bufferResults */
-        $bufferResults = $options['buffer_results'] ?? false;
-
-        return new Statement(bufferResults: $bufferResults);
+    public function __invoke(
+        ContainerInterface $container,
+        string $requestedName,
+        ?array $options = null
+    ): StatementInterface&Statement {
+        return new Statement(bufferResults: $options['buffer_results'] ?? false);
     }
 }
