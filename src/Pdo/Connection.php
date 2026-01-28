@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Pdo;
+namespace PhpDb\Mysql\Pdo;
 
 use Override;
 use PDO;
@@ -52,50 +52,29 @@ class Connection extends AbstractPdoConnection
             return $this;
         }
 
-        $dsn     = $username = $password = $hostname = $database = null;
+        $dsn     = $username = $password = $hostname = $port = $charset = $database = $unixSocket = $version = null;
         $options = [];
+
         foreach ($this->connectionParameters as $key => $value) {
-            switch (strtolower($key)) {
-                case 'dsn':
-                    $dsn = (string) $value;
-                    break;
-                case 'user':
-                case 'username':
-                    $username = (string) $value;
-                    break;
-                case 'pass':
-                case 'password':
-                    $password = (string) $value;
-                    break;
-                case 'host':
-                case 'hostname':
-                    $hostname = (string) $value;
-                    break;
-                case 'port':
-                    $port = (int) $value;
-                    break;
-                case 'database':
-                case 'dbname':
-                    $database = (string) $value;
-                    break;
-                case 'charset':
-                    $charset = (string) $value;
-                    break;
-                case 'unix_socket':
-                    $unixSocket = (string) $value;
-                    break;
-                case 'version':
-                    $version = (string) $value;
-                    break;
-                case 'driver_options':
+            $result = match (strtolower($key)) {
+                'dsn'                                => $dsn        = (string) $value,
+                'user', 'username'                   => $username   = (string) $value,
+                'password', 'passwd', 'pw'           => $password   = (string) $value,
+                'host', 'hostname'                   => $hostname   = (string) $value,
+                'port'                               => $port       = (int) $value,
+                'charset'                            => $charset    = (string) $value,
+                'dbname', 'database', 'db', 'schema' => $database   = (string) $value,
+                'unix_socket'                        => $unixSocket = (string) $value,
+                'version'                            => $version    = (string) $value,
+                // todo: should we suppport sslmode for pdo pgsql?
+                'driver_options' => (function (&$options, $value): void {
                     $value   = (array) $value;
                     $options = array_diff_key($options, $value) + $value;
-                    break;
-                default:
-                    $options[$key] = $value;
-                    break;
-            }
+                })($options, $value),
+                default => $options[$key] = $value,
+            };
         }
+        unset($result);
 
         if (isset($hostname) && isset($unixSocket)) {
             throw new Exception\InvalidConnectionParametersException(
@@ -151,13 +130,8 @@ class Connection extends AbstractPdoConnection
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $name
-     */
     #[Override]
-    public function getLastGeneratedValue($name = null): string|int|bool|null
+    public function getLastGeneratedValue(?string $name = null): string|int|false|null
     {
         try {
             return $this->resource->lastInsertId($name);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Mysql;
 
 use mysqli_stmt;
 use PhpDb\Adapter\Driver\ConnectionInterface;
@@ -11,7 +11,6 @@ use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Mysql\DatabasePlatformNameTrait;
 use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 
@@ -20,7 +19,7 @@ use function array_merge;
 use function extension_loaded;
 use function is_string;
 
-final class Mysqli implements DriverInterface, ProfilerAwareInterface
+final class Driver implements DriverInterface, ProfilerAwareInterface
 {
     use DatabasePlatformNameTrait;
 

@@ -28,7 +28,7 @@ final class ConnectionTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $this->connection = new Connection();
+        $this->connection = new Connection([]);
     }
 
     /**
@@ -59,7 +59,7 @@ final class ConnectionTest extends TestCase
     #[Group('2622')]
     public function testArrayOfConnectionParametersCreatesCorrectDsn(): void
     {
-        $this->connection->setConnectionParameters([
+        $connection = new Connection([
             'driver'      => 'pdo_mysql',
             'charset'     => 'utf8',
             'dbname'      => 'foo',
@@ -67,10 +67,10 @@ final class ConnectionTest extends TestCase
             'unix_socket' => '/var/run/mysqld/mysqld.sock',
         ]);
         try {
-            $this->connection->connect();
+            $connection->connect();
         } catch (Exception) {
         }
-        $responseString = $this->connection->getDsn();
+        $responseString = $connection->getDsn();
 
         self::assertStringStartsWith('mysql:', $responseString);
         self::assertStringContainsString('charset=utf8', $responseString);
@@ -86,13 +86,13 @@ final class ConnectionTest extends TestCase
             'Ambiguous connection parameters, both hostname and unix_socket parameters were set'
         );
 
-        $this->connection->setConnectionParameters([
+        $connection = new Connection([
             'driver'      => 'pdo_mysql',
             'host'        => '127.0.0.1',
             'dbname'      => 'foo',
             'port'        => '3306',
             'unix_socket' => '/var/run/mysqld/mysqld.sock',
         ]);
-        $this->connection->connect();
+        $connection->connect();
     }
 }

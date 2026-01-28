@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Pdo;
+namespace PhpDb\Mysql\Pdo;
 
 use Override;
 use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdo;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\ResultInterface;
-use PhpDb\Adapter\Mysql\DatabasePlatformNameTrait;
+use PhpDb\Mysql\DatabasePlatformNameTrait;
 
-class Pdo extends AbstractPdo
+class Driver extends AbstractPdo
 {
     use DatabasePlatformNameTrait;
 
@@ -21,13 +21,11 @@ class Pdo extends AbstractPdo
     #[Override]
     public function createResult($resource): ResultInterface
     {
-        /** @var Result $result */
+        /** @var ResultInterface&Result $result */
         $result = clone $this->resultPrototype;
 
-        /** @var null $rowCount */
-        $rowCount = null;
+        $rowCount = 0;
 
-        /** @var string|int|bool|null $lastGeneratedValue */
         $lastGeneratedValue = $this->getLastGeneratedValue();
 
         $result->initialize($resource, $lastGeneratedValue, $rowCount);

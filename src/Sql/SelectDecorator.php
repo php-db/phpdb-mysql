@@ -2,30 +2,31 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Sql\Platform\Mysql;
+namespace PhpDb\Mysql\Sql;
 
+use Override;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
+use PhpDb\Sql\PreparableSqlInterface;
 use PhpDb\Sql\Select;
+use PhpDb\Sql\SqlInterface;
 
 final class SelectDecorator extends Select implements PlatformDecoratorInterface
 {
-    /** @var Select */
-    protected $subject;
+    protected SqlInterface|PreparableSqlInterface|null $subject;
 
-    /**
-     * @param Select $subject
-     * @return $this
-     */
-    public function setSubject($subject)
-    {
+    #[Override]
+    public function setSubject(
+        SqlInterface|PreparableSqlInterface|null $subject
+    ): PlatformDecoratorInterface {
         $this->subject = $subject;
         return $this;
     }
 
-    protected function localizeVariables()
+    #[Override]
+    protected function localizeVariables(): void
     {
         parent::localizeVariables();
         if ($this->limit === null && $this->offset !== null) {
@@ -33,7 +34,8 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
         }
     }
 
-    /** @return null|string[] */
+    /** @return string[]|null */
+    #[Override]
     protected function processLimit(
         PlatformInterface $platform,
         ?DriverInterface $driver = null,
@@ -54,6 +56,7 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
         return [$this->limit];
     }
 
+    #[Override]
     protected function processOffset(
         PlatformInterface $platform,
         ?DriverInterface $driver = null,

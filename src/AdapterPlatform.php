@@ -2,39 +2,36 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Platform;
+namespace PhpDb\Mysql;
 
 use mysqli;
 use Override;
 use PDO;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Mysql\Sql\Platform\Mysql\Mysql as SqlPlatform;
 use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 
 use function implode;
 use function str_replace;
 
-class Mysql extends AbstractPlatform
+class AdapterPlatform extends AbstractPlatform
 {
     public final const PLATFORM_NAME = 'MySQL';
 
     /**
      * {@inheritDoc}
      */
-    protected $quoteIdentifier = ['`', '`'];
+    protected array $quoteIdentifier = ['`', '`'];
 
     /**
      * {@inheritDoc}
      */
-    protected $quoteIdentifierTo = '``';
+    protected string $quoteIdentifierTo = '``';
 
     /**
      * NOTE: Include dashes for MySQL only, need tests for others platforms
-     *
-     * @var string
      */
-    protected $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
+    protected string $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
     public function __construct(
         protected readonly DriverInterface|mysqli|PDO $driver
@@ -56,7 +53,7 @@ class Mysql extends AbstractPlatform
     #[Override]
     public function getSqlPlatformDecorator(): PlatformDecoratorInterface
     {
-        return new SqlPlatform();
+        return new Sql\Platform();
     }
 
     /**

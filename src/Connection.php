@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Mysql;
 
 use Exception as GenericException;
 use Override;
@@ -25,7 +25,7 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    protected Mysqli $driver;
+    protected Driver $driver;
 
     /** @var \mysqli */
     protected $resource;
@@ -275,7 +275,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     /** @inheritDoc */
     #[Override]
-    public function getLastGeneratedValue($name = null): string|int|bool|null
+    public function getLastGeneratedValue(?string $name = null): string|int|false|null
     {
         return $this->resource->insert_id;
     }

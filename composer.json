@@ -1,5 +1,5 @@
 {
-    "name": "php-db/phpdb-adapter-mysql",
+    "name": "php-db/phpdb-mysql",
     "description": "MySQL support for php-db",
     "license": "BSD-3-Clause",
     "keywords": [
@@ -9,11 +9,11 @@
         "mysql",
         "db"
     ],
-    "homepage": "https://github.com/php-db/phpdb-adapter-mysql/discussions",
+    "homepage": "https://github.com/php-db/phpdb-mysql/discussions",
     "support": {
-        "issues": "https://github.com/php-db/phpdb-adapter-mysql/issues",
-        "source": "https://github.com/php-db/phpdb-adapter-mysql",
-        "forum": "https://github.com/php-db/phpdb-adapter-mysql/discussions"
+        "issues": "https://github.com/php-db/phpdb-mysql/issues",
+        "source": "https://github.com/php-db/phpdb-mysql",
+        "forum": "https://github.com/php-db/phpdb-mysql/discussions"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -28,12 +28,12 @@
     },
     "extra": {
         "laminas": {
-            "config-provider": "PhpDb\\Adapter\\Mysql\\ConfigProvider"
+            "config-provider": "PhpDb\\Mysql\\ConfigProvider"
         }
     },
     "require": {
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
-        "php-db/phpdb": "^0.3.2"
+        "php-db/phpdb": "^0.6.0"
     },
     "require-dev": {
         "ext-mysqli": "*",
@@ -50,13 +50,13 @@
     },
     "autoload": {
         "psr-4": {
-            "PhpDb\\Adapter\\Mysql\\": "src/"
+            "PhpDb\\Mysql\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhpDbTest\\Adapter\\Mysql\\": "test/unit/",
-            "PhpDbIntegrationTest\\Adapter\\Mysql\\": "test/integration/"
+            "PhpDbTest\\Mysql\\": "test/unit/",
+            "PhpDbIntegrationTest\\Mysql\\": "test/integration/"
         }
     },
     "scripts": {

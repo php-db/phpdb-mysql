@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDb\Mysql;
 
 use Iterator;
 use mysqli;
@@ -320,11 +320,9 @@ final class Result implements Iterator, ResultInterface
 
     /**
      * Get generated value
-     *
-     * @return mixed|null
      */
     #[Override]
-    public function getGeneratedValue()
+    public function getGeneratedValue(): string|int|false|null
     {
         return $this->generatedValue;
     }
