@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Mysql\Driver\Pdo\TestAsset;
+namespace PhpDbTest\Mysql\Pdo\TestAsset;
 
 use Override;
 use PDO;

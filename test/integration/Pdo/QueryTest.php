@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Mysql\Pdo;
 
 use Exception;
 use PhpDb\Adapter\Adapter;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Mysql\Driver\Pdo;
+namespace PhpDbTest\Mysql\Pdo;
 
 use Override;
 use PDOStatement;

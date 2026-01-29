@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Mysql\Pdo;
 
 use Laminas\Stdlib\ArrayObject;
 use PhpDb\Adapter\Adapter;

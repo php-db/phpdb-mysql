@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Mysql\Driver\Mysqli;
+namespace PhpDbTest\Mysql;
 
 use mysqli;
 use Override;

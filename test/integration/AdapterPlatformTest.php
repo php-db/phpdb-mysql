@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Mysql\Platform;
+namespace PhpDbIntegrationTest\Mysql;
 
 use Override;
 use PhpDb\Adapter\Driver\Pdo;

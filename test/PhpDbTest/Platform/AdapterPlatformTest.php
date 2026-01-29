@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Mysql\Platform;
+namespace PhpDbTest\Platform;
 
 use Override;
 use PhpDb\Adapter\Driver\Pdo\Result;

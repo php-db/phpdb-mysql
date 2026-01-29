@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Mysql\Driver\Mysqli;
+namespace PhpDbIntegrationTest\Mysql;
 
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;

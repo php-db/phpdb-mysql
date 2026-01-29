@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Mysql\Driver\Mysqli;
+namespace PhpDbIntegrationTest\Mysql;
 
 use PhpDb\Mysql\Mysqli\Connection;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
