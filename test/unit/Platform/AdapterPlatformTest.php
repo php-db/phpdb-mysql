@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\Platform;
+namespace PhpDbTest\Mysql\Platform;
 
 use Override;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
-use PhpDb\Adapter\Mysql\Driver\Pdo;
-use PhpDb\Adapter\Mysql\Platform\Mysql;
+use PhpDb\Mysql\Pdo;
+use PhpDb\Mysql\AdapterPlatform;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Mysql::class, 'getName')]
-#[CoversMethod(Mysql::class, 'getQuoteIdentifierSymbol')]
-#[CoversMethod(Mysql::class, 'quoteIdentifier')]
-#[CoversMethod(Mysql::class, 'quoteIdentifierChain')]
-#[CoversMethod(Mysql::class, 'getQuoteValueSymbol')]
-#[CoversMethod(Mysql::class, 'quoteValue')]
-#[CoversMethod(Mysql::class, 'quoteTrustedValue')]
-#[CoversMethod(Mysql::class, 'quoteValueList')]
-#[CoversMethod(Mysql::class, 'getIdentifierSeparator')]
-#[CoversMethod(Mysql::class, 'quoteIdentifierInFragment')]
-final class MysqlTest extends TestCase
+#[CoversMethod(AdapterPlatform::class, 'getName')]
+#[CoversMethod(AdapterPlatform::class, 'getQuoteIdentifierSymbol')]
+#[CoversMethod(AdapterPlatform::class, 'quoteIdentifier')]
+#[CoversMethod(AdapterPlatform::class, 'quoteIdentifierChain')]
+#[CoversMethod(AdapterPlatform::class, 'getQuoteValueSymbol')]
+#[CoversMethod(AdapterPlatform::class, 'quoteValue')]
+#[CoversMethod(AdapterPlatform::class, 'quoteTrustedValue')]
+#[CoversMethod(AdapterPlatform::class, 'quoteValueList')]
+#[CoversMethod(AdapterPlatform::class, 'getIdentifierSeparator')]
+#[CoversMethod(AdapterPlatform::class, 'quoteIdentifierInFragment')]
+final class AdapterPlatformTest extends TestCase
 {
-    protected Mysql $platform;
+    protected AdapterPlatform $platform;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -33,12 +33,12 @@ final class MysqlTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $pdo            = new Pdo\Pdo(
+        $pdo            = new Pdo\Driver(
             $this->createMock(Pdo\Connection::class),
             $this->createMock(Statement::class),
             $this->createMock(Result::class),
         );
-        $this->platform = new Mysql($pdo);
+        $this->platform = new AdapterPlatform($pdo);
     }
 
     public function testGetName(): void

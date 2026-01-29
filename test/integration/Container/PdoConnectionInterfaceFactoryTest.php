@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
-use PhpDb\Adapter\Mysql\Container\PdoConnectionFactory;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
+use PhpDb\Mysql\Container\PdoConnectionFactory;
+use PhpDb\Mysql\Container\PdoConnectionInterfaceFactory;
+use PhpDb\Mysql\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
@@ -15,16 +16,16 @@ use PHPUnit\Framework\TestCase;
 
 #[Group('container')]
 #[Group('integration')]
-#[CoversClass(PdoConnectionFactory::class)]
-#[CoversMethod(PdoConnectionFactory::class, '__invoke')]
-final class PdoConnectionFactoryTest extends TestCase
+#[CoversClass(PdoConnectionInterfaceFactory::class)]
+#[CoversMethod(PdoConnectionInterfaceFactory::class, '__invoke')]
+final class PdoConnectionInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
     public function testInvokeReturnsPdoConnection(): void
     {
-        $factory  = new PdoConnectionFactory();
-        $instance = $factory($this->container);
+        $factory  = new PdoConnectionInterfaceFactory();
+        $instance = $factory($this->container, Connection::class, ['connection' => ['foo' => 'bar']]);
         self::assertInstanceOf(ConnectionInterface::class, $instance);
         self::assertInstanceOf(PdoConnectionInterface::class, $instance);
         self::assertInstanceOf(Connection::class, $instance);

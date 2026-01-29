@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset;
+namespace PhpDbIntegrationTest\Mysql\Container\TestAsset;
 
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Mysql\ConfigProvider;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
+use PhpDb\Mysql\ConfigProvider;
+use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\ConfigProvider as LaminasDbConfigProvider;
 use Psr\Container\ContainerInterface;
 
@@ -42,8 +42,8 @@ trait SetupTrait
     protected function getAdapter(array $config = []): AdapterInterface
     {
         $connectionConfig = [
-            'db' => [
-                'driver'     => $this->driver ?? Pdo::class,
+            AdapterInterface::class => [
+                'driver'     => $this->driver ?? Driver::class,
                 'connection' => [
                     'hostname'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME') ?: 'localhost',
                     'username'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
@@ -59,7 +59,7 @@ trait SetupTrait
             ],
         ];
 
-        // merge service config from both PhpDb and PhpDb\Adapter\Mysql
+        // merge service config from both PhpDb and PhpDb\Mysql
         $serviceManagerConfig = ArrayUtils::merge(
             (new LaminasDbConfigProvider())()['dependencies'],
             (new ConfigProvider())()['dependencies']
@@ -98,6 +98,6 @@ trait SetupTrait
 
     protected function getHostname(): string
     {
-        return $this->getConfig()['db']['connection']['hostname'];
+        return $this->getConfig()[AdapterInterface::class]['connection']['hostname'];
     }
 }

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Extension;
+namespace PhpDbIntegrationTest\Mysql\Extension;
 
 use Exception;
-use PhpDbIntegrationTest\Adapter\Mysql\FixtureLoader\FixtureLoaderInterface;
-use PhpDbIntegrationTest\Adapter\Mysql\FixtureLoader\MysqlFixtureLoader;
+use PhpDbIntegrationTest\Mysql\FixtureLoader\FixtureLoaderInterface;
+use PhpDbIntegrationTest\Mysql\FixtureLoader\MysqlFixtureLoader;
 use PHPUnit\Event\TestSuite\Started;
 use PHPUnit\Event\TestSuite\StartedSubscriber;
 

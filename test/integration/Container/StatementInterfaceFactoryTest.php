@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\Driver\StatementInterface;
-use PhpDb\Adapter\Mysql\Container\MysqliStatementFactory;
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Statement;
+use PhpDb\Mysql\Container\StatementInterfaceFactory;
+use PhpDb\Mysql\Statement;
 use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 
-#[Attributes\CoversClass(MysqliStatementFactory::class)]
-#[Attributes\CoversMethod(MysqliStatementFactory::class, '__invoke')]
+#[Attributes\CoversClass(StatementInterfaceFactory::class)]
+#[Attributes\CoversMethod(StatementInterfaceFactory::class, '__invoke')]
 #[Attributes\Group('container')]
 #[Attributes\Group('integration')]
 #[Attributes\Group('integration-mysqli')]
-final class MysqliStatementFactoryTest extends TestCase
+final class StatementInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
@@ -30,8 +30,8 @@ final class MysqliStatementFactoryTest extends TestCase
             ],
         ]);
 
-        $factory   = new MysqliStatementFactory();
-        $statement = $factory($this->container);
+        $factory   = new StatementInterfaceFactory();
+        $statement = $factory($this->container, Statement::class, []);
 
         self::assertInstanceOf(StatementInterface::class, $statement);
         self::assertInstanceOf(Statement::class, $statement);

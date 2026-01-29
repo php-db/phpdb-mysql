@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\TestAsset;
+namespace PhpDbTest\Mysql\TestAsset;
 
-use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
+use PhpDb\Mysql\Pdo\Connection;
 
 /**
  * Test asset class used only by {@see \PhpDbTest\Adapter\Driver\Pdo\ConnectionTransactionsTest}

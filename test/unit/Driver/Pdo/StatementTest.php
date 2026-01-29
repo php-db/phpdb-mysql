@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbTest\Mysql\Driver\Pdo;
 
 use Override;
 use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
+use PhpDb\Mysql\Pdo\Connection;
+use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\Adapter\ParameterContainer;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(Statement::class, 'execute')]
 final class StatementTest extends TestCase
 {
-    protected ?Pdo $pdo;
+    protected ?Driver $pdo;
     protected Statement $statement;
 
     /**
@@ -37,7 +37,7 @@ final class StatementTest extends TestCase
     protected function setUp(): void
     {
         $this->statement = new Statement();
-        $this->pdo       = new Pdo(
+        $this->pdo       = new Driver(
             $this->createMock(Connection::class),
             $this->statement,
             $this->createMock(Result::class),

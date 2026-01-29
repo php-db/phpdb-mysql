@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDbIntegrationTest\Mysql\Driver\Mysqli;
 
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
-use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Mysql\Mysqli\Connection;
+use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Mysql\Container\MysqliConnectionFactory;
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Connection;
+use PhpDb\Mysql\Connection;
+use PhpDb\Mysql\Container\ConnectionInterfaceFactory;
 use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 
-#[Attributes\CoversClass(MysqliConnectionFactory::class)]
-#[Attributes\CoversMethod(MysqliConnectionFactory::class, '__invoke')]
+#[Attributes\CoversClass(ConnectionInterfaceFactoryTest::class)]
+#[Attributes\CoversMethod(ConnectionInterfaceFactoryTest::class, '__invoke')]
 #[Attributes\Group('container')]
 #[Attributes\Group('integration')]
 #[Attributes\Group('integration-mysqli')]
-final class MysqliConnectionFactoryTest extends TestCase
+final class ConnectionInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
@@ -27,8 +27,8 @@ final class MysqliConnectionFactoryTest extends TestCase
             ],
         ]);
 
-        $factory    = new MysqliConnectionFactory();
-        $connection = $factory($this->container, Connection::class);
+        $factory    = new ConnectionInterfaceFactory();
+        $connection = $factory($this->container, Connection::class, ['connection' => ['foo' => 'bar']]);
 
         self::assertInstanceOf(ConnectionInterface::class, $connection);
         self::assertInstanceOf(Connection::class, $connection);

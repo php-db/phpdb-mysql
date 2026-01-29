@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\Driver\TestAsset;
+namespace PhpDbTest\Mysql\Driver\TestAsset;
 
 use PDO;
 

@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Platform;
+namespace PhpDbIntegrationTest\Mysql\Platform;
 
 use Override;
 use PhpDb\Adapter\Driver\Pdo;
-use PhpDb\Adapter\Mysql\Driver\Mysqli;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
-use PhpDb\Adapter\Mysql\Platform\Mysql;
+use PhpDb\Mysql\AdapterPlatform;
+use PhpDb\Mysql\Connection;
+use PhpDb\Mysql\Driver;
+use PhpDb\Mysql\Pdo\Connection as PdoConnection;
+use PhpDb\Mysql\Pdo\Driver as PdoDriver;
+use PhpDb\Mysql\Result;
+use PhpDb\Mysql\Statement;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -18,9 +21,9 @@ use function extension_loaded;
 use function getenv;
 
 #[Group('integration')]
-#[CoversMethod(Mysqli\Mysqli::class, 'quoteValue')]
+#[CoversMethod(Driver::class, 'quoteValue')]
 #[CoversMethod(PdoDriver::class, 'quoteValue')]
-final class MysqlTest extends TestCase
+final class AdapterPlatformTest extends TestCase
 {
     /** @var array<string, \mysqli|\PDO> */
     public array $adapters = [];
@@ -75,15 +78,15 @@ final class MysqlTest extends TestCase
         if (! $this->adapters['mysqli'] instanceof \Mysqli) {
             $this->markTestSkipped('MySQL (Mysqli) not configured in unit test configuration file');
         }
-        $mysql = new Mysql($this->adapters['mysqli']);
+        $mysql = new AdapterPlatform($this->adapters['mysqli']);
         $value = $mysql->quoteValue('value');
         self::assertEquals('\'value\'', $value);
 
-        $mysql = new Mysql(
-            new Mysqli\Mysqli(
-                new Mysqli\Connection($this->mysqliParams),
-                new Mysqli\Statement(),
-                new Mysqli\Result()
+        $mysql = new AdapterPlatform(
+            new Driver(
+                new Connection($this->mysqliParams),
+                new Statement(),
+                new Result()
             )
         );
         $value = $mysql->quoteValue('value');
@@ -98,13 +101,13 @@ final class MysqlTest extends TestCase
         if (! $this->adapters['pdo_mysql'] instanceof \PDO) {
             $this->markTestSkipped('MySQL (PDO_Mysql) not configured in unit test configuration file');
         }
-        $mysql = new Mysql($this->adapters['pdo_mysql']);
+        $mysql = new AdapterPlatform($this->adapters['pdo_mysql']);
         $value = $mysql->quoteValue('value');
         self::assertEquals('\'value\'', $value);
 
-        $mysql = new Mysql(
+        $mysql = new AdapterPlatform(
             new PdoDriver(
-                new Connection($this->pdoParams),
+                new PdoConnection($this->pdoParams),
                 new Pdo\Statement(),
                 new Pdo\Result()
             )
