@@ -6,8 +6,8 @@ namespace PhpDbTest\Mysql;
 
 use mysqli;
 use Override;
-use PhpDb\Mysql\Connection;
 use PhpDb\Exception\RuntimeException;
+use PhpDb\Mysql\Connection;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\MockObject\MockObject;

@@ -6,7 +6,6 @@ namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
-use PhpDb\Mysql\Container\PdoConnectionFactory;
 use PhpDb\Mysql\Container\PdoConnectionInterfaceFactory;
 use PhpDb\Mysql\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;

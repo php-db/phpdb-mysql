@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDb\Mysql;
 
 use Exception as GenericException;
+use mysqli;
 use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Driver\ConnectionInterface;
@@ -27,7 +28,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 {
     protected Driver $driver;
 
-    /** @var \mysqli */
+    /** @var mysqli */
     protected $resource;
 
     /**
@@ -36,11 +37,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      * @throws InvalidArgumentException
      */
     public function __construct(
-        array|\mysqli|null $connectionInfo = null
+        array|mysqli|null $connectionInfo = null
     ) {
         if (is_array($connectionInfo)) {
             $this->setConnectionParameters($connectionInfo);
-        } elseif ($connectionInfo instanceof \mysqli) {
+        } elseif ($connectionInfo instanceof mysqli) {
             $this->setResource($connectionInfo);
         } elseif (null !== $connectionInfo) {
             throw new Exception\InvalidArgumentException(
@@ -75,7 +76,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      *
      * @return $this Provides a fluent interface
      */
-    public function setResource(\mysqli $resource): static
+    public function setResource(mysqli $resource): static
     {
         $this->resource = $resource;
 
@@ -86,7 +87,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     #[Override]
     public function connect(): ConnectionInterface
     {
-        if ($this->resource instanceof \mysqli) {
+        if ($this->resource instanceof mysqli) {
             return $this;
         }
 
@@ -185,14 +186,14 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /** @inheritDoc */
     public function isConnected(): bool
     {
-        return $this->resource instanceof \mysqli;
+        return $this->resource instanceof mysqli;
     }
 
     /** @inheritDoc */
     #[Override]
     public function disconnect(): ConnectionInterface
     {
-        if ($this->resource instanceof \mysqli) {
+        if ($this->resource instanceof mysqli) {
             $this->resource->close();
         }
         $this->resource = null;
@@ -285,10 +286,10 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      *
      * todo: why do we have this random method here?
      *
-     * @return \mysqli
+     * @return mysqli
      */
     protected function createResource()
     {
-        return new \mysqli();
+        return new mysqli();
     }
 }

@@ -7,8 +7,8 @@ namespace PhpDbTest\Platform;
 use Override;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
-use PhpDb\Mysql\Pdo;
 use PhpDb\Mysql\AdapterPlatform;
+use PhpDb\Mysql\Pdo;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 

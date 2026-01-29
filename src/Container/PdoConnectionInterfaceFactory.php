@@ -13,7 +13,6 @@ use function is_array;
 
 final class PdoConnectionInterfaceFactory
 {
-
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,

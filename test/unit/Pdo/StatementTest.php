@@ -9,9 +9,9 @@ use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
-use PhpDb\Adapter\ParameterContainer;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 

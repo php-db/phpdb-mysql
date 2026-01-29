@@ -7,7 +7,6 @@ namespace PhpDb\Mysql\Container;
 use Laminas\ServiceManager\ServiceManager;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\ResultInterface;

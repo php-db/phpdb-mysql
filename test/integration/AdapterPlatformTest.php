@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Mysql;
 
+use mysqli;
 use Override;
 use PhpDb\Adapter\Driver\Pdo;
 use PhpDb\Mysql\AdapterPlatform;
@@ -25,7 +26,7 @@ use function getenv;
 #[CoversMethod(PdoDriver::class, 'quoteValue')]
 final class AdapterPlatformTest extends TestCase
 {
-    /** @var array<string, \mysqli|\PDO> */
+    /** @var array<string, mysqli|\PDO> */
     public array $adapters = [];
 
     protected array $mysqliParams;
@@ -45,7 +46,7 @@ final class AdapterPlatformTest extends TestCase
                 'database' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
             ];
 
-            $this->adapters['mysqli'] = new \mysqli(
+            $this->adapters['mysqli'] = new mysqli(
                 $this->mysqliParams['hostname'],
                 $this->mysqliParams['username'],
                 $this->mysqliParams['password'],

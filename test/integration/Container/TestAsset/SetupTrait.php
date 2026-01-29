@@ -8,9 +8,9 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\ConfigProvider as LaminasDbConfigProvider;
 use PhpDb\Mysql\ConfigProvider;
 use PhpDb\Mysql\Pdo\Driver;
-use PhpDb\ConfigProvider as LaminasDbConfigProvider;
 use Psr\Container\ContainerInterface;
 
 use function getenv;

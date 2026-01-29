@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Mysql\Container;
 
-use PhpDb\Mysql\Container\MetadataInterfaceFactory;
 use PhpDb\Metadata\MetadataInterface;
+use PhpDb\Mysql\Container\MetadataInterfaceFactory;
 use PhpDb\Mysql\Metadata\Source;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
