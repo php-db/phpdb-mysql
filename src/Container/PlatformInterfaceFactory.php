@@ -7,7 +7,7 @@ namespace PhpDb\Mysql\Container;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Exception\ContainerException;
 use PhpDb\Mysql\AdapterPlatform;
-use PhpDb\Mysql\Driver as MysqliDriver;
+use PhpDb\Mysql\Driver;
 use PhpDb\Mysql\Pdo\Driver as PdoDriver;
 use Psr\Container\ContainerInterface;
 
@@ -19,11 +19,11 @@ final class PlatformInterfaceFactory
         ?array $options = null
     ): PlatformInterface&AdapterPlatform {
         $driverInstance = $options['driver'] ?? null;
-        if (! $driverInstance instanceof MysqliDriver && ! $driverInstance instanceof PdoDriver) {
+        if (! $driverInstance instanceof Driver && ! $driverInstance instanceof PdoDriver) {
             throw ContainerException::forService(
                 AdapterPlatform::class,
                 self::class,
-                '$options["driver"] must be an instance of ' . MysqliDriver::class . ' or ' . PdoDriver::class . '.'
+                '$options["driver"] must be an instance of ' . Driver::class . ' or ' . PdoDriver::class . '.'
             );
         }
         return new AdapterPlatform($driverInstance);
