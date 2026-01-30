@@ -6,8 +6,11 @@ namespace PhpDbTest\Mysql;
 
 use mysqli;
 use Override;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Exception\InvalidArgumentException;
 use PhpDb\Exception\RuntimeException;
 use PhpDb\Mysql\Connection;
+use PhpDb\Mysql\Driver;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -43,6 +46,15 @@ final class ConnectionTest extends TestCase
      */
     protected function tearDown(): void
     {
+    }
+
+    public function testSetDriverWithInvalidDriverThrowsException(): void
+    {
+        $driver = $this->createStub(DriverInterface::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('$driver must be an instance of ' . Driver::class);
+        $this->connection->setDriver($driver);
     }
 
     public function testSetDriver(): void

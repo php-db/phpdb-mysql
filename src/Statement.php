@@ -20,6 +20,7 @@ use PhpDb\Adapter\StatementContainerInterface;
 use function array_unshift;
 use function call_user_func_array;
 use function is_array;
+use function sprintf;
 
 final class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
 {
@@ -44,6 +45,13 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
     #[Override]
     public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
+        if (! $driver instanceof Driver) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Driver must be an instance of %s',
+                Driver::class
+            ));
+        }
+
         $this->driver = $driver;
         return $this;
     }

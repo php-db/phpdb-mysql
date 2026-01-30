@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Mysql;
 
-use PhpDb\Mysql\Mysqli\Connection;
+use PhpDb\Mysql\Connection;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;

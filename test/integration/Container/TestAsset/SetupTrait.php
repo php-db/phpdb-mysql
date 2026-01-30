@@ -29,7 +29,7 @@ trait SetupTrait
 
     protected ?AdapterInterface $adapter;
 
-    protected ContainerInterface $container;
+    protected ContainerInterface&ServiceManager $container;
 
     protected DriverInterface|string|null $driver = null;
 

@@ -19,6 +19,7 @@ use function constant;
 use function defined;
 use function is_array;
 use function is_string;
+use function sprintf;
 use function strtoupper;
 
 use const MYSQLI_CLIENT_SSL;
@@ -52,6 +53,13 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
+        if (! $driver instanceof Driver) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                '$driver must be an instance of %s',
+                Driver::class
+            ));
+        }
+
         $this->driver = $driver;
 
         return $this;

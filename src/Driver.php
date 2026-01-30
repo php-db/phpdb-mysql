@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhpDb\Mysql;
 
 use mysqli;
+use mysqli_result;
 use mysqli_stmt;
 use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
@@ -15,8 +15,7 @@ use PhpDb\Adapter\Exception;
 use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 
-use function array_intersect_key;
-use function array_merge;
+use function assert;
 use function extension_loaded;
 use function is_string;
 
@@ -34,30 +33,20 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     public function __construct(
         protected readonly ConnectionInterface&Connection $connection,
         protected readonly StatementInterface&Statement $statementPrototype,
-        protected readonly ResultInterface $resultPrototype,
-        array $options = []
+        protected readonly ResultInterface&Result $resultPrototype
     ) {
         $this->checkEnvironment();
 
-        $options = array_intersect_key(array_merge($this->options, $options), $this->options);
-
-        if ($this->connection instanceof DriverAwareInterface) {
-            $this->connection->setDriver($this);
-        }
-        if ($this->statementPrototype instanceof DriverAwareInterface) {
-            $this->statementPrototype->setDriver($this);
-        }
+        $this->connection->setDriver($this);
+        $this->statementPrototype->setDriver($this);
     }
 
     public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;
-        if ($this->connection instanceof ProfilerAwareInterface) {
-            $this->connection->setProfiler($profiler);
-        }
-        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
-            $this->statementPrototype->setProfiler($profiler);
-        }
+        $this->connection->setProfiler($profiler);
+        $this->statementPrototype->setProfiler($profiler);
+
         return $this;
     }
 
@@ -128,10 +117,12 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Create result
      *
-     * @param mysqli|mysqli_result|mysqli_stmt $resource
+     * @inheritDoc
      */
     public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
     {
+        assert($resource instanceof mysqli || $resource instanceof mysqli_result || $resource instanceof mysqli_stmt);
+
         /** @var Result $result */
         $result = clone $this->resultPrototype;
         $result->initialize($resource, $this->connection->getLastGeneratedValue(), $isBuffered);
