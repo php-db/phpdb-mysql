@@ -6,7 +6,7 @@ namespace PhpDbIntegrationTest\Mysql;
 
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
-use PhpDb\Mysql\Mysqli\Mysqli;
+use PhpDb\Mysql\Driver;
 use PhpDb\ResultSet\AbstractResultSet;
 use PhpDb\TableGateway\TableGateway;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
@@ -27,8 +27,8 @@ final class TableGatewayTest extends TestCase
     {
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
-            'db' => [
-                'driver'  => Mysqli::class,
+            AdapterInterface::class => [
+                'driver'  => Driver::class,
                 'options' => [
                     'buffer_results' => true,
                 ],
