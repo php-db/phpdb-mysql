@@ -25,7 +25,7 @@ final class DriverInterfaceFactory
             throw ContainerException::forService(
                 Driver::class,
                 self::class,
-                '$options["connection"] must containe an array of connection configuration.'
+                '$options["connection"] must contain an array of connection configuration.'
             );
         }
 

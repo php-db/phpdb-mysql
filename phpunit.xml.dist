@@ -11,7 +11,7 @@
          failOnWarning="true">
 
     <extensions>
-        <bootstrap class="PhpDbIntegrationTest\Adapter\Mysql\Extension\ListenerExtension" />
+        <bootstrap class="PhpDbIntegrationTest\Mysql\Extension\ListenerExtension" />
     </extensions>
     <testsuites>
         <testsuite name="unit test">

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset;
+namespace PhpDbIntegrationTest\Mysql\Container\TestAsset;
 
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Mysql\ConfigProvider;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
 use PhpDb\ConfigProvider as LaminasDbConfigProvider;
+use PhpDb\Mysql\ConfigProvider;
+use PhpDb\Mysql\Pdo\Driver;
 use Psr\Container\ContainerInterface;
 
 use function getenv;
@@ -25,7 +25,7 @@ use function getenv;
  */
 trait SetupTrait
 {
-    protected array $config = ['db' => []];
+    protected array $config = [AdapterInterface::class => []];
 
     protected ?AdapterInterface $adapter;
 
@@ -42,8 +42,8 @@ trait SetupTrait
     protected function getAdapter(array $config = []): AdapterInterface
     {
         $connectionConfig = [
-            'db' => [
-                'driver'     => $this->driver ?? Pdo::class,
+            AdapterInterface::class => [
+                'driver'     => $this->driver ?? Driver::class,
                 'connection' => [
                     'hostname'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME') ?: 'localhost',
                     'username'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
@@ -98,6 +98,6 @@ trait SetupTrait
 
     protected function getHostname(): string
     {
-        return $this->getConfig()['db']['connection']['hostname'];
+        return $this->getConfig()[AdapterInterface::class]['connection']['hostname'];
     }
 }
