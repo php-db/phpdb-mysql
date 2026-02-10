@@ -21,7 +21,7 @@ final class MetadataInterfaceFactoryTest extends TestCase
     public function testFactoryReturnsMysqlMetadata(): void
     {
         $factory  = new MetadataInterfaceFactory();
-        $metadata = $factory($this->container);
+        $metadata = $factory($this->container, MetadataInterface::class);
         self::assertInstanceOf(MetadataInterface::class, $metadata);
         self::assertInstanceOf(Source::class, $metadata);
     }

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Mysql\Container;
 
+use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
+use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Mysql\Container\PdoConnectionInterfaceFactory;
 use PhpDb\Mysql\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -24,9 +26,24 @@ final class PdoConnectionInterfaceFactoryTest extends TestCase
     public function testInvokeReturnsPdoConnection(): void
     {
         $factory  = new PdoConnectionInterfaceFactory();
-        $instance = $factory($this->container);
+        $instance = $factory(
+            $this->container,
+            PdoConnectionInterface::class,
+            $this->config[AdapterInterface::class]
+        );
         self::assertInstanceOf(ConnectionInterface::class, $instance);
         self::assertInstanceOf(PdoConnectionInterface::class, $instance);
         self::assertInstanceOf(Connection::class, $instance);
+    }
+
+    public function testInvokeThrowsExceptionWithoutConnectionConfig(): void
+    {
+        $this->expectException(InvalidConnectionParametersException::class);
+
+        $factory = new PdoConnectionInterfaceFactory();
+        $factory(
+            $this->container,
+            PdoConnectionInterface::class
+        );
     }
 }
