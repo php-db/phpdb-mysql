@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql;
 
+use mysqli;
 use mysqli_stmt;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverAwareInterface;
@@ -96,7 +97,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Create statement
      *
-     * @param \mysqli|mysqli_stmt|string $sqlOrResource
+     * @param mysqli|mysqli_stmt|string $sqlOrResource
      */
     public function createStatement($sqlOrResource = null): StatementInterface&Statement
     {
@@ -117,7 +118,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
             if (! $this->connection->isConnected()) {
                 $this->connection->connect();
             }
-            /** @var \mysqli $resource */
+            /** @var mysqli $resource */
             $resource = $this->connection->getResource();
             $statement->initialize($resource);
         }
@@ -127,7 +128,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Create result
      *
-     * @param \mysqli|mysqli_result|mysqli_stmt $resource
+     * @param mysqli|mysqli_result|mysqli_stmt $resource
      */
     public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql;
 
+use mysqli;
 use mysqli_stmt;
 use Override;
 use PhpDb\Adapter\Driver\DriverAwareInterface;
@@ -22,7 +23,7 @@ use function is_array;
 
 final class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
 {
-    protected \mysqli $mysqli;
+    protected mysqli $mysqli;
 
     protected Driver $driver;
 
@@ -59,7 +60,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         return $this->profiler;
     }
 
-    public function initialize(\mysqli $mysqli): static
+    public function initialize(mysqli $mysqli): static
     {
         $this->mysqli = $mysqli;
         return $this;
