@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Mysql\Container;
 
+use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Container\ConnectionInterfaceFactory;
 use PHPUnit\Framework\Attributes;
@@ -21,16 +23,25 @@ final class ConnectionInterfaceFactoryTest extends TestCase
 
     public function testInvokeReturnsMysqliConnection(): void
     {
-        $this->getAdapter([
-            'db' => [
-                'driver' => 'Mysqli',
-            ],
-        ]);
-
         $factory    = new ConnectionInterfaceFactory();
-        $connection = $factory($this->container, Connection::class);
+        $connection = $factory(
+            $this->container,
+            Connection::class,
+            $this->config[AdapterInterface::class]
+        );
 
         self::assertInstanceOf(ConnectionInterface::class, $connection);
         self::assertInstanceOf(Connection::class, $connection);
+    }
+
+    public function testInvokeThrowsExceptionWithoutConnectionConfig(): void
+    {
+        $this->expectException(InvalidConnectionParametersException::class);
+
+        $factory = new ConnectionInterfaceFactory();
+        $factory(
+            $this->container,
+            Connection::class
+        );
     }
 }

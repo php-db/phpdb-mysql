@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Mysql\Container;
 
+use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Mysql\Container\PdoDriverInterfaceFactory;
 use PhpDb\Mysql\Pdo\Driver;
@@ -23,7 +24,11 @@ final class PdoDriverInterfaceFactoryTest extends TestCase
     public function testInvokeReturnsPdoDriver(): void
     {
         $factory  = new PdoDriverInterfaceFactory();
-        $instance = $factory($this->container);
+        $instance = $factory(
+            $this->container,
+            PdoDriverInterface::class,
+            $this->config[AdapterInterface::class]
+        );
 
         self::assertInstanceOf(PdoDriverInterface::class, $instance);
         self::assertInstanceOf(Driver::class, $instance);

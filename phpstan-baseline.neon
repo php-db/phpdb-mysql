@@ -223,34 +223,10 @@ parameters:
 			path: test/integration/AdapterPlatformTest.php
 
 		-
-			message: '#^Callable PhpDb\\Mysql\\Container\\DriverInterfaceFactory invoked with 1 parameter, 2\-3 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: test/integration/Container/DriverInterfaceFactoryTest.php
-
-		-
 			message: '#^Parameter \#1 \$container of callable PhpDb\\Mysql\\Container\\DriverInterfaceFactory expects Laminas\\ServiceManager\\ServiceManager, Psr\\Container\\ContainerInterface given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: test/integration/Container/DriverInterfaceFactoryTest.php
-
-		-
-			message: '#^Callable PhpDb\\Mysql\\Container\\MetadataInterfaceFactory invoked with 1 parameter, 2\-3 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: test/integration/Container/MetadataInterfaceFactoryTest.php
-
-		-
-			message: '#^Callable PhpDb\\Mysql\\Container\\PdoConnectionInterfaceFactory invoked with 1 parameter, 2\-3 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: test/integration/Container/PdoConnectionInterfaceFactoryTest.php
-
-		-
-			message: '#^Callable PhpDb\\Mysql\\Container\\PdoDriverInterfaceFactory invoked with 1 parameter, 2\-3 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: test/integration/Container/PdoDriverInterfaceFactoryTest.php
 
 		-
 			message: '#^Parameter \#1 \$container of callable PhpDb\\Mysql\\Container\\PdoDriverInterfaceFactory expects Laminas\\ServiceManager\\ServiceManager, Psr\\Container\\ContainerInterface given\.$#'
@@ -259,26 +235,26 @@ parameters:
 			path: test/integration/Container/PdoDriverInterfaceFactoryTest.php
 
 		-
-			message: '#^Callable PhpDb\\Mysql\\Container\\PdoStatementFactory invoked with 1 parameter, 2\-3 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: test/integration/Container/PdoStatementFactoryTest.php
-
-		-
-			message: '#^Callable PhpDb\\Mysql\\Container\\PlatformInterfaceFactory invoked with 1 parameter, 2\-3 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: test/integration/Container/PlatformInterfaceFactoryTest.php
-
-		-
-			message: '#^Callable PhpDb\\Mysql\\Container\\StatementInterfaceFactory invoked with 1 parameter, 2\-3 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: test/integration/Container/StatementInterfaceFactoryTest.php
-
-		-
 			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with int will always evaluate to true\.$#'
 			identifier: staticMethod.alreadyNarrowedType
 			count: 1
 			path: test/integration/Pdo/ConnectionTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: test/integration/Pdo/QueryTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: test/integration/Pdo/TableGatewayTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: test/integration/TableGatewayTest.php
 

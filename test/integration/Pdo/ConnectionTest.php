@@ -75,36 +75,112 @@ final class ConnectionTest extends TestCase
         $connection->disconnect();
     }
 
-    /**
-     * @todo   Implement testBeginTransaction().
-     */
-    public function testBeginTransaction(): never
+    public function testBeginTransaction(): void
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $connection = $this->getAdapter()->getDriver()->getConnection();
+        $connection->connect();
+
+        self::assertTrue($connection->isConnected());
+        self::assertFalse($connection->inTransaction());
+
+        $result = $connection->beginTransaction();
+
+        self::assertInstanceOf(Connection::class, $result);
+        self::assertTrue($connection->inTransaction());
+
+        $connection->rollback();
+        self::assertFalse($connection->inTransaction());
+        $connection->disconnect();
     }
 
-    /**
-     * @todo   Implement testCommit().
-     */
-    public function testCommit(): never
+    public function testCommit(): void
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $connection = $this->getAdapter()->getDriver()->getConnection();
+        $connection->connect();
+        self::assertTrue($connection->isConnected());
+
+        $connection->beginTransaction();
+        self::assertTrue($connection->inTransaction());
+
+        $connection->execute("INSERT INTO test (name, value) VALUES ('tx_commit', 'test')");
+
+        $result = $connection->commit();
+        self::assertInstanceOf(Connection::class, $result);
+        self::assertFalse($connection->inTransaction());
+
+        $result = $connection->execute("SELECT COUNT(*) AS cnt FROM test WHERE name = 'tx_commit'");
+        self::assertSame(1, $result->getResource()->fetchColumn());
+
+        $connection->execute("DELETE FROM test WHERE name = 'tx_commit'");
+        $connection->disconnect();
     }
 
-    /**
-     * @todo   Implement testRollback().
-     */
-    public function testRollback(): never
+    public function testRollback(): void
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+        $connection = $this->getAdapter()->getDriver()->getConnection();
+        $connection->connect();
+        self::assertTrue($connection->isConnected());
+
+        $connection->beginTransaction();
+        self::assertTrue($connection->inTransaction());
+
+        $connection->execute("INSERT INTO test (name, value) VALUES ('tx_rollback', 'test')");
+
+        $result = $connection->rollback();
+        self::assertInstanceOf(Connection::class, $result);
+        self::assertFalse($connection->inTransaction());
+
+        $result = $connection->execute("SELECT COUNT(*) AS cnt FROM test WHERE name = 'tx_rollback'");
+        self::assertSame(0, $result->getResource()->fetchColumn());
+
+        $connection->disconnect();
+    }
+
+    public function testAutocommitRestoredAfterCommit(): void
+    {
+        /** @var Connection $connection */
+        $connection = $this->getAdapter()->getDriver()->getConnection();
+        $connection->connect();
+        self::assertTrue($connection->isConnected());
+
+        $connection->beginTransaction();
+        self::assertTrue($connection->inTransaction());
+        $connection->commit();
+        self::assertFalse($connection->inTransaction());
+
+        $connection->execute("INSERT INTO test (name, value) VALUES ('tx_autocommit', 'test')");
+
+        $connection->disconnect();
+
+        $connection->connect();
+        $result = $connection->execute("SELECT COUNT(*) AS cnt FROM test WHERE name = 'tx_autocommit'");
+        self::assertSame(1, $result->getResource()->fetchColumn());
+
+        $connection->execute("DELETE FROM test WHERE name = 'tx_autocommit'");
+        $connection->disconnect();
+    }
+
+    public function testAutocommitRestoredAfterRollback(): void
+    {
+        /** @var Connection $connection */
+        $connection = $this->getAdapter()->getDriver()->getConnection();
+        $connection->connect();
+        self::assertTrue($connection->isConnected());
+
+        $connection->beginTransaction();
+        self::assertTrue($connection->inTransaction());
+        $connection->rollback();
+        self::assertFalse($connection->inTransaction());
+
+        $connection->execute("INSERT INTO test (name, value) VALUES ('tx_autocommit_rb', 'test')");
+
+        $connection->disconnect();
+
+        $connection->connect();
+        $result = $connection->execute("SELECT COUNT(*) AS cnt FROM test WHERE name = 'tx_autocommit_rb'");
+        self::assertSame(1, $result->getResource()->fetchColumn());
+
+        $connection->execute("DELETE FROM test WHERE name = 'tx_autocommit_rb'");
+        $connection->disconnect();
     }
 }
