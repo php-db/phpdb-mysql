@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\AdapterInterface;
-use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Mysql\Container\PdoDriverInterfaceFactory;
 use PhpDb\Mysql\Pdo\Driver;

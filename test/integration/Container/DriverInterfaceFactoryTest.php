@@ -6,10 +6,8 @@ namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Exception\ContainerException;
 use PhpDb\Mysql\Connection;
-use PhpDb\Mysql\Container\ConnectionInterfaceFactory;
 use PhpDb\Mysql\Container\DriverInterfaceFactory;
 use PhpDb\Mysql\Driver;
 use PHPUnit\Framework\Attributes;
@@ -40,7 +38,7 @@ final class DriverInterfaceFactoryTest extends TestCase
     {
         $this->expectException(ContainerException::class);
 
-        $factory    = new DriverInterfaceFactory();
+        $factory = new DriverInterfaceFactory();
         $factory(
             $this->container,
             Connection::class

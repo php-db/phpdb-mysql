@@ -38,7 +38,7 @@ final class ConnectionInterfaceFactoryTest extends TestCase
     {
         $this->expectException(InvalidConnectionParametersException::class);
 
-        $factory    = new ConnectionInterfaceFactory();
+        $factory = new ConnectionInterfaceFactory();
         $factory(
             $this->container,
             Connection::class
