@@ -17,6 +17,7 @@ use function assert;
 use function uniqid;
 
 #[CoversMethod(Result::class, 'current')]
+#[CoversMethod(Result::class, 'count')]
 #[Group('result-pdo')]
 final class ResultTest extends TestCase
 {
@@ -76,6 +77,55 @@ final class ResultTest extends TestCase
         $result->setFetchMode(PDO::FETCH_NAMED);
         self::assertEquals(11, $result->getFetchMode());
         self::assertInstanceOf('stdClass', $result->current());
+    }
+
+    public function testCountWithNullRowCountDelegatesToPdoStatement(): void
+    {
+        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $stub->expects($this->once())
+            ->method('rowCount')
+            ->willReturn(4);
+
+        $result = new Result();
+        $result->initialize($stub, null, null);
+
+        self::assertSame(4, $result->count());
+    }
+
+    public function testCountWithZeroRowCountReturnsZeroWithoutQueryingPdo(): void
+    {
+        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $stub->expects($this->never())
+            ->method('rowCount');
+
+        $result = new Result();
+        $result->initialize($stub, null, 0);
+
+        self::assertSame(0, $result->count());
+    }
+
+    public function testCountWithIntRowCountReturnsValueWithoutQueryingPdo(): void
+    {
+        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $stub->expects($this->never())
+            ->method('rowCount');
+
+        $result = new Result();
+        $result->initialize($stub, null, 7);
+
+        self::assertSame(7, $result->count());
+    }
+
+    public function testCountWithClosureRowCountInvokesClosure(): void
+    {
+        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $stub->expects($this->never())
+            ->method('rowCount');
+
+        $result = new Result();
+        $result->initialize($stub, null, fn() => 3);
+
+        self::assertSame(3, $result->count());
     }
 
     public function testMultipleRewind(): void
