@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Mysql\Container\PdoDriverInterfaceFactory;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
+use PhpDb\Mysql\Container\PdoDriverInterfaceFactory;
+use PhpDb\Mysql\Pdo\Driver as PdoDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
@@ -26,6 +26,6 @@ final class PdoDriverFactoryTest extends TestCase
         $instance = $factory($this->container);
 
         self::assertInstanceOf(PdoDriverInterface::class, $instance);
-        self::assertInstanceOf(Pdo::class, $instance);
+        self::assertInstanceOf(PdoDriver::class, $instance);
     }
 }

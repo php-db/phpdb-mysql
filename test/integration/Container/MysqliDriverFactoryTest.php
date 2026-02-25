@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Mysql\Container\MysqliDriverFactory;
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Mysqli;
+use PhpDb\Mysql\Container\DriverInterfaceFactory;
+use PhpDb\Mysql\Driver;
 use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 
-#[Attributes\CoversClass(MysqliDriverFactory::class)]
-#[Attributes\CoversMethod(MysqliDriverFactory::class, '__invoke')]
+#[Attributes\CoversClass(DriverInterfaceFactory::class)]
+#[Attributes\CoversMethod(DriverInterfaceFactory::class, '__invoke')]
 #[Attributes\Group('container')]
 #[Attributes\Group('integration')]
 #[Attributes\Group('integration-mysqli')]
@@ -26,9 +26,9 @@ final class MysqliDriverFactoryTest extends TestCase
                 'driver' => 'Mysqli',
             ],
         ]);
-        $factory = new MysqliDriverFactory();
-        $driver  = $factory($this->container);
+        $factory = new DriverInterfaceFactory();
+        $driver  = $factory($this->container, Driver::class, $this->config['db']);
         self::assertInstanceOf(DriverInterface::class, $driver);
-        $this->assertInstanceOf(Mysqli::class, $driver);
+        $this->assertInstanceOf(Driver::class, $driver);
     }
 }

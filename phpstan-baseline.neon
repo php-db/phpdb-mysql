@@ -4,169 +4,175 @@ parameters:
 			message: '#^Method PhpDb\\Adapter\\Profiler\\ProfilerInterface\:\:profilerFinish\(\) invoked with 1 parameter, 0 required\.$#'
 			identifier: arguments.count
 			count: 1
-			path: src/Driver/Mysqli/Connection.php
+			path: src/Connection.php
 
 		-
-			message: '#^Property PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Connection\:\:\$driver \(PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Mysqli\) does not accept PhpDb\\Adapter\\Driver\\DriverInterface\.$#'
+			message: '#^Property PhpDb\\Mysql\\Connection\:\:\$driver \(PhpDb\\Mysql\\Driver\) does not accept PhpDb\\Adapter\\Driver\\DriverInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: src/Driver/Mysqli/Connection.php
+			path: src/Connection.php
 
 		-
-			message: '#^Property PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Connection\:\:\$resource \(mysqli\) does not accept null\.$#'
+			message: '#^Property PhpDb\\Mysql\\Connection\:\:\$resource \(mysqli\) does not accept null\.$#'
 			identifier: assign.propertyType
 			count: 1
-			path: src/Driver/Mysqli/Connection.php
+			path: src/Connection.php
 
 		-
 			message: '#^Strict comparison using \!\=\= between null and null will always evaluate to false\.$#'
 			identifier: notIdentical.alwaysFalse
 			count: 1
-			path: src/Driver/Mysqli/Connection.php
+			path: src/Connection.php
 
 		-
 			message: '#^Variable \$names in PHPDoc tag @var does not match assigned variable \$findParameterValue\.$#'
 			identifier: varTag.differentVariable
 			count: 1
-			path: src/Driver/Mysqli/Connection.php
+			path: src/Connection.php
 
 		-
-			message: '#^Instanceof between PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Connection and PhpDb\\Adapter\\Driver\\DriverAwareInterface will always evaluate to true\.$#'
+			message: '#^Instanceof between PhpDb\\Mysql\\Connection and PhpDb\\Adapter\\Driver\\DriverAwareInterface will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
-			path: src/Driver/Mysqli/Mysqli.php
+			path: src/Driver.php
 
 		-
-			message: '#^Instanceof between PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Connection and PhpDb\\Adapter\\Profiler\\ProfilerAwareInterface will always evaluate to true\.$#'
+			message: '#^Instanceof between PhpDb\\Mysql\\Connection and PhpDb\\Adapter\\Profiler\\ProfilerAwareInterface will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
-			path: src/Driver/Mysqli/Mysqli.php
+			path: src/Driver.php
 
 		-
-			message: '#^Instanceof between PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Statement and PhpDb\\Adapter\\Driver\\DriverAwareInterface will always evaluate to true\.$#'
+			message: '#^Instanceof between PhpDb\\Mysql\\Statement and PhpDb\\Adapter\\Driver\\DriverAwareInterface will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
-			path: src/Driver/Mysqli/Mysqli.php
+			path: src/Driver.php
 
 		-
-			message: '#^Instanceof between PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Statement and PhpDb\\Adapter\\Profiler\\ProfilerAwareInterface will always evaluate to true\.$#'
+			message: '#^Instanceof between PhpDb\\Mysql\\Statement and PhpDb\\Adapter\\Profiler\\ProfilerAwareInterface will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
-			path: src/Driver/Mysqli/Mysqli.php
+			path: src/Driver.php
 
 		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Mysqli\:\:getResultPrototype\(\) should return PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Result but returns PhpDb\\Adapter\\Driver\\ResultInterface\.$#'
+			message: '#^Method PhpDb\\Mysql\\Driver\:\:getResultPrototype\(\) should return PhpDb\\Mysql\\Result but returns PhpDb\\Adapter\\Driver\\ResultInterface\.$#'
 			identifier: return.type
 			count: 1
-			path: src/Driver/Mysqli/Mysqli.php
+			path: src/Driver.php
 
 		-
-			message: '#^Parameter \#1 \$resource \(mysqli\|mysqli_stmt\|PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\mysqli_result\) of method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Mysqli\:\:createResult\(\) should be compatible with parameter \$resource \(resource\) of method PhpDb\\Adapter\\Driver\\DriverInterface\:\:createResult\(\)$#'
+			message: '#^Parameter \#1 \$resource \(mysqli\|mysqli_stmt\|PhpDb\\Mysql\\mysqli_result\) of method PhpDb\\Mysql\\Driver\:\:createResult\(\) should be compatible with parameter \$resource \(resource\) of method PhpDb\\Adapter\\Driver\\DriverInterface\:\:createResult\(\)$#'
 			identifier: method.childParameterType
 			count: 1
-			path: src/Driver/Mysqli/Mysqli.php
+			path: src/Driver.php
 
 		-
-			message: '#^Parameter \$resource of method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Mysqli\:\:createResult\(\) has invalid type PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\mysqli_result\.$#'
+			message: '#^Parameter \$resource of method PhpDb\\Mysql\\Driver\:\:createResult\(\) has invalid type PhpDb\\Mysql\\mysqli_result\.$#'
 			identifier: class.notFound
 			count: 1
-			path: src/Driver/Mysqli/Mysqli.php
-
-		-
-			message: '#^Instanceof between mysqli_stmt and mysqli_stmt will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 2
-			path: src/Driver/Mysqli/Result.php
-
-		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Result\:\:initialize\(\) has PhpDb\\Adapter\\Exception\\InvalidArgumentException in PHPDoc @throws tag but it''s not thrown\.$#'
-			identifier: throws.unusedType
-			count: 1
-			path: src/Driver/Mysqli/Result.php
-
-		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Result\:\:isBuffered\(\) never returns null so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: src/Driver/Mysqli/Result.php
-
-		-
-			message: '#^Result of && is always false\.$#'
-			identifier: booleanAnd.alwaysFalse
-			count: 1
-			path: src/Driver/Mysqli/Result.php
-
-		-
-			message: '#^Instanceof between PhpDb\\Adapter\\ParameterContainer and PhpDb\\Adapter\\ParameterContainer will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/Driver/Mysqli/Statement.php
-
-		-
-			message: '#^Instanceof between mysqli_stmt and mysqli_stmt will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/Driver/Mysqli/Statement.php
-
-		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Statement\:\:execute\(\) never returns null so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: src/Driver/Mysqli/Statement.php
-
-		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Statement\:\:getParameterContainer\(\) never returns null so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: src/Driver/Mysqli/Statement.php
-
-		-
-			message: '#^Method PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Statement\:\:getSql\(\) never returns null so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: src/Driver/Mysqli/Statement.php
-
-		-
-			message: '#^Property PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Statement\:\:\$driver \(PhpDb\\Adapter\\Mysql\\Driver\\Mysqli\\Mysqli\) does not accept PhpDb\\Adapter\\Driver\\DriverInterface\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Driver/Mysqli/Statement.php
-
-		-
-			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Driver/Pdo/Connection.php
-
-		-
-			message: '#^Parameter \#1 \$resource \(PDOStatement\) of method PhpDb\\Adapter\\Mysql\\Driver\\Pdo\\Pdo\:\:createResult\(\) should be compatible with parameter \$resource \(resource\) of method PhpDb\\Adapter\\Driver\\DriverInterface\:\:createResult\(\)$#'
-			identifier: method.childParameterType
-			count: 3
-			path: src/Driver/Pdo/Pdo.php
+			path: src/Driver.php
 
 		-
 			message: '#^Parameter \#2 \$array of function implode expects array\<string\>, array\<int, array\<int, string\>\> given\.$#'
 			identifier: argument.type
 			count: 2
-			path: src/Metadata/Source/MysqlMetadata.php
+			path: src/Metadata/Source.php
 
 		-
 			message: '#^Parameter \#2 \$array of function implode expects array\<string\>, array\<int, list\<string\>\> given\.$#'
 			identifier: argument.type
 			count: 4
-			path: src/Metadata/Source/MysqlMetadata.php
+			path: src/Metadata/Source.php
 
 		-
 			message: '#^Variable \$isFK might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
-			path: src/Metadata/Source/MysqlMetadata.php
+			path: src/Metadata/Source.php
 
 		-
 			message: '#^Variable \$name might not be defined\.$#'
 			identifier: variable.undefined
 			count: 2
-			path: src/Metadata/Source/MysqlMetadata.php
+			path: src/Metadata/Source.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/Pdo/Connection.php
+
+		-
+			message: '#^Parameter \#1 \$resource \(PDOStatement\) of method PhpDb\\Mysql\\Pdo\\Driver\:\:createResult\(\) should be compatible with parameter \$resource \(resource\) of method PhpDb\\Adapter\\Driver\\DriverInterface\:\:createResult\(\)$#'
+			identifier: method.childParameterType
+			count: 3
+			path: src/Pdo/Driver.php
+
+		-
+			message: '#^Parameter \#3 \$rowCount of method PhpDb\\Adapter\\Driver\\Pdo\\Result\:\:initialize\(\) expects Closure\|int, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Pdo/Driver.php
+
+		-
+			message: '#^Instanceof between mysqli_stmt and mysqli_stmt will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 2
+			path: src/Result.php
+
+		-
+			message: '#^Method PhpDb\\Mysql\\Result\:\:initialize\(\) has PhpDb\\Adapter\\Exception\\InvalidArgumentException in PHPDoc @throws tag but it''s not thrown\.$#'
+			identifier: throws.unusedType
+			count: 1
+			path: src/Result.php
+
+		-
+			message: '#^Method PhpDb\\Mysql\\Result\:\:isBuffered\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Result.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: src/Result.php
+
+		-
+			message: '#^Instanceof between PhpDb\\Adapter\\ParameterContainer and PhpDb\\Adapter\\ParameterContainer will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Statement.php
+
+		-
+			message: '#^Instanceof between mysqli_stmt and mysqli_stmt will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: src/Statement.php
+
+		-
+			message: '#^Method PhpDb\\Mysql\\Statement\:\:execute\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Statement.php
+
+		-
+			message: '#^Method PhpDb\\Mysql\\Statement\:\:getParameterContainer\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Statement.php
+
+		-
+			message: '#^Method PhpDb\\Mysql\\Statement\:\:getSql\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: src/Statement.php
+
+		-
+			message: '#^Property PhpDb\\Mysql\\Statement\:\:\$driver \(PhpDb\\Mysql\\Driver\) does not accept PhpDb\\Adapter\\Driver\\DriverInterface\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Statement.php
 
 		-
 			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with int will always evaluate to true\.$#'

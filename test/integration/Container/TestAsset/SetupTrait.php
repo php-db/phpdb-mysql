@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset;
+namespace PhpDbIntegrationTest\Mysql\Container\TestAsset;
 
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Mysql\ConfigProvider;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
 use PhpDb\ConfigProvider as LaminasDbConfigProvider;
-use Psr\Container\ContainerInterface;
+use PhpDb\Mysql\ConfigProvider;
+use PhpDb\Mysql\Pdo\Driver as PdoDriver;
 
 use function getenv;
 
@@ -27,14 +26,18 @@ trait SetupTrait
 {
     protected array $config = ['db' => []];
 
-    protected ?AdapterInterface $adapter;
+    protected ?AdapterInterface $adapter = null;
 
-    protected ContainerInterface $container;
+    protected ServiceManager $container;
 
     protected DriverInterface|string|null $driver = null;
 
     protected function setUp(): void
     {
+        if (getenv('TESTS_PHPDB_ADAPTER_MYSQL') !== 'true') {
+            self::markTestSkipped('Integration tests require TESTS_PHPDB_ADAPTER_MYSQL=true');
+        }
+
         $this->getAdapter();
         parent::setUp();
     }
@@ -43,7 +46,7 @@ trait SetupTrait
     {
         $connectionConfig = [
             'db' => [
-                'driver'     => $this->driver ?? Pdo::class,
+                'driver'     => $this->driver ?? PdoDriver::class,
                 'connection' => [
                     'hostname'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME') ?: 'localhost',
                     'username'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),

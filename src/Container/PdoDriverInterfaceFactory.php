@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Container;
 
-use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;

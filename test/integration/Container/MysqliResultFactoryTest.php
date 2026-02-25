@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\Driver\ResultInterface;
-use PhpDb\Adapter\Mysql\Container\MysqliResultFactory;
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Result;
+use PhpDb\Mysql\Container\MysqliResultFactory;
+use PhpDb\Mysql\Result;
 use PHPUnit\Framework\Attributes;
 use PHPUnit\Framework\TestCase;
 

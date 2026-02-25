@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbTest\Mysql\Driver\Pdo;
 
 use Override;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
-use PhpDb\Adapter\Mysql\Driver\Pdo;
 use PhpDb\Exception\RuntimeException;
+use PhpDb\Mysql\Pdo;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Pdo\Pdo::class, 'getDatabasePlatformName')]
-#[CoversMethod(Pdo\Pdo::class, 'getResultPrototype')]
+#[CoversMethod(Pdo\Driver::class, 'getDatabasePlatformName')]
+#[CoversMethod(Pdo\Driver::class, 'getResultPrototype')]
 final class PdoTest extends TestCase
 {
-    protected Pdo\Pdo $pdo;
+    protected Pdo\Driver $pdo;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -30,7 +30,7 @@ final class PdoTest extends TestCase
         $connection = $this->createMock(Pdo\Connection::class);
         $statement  = $this->createMock(Statement::class);
         $result     = $this->createMock(Result::class);
-        $this->pdo  = new Pdo\Pdo(
+        $this->pdo  = new Pdo\Driver(
             $connection,
             $statement,
             $result

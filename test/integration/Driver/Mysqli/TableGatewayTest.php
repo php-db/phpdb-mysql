@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Mysqli;
+namespace PhpDbIntegrationTest\Mysql\Driver\Mysqli;
 
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
-use PhpDb\Adapter\Mysql\Driver\Mysqli\Mysqli;
+use PhpDb\Mysql\Driver;
 use PhpDb\ResultSet\AbstractResultSet;
 use PhpDb\TableGateway\TableGateway;
-use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -28,7 +28,7 @@ final class TableGatewayTest extends TestCase
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
             'db' => [
-                'driver'  => Mysqli::class,
+                'driver'  => Driver::class,
                 'options' => [
                     'buffer_results' => true,
                 ],

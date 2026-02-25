@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbTest\Mysql\Driver\Pdo;
 
 use Exception;
 use Override;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Adapter\Exception\RuntimeException;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
+use PhpDb\Mysql\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

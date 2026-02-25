@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Mysql\Container;
 
-use PhpDb\Adapter\Mysql\Container\MysqlMetadataFactory;
-use PhpDb\Adapter\Mysql\Metadata\Source\MysqlMetadata;
 use PhpDb\Metadata\MetadataInterface;
-use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Mysql\Container\MetadataInterfaceFactory;
+use PhpDb\Mysql\Metadata\Source;
+use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(MysqlMetadataFactory::class)]
-#[CoversMethod(MysqlMetadataFactory::class, '__invoke')]
+#[CoversClass(MetadataInterfaceFactory::class)]
+#[CoversMethod(MetadataInterfaceFactory::class, '__invoke')]
 final class MysqlMetadataFactoryTest extends TestCase
 {
     use SetupTrait;
 
     public function testFactoryReturnsMysqlMetadata(): void
     {
-        $factory  = new MysqlMetadataFactory();
-        $metadata = $factory($this->container);
+        $factory  = new MetadataInterfaceFactory();
+        $metadata = $factory($this->container, Source::class);
         self::assertInstanceOf(MetadataInterface::class, $metadata);
-        self::assertInstanceOf(MysqlMetadata::class, $metadata);
+        self::assertInstanceOf(Source::class, $metadata);
     }
 }

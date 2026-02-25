@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\Platform;
+namespace PhpDbTest\Mysql\Platform;
 
 use Override;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
-use PhpDb\Adapter\Mysql\Driver\Pdo;
-use PhpDb\Adapter\Mysql\Platform\Mysql;
+use PhpDb\Mysql\AdapterPlatform as Mysql;
+use PhpDb\Mysql\Pdo;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -33,7 +33,7 @@ final class MysqlTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $pdo            = new Pdo\Pdo(
+        $pdo            = new Pdo\Driver(
             $this->createMock(Pdo\Connection::class),
             $this->createMock(Statement::class),
             $this->createMock(Result::class),

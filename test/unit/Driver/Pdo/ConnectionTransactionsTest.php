@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbTest\Mysql\Driver\Pdo;
 
 use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Exception\RuntimeException;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
-use PhpDbTest\Adapter\Mysql\TestAsset\ConnectionWrapper;
+use PhpDb\Mysql\Pdo\Connection;
+use PhpDbTest\Mysql\TestAsset\ConnectionWrapper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests for {@see \PhpDb\Adapter\Mysql\Driver\Pdo\Connection} transaction support
+ * Tests for {@see \PhpDb\Mysql\Pdo\Connection} transaction support
  */
 #[CoversClass(Connection::class)]
 #[CoversClass(AbstractConnection::class)]

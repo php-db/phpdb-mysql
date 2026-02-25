@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Platform;
+namespace PhpDbIntegrationTest\Mysql\Platform;
 
+use mysqli;
 use Override;
 use PhpDb\Adapter\Driver\Pdo;
-use PhpDb\Adapter\Mysql\Driver\Mysqli;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo as PdoDriver;
-use PhpDb\Adapter\Mysql\Platform\Mysql;
+use PhpDb\Mysql\AdapterPlatform as Mysql;
+use PhpDb\Mysql\Connection as MysqliConnection;
+use PhpDb\Mysql\Driver as MysqliDriver;
+use PhpDb\Mysql\Pdo\Connection;
+use PhpDb\Mysql\Pdo\Driver as PdoDriver;
+use PhpDb\Mysql\Result as MysqliResult;
+use PhpDb\Mysql\Statement as MysqliStatement;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -18,11 +22,11 @@ use function extension_loaded;
 use function getenv;
 
 #[Group('integration')]
-#[CoversMethod(Mysqli\Mysqli::class, 'quoteValue')]
+#[CoversMethod(MysqliDriver::class, 'quoteValue')]
 #[CoversMethod(PdoDriver::class, 'quoteValue')]
 final class MysqlTest extends TestCase
 {
-    /** @var array<string, \mysqli|\PDO> */
+    /** @var array<string, mysqli|\PDO> */
     public array $adapters = [];
 
     protected array $mysqliParams;
@@ -32,7 +36,9 @@ final class MysqlTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        //$this->markTestSkipped(self::class . ' test need refactored');
+        if (getenv('TESTS_PHPDB_ADAPTER_MYSQL') !== 'true') {
+            self::markTestSkipped('Integration tests require TESTS_PHPDB_ADAPTER_MYSQL=true');
+        }
 
         if (extension_loaded('mysqli')) {
             $this->mysqliParams = [
@@ -42,7 +48,7 @@ final class MysqlTest extends TestCase
                 'database' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
             ];
 
-            $this->adapters['mysqli'] = new \mysqli(
+            $this->adapters['mysqli'] = new mysqli(
                 $this->mysqliParams['hostname'],
                 $this->mysqliParams['username'],
                 $this->mysqliParams['password'],
@@ -80,10 +86,10 @@ final class MysqlTest extends TestCase
         self::assertEquals('\'value\'', $value);
 
         $mysql = new Mysql(
-            new Mysqli\Mysqli(
-                new Mysqli\Connection($this->mysqliParams),
-                new Mysqli\Statement(),
-                new Mysqli\Result()
+            new MysqliDriver(
+                new MysqliConnection($this->mysqliParams),
+                new MysqliStatement(),
+                new MysqliResult()
             )
         );
         $value = $mysql->quoteValue('value');

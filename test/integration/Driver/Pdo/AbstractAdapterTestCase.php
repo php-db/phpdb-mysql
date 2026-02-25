@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Mysql\Driver\Pdo;
 
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Pdo;
 use PhpDb\Adapter\SchemaAwareInterface;
-use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Mysql\Pdo\Driver as PdoDriver;
+use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -46,7 +46,7 @@ abstract class AbstractAdapterTestCase extends TestCase
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
             'db' => [
-                'driver' => Pdo::class,
+                'driver' => PdoDriver::class,
             ],
         ]);
         $adapter->getDriver()->getConnection()->connect();

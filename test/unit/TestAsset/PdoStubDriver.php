@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpDbTest\Adapter\Mysql\TestAsset;
+namespace PhpDbTest\Mysql\TestAsset;
 
 use PDO;
 

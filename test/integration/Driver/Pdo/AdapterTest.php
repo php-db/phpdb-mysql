@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Mysql\Driver\Pdo;
 
-use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
-use PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo\AbstractAdapterTestCase;
+use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversNothing;
 
 #[CoversNothing]

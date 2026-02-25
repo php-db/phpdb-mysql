@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Extension;
+namespace PhpDbIntegrationTest\Mysql\Extension;
 
-use PhpDbIntegrationTest\Adapter\Mysql\FixtureLoader\FixtureLoaderInterface;
+use PhpDbIntegrationTest\Mysql\FixtureLoader\FixtureLoaderInterface;
 use PHPUnit\Event\TestSuite\Finished;
 use PHPUnit\Event\TestSuite\FinishedSubscriber;
 

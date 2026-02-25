@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Container;
+namespace PhpDbIntegrationTest\Mysql\Container;
 
-use PhpDb\Adapter\Mysql\Container\PlatformInterfaceFactory;
-use PhpDb\Adapter\Mysql\Platform\Mysql;
 use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Mysql\AdapterPlatform as Mysql;
+use PhpDb\Mysql\Container\PlatformInterfaceFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
@@ -23,7 +23,7 @@ final class PlatformInterfaceFactoryTest extends TestCase
     public function testInvokeReturnsPlatformInterfaceWhenDbDriverIsPdo(): void
     {
         $factory  = new PlatformInterfaceFactory();
-        $instance = $factory($this->container);
+        $instance = $factory($this->container, Mysql::class, ['driver' => $this->adapter->getDriver()]);
         self::assertInstanceOf(PlatformInterface::class, $instance);
         self::assertInstanceOf(Mysql::class, $instance);
     }

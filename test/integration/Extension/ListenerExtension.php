@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Extension;
+namespace PhpDbIntegrationTest\Mysql\Extension;
 
 use PHPUnit\Runner\Extension\Extension;
 use PHPUnit\Runner\Extension\Facade;

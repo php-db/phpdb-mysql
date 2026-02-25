@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbTest\Mysql\Driver\Pdo;
 
 use PDO;
 use PDOStatement;

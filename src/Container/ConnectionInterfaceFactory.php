@@ -9,6 +9,8 @@ use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Mysql\Connection;
 use Psr\Container\ContainerInterface;
 
+use function is_array;
+
 final class ConnectionInterfaceFactory
 {
     public function __invoke(

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Mysql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Mysql\Driver\Pdo;
 
 use PDO;
 use PhpDb\Adapter\Driver\AbstractConnection;
@@ -13,8 +13,8 @@ use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
-use PhpDb\Adapter\Mysql\Driver\Pdo\Connection;
-use PhpDbIntegrationTest\Adapter\Mysql\Container\TestAsset\SetupTrait;
+use PhpDb\Mysql\Pdo\Connection;
+use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;

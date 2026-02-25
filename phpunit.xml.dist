@@ -11,7 +11,7 @@
          failOnWarning="true">
 
     <extensions>
-        <bootstrap class="PhpDbIntegrationTest\Adapter\Mysql\Extension\ListenerExtension" />
+        <bootstrap class="PhpDbIntegrationTest\Mysql\Extension\ListenerExtension" />
     </extensions>
     <testsuites>
         <testsuite name="unit test">
@@ -27,7 +27,7 @@
         </include>
     </source>
     <php>
-        <env name="TESTS_PHPDB_ADAPTER_MYSQL" value="true"/>
+        <env name="TESTS_PHPDB_ADAPTER_MYSQL" value="false"/>
         <env name="TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME" value="mysql"/>
         <env name="TESTS_PHPDB_ADAPTER_MYSQL_USERNAME" value="root"/>
         <env name="TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD" value=""/>
