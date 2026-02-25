@@ -10,7 +10,8 @@ use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\ConfigProvider as LaminasDbConfigProvider;
 use PhpDb\Mysql\ConfigProvider;
-use PhpDb\Mysql\Pdo\Driver as PdoDriver;
+use PhpDb\Mysql\Pdo\Driver;
+use Psr\Container\ContainerInterface;
 
 use function getenv;
 
@@ -24,20 +25,16 @@ use function getenv;
  */
 trait SetupTrait
 {
-    protected array $config = ['db' => []];
+    protected array $config = [AdapterInterface::class => []];
 
-    protected ?AdapterInterface $adapter = null;
+    protected ?AdapterInterface $adapter;
 
-    protected ServiceManager $container;
+    protected ContainerInterface $container;
 
     protected DriverInterface|string|null $driver = null;
 
     protected function setUp(): void
     {
-        if (getenv('TESTS_PHPDB_ADAPTER_MYSQL') !== 'true') {
-            self::markTestSkipped('Integration tests require TESTS_PHPDB_ADAPTER_MYSQL=true');
-        }
-
         $this->getAdapter();
         parent::setUp();
     }
@@ -45,8 +42,8 @@ trait SetupTrait
     protected function getAdapter(array $config = []): AdapterInterface
     {
         $connectionConfig = [
-            'db' => [
-                'driver'     => $this->driver ?? PdoDriver::class,
+            AdapterInterface::class => [
+                'driver'     => $this->driver ?? Driver::class,
                 'connection' => [
                     'hostname'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME') ?: 'localhost',
                     'username'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
@@ -101,6 +98,6 @@ trait SetupTrait
 
     protected function getHostname(): string
     {
-        return $this->getConfig()['db']['connection']['hostname'];
+        return $this->getConfig()[AdapterInterface::class]['connection']['hostname'];
     }
 }

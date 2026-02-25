@@ -18,13 +18,14 @@ final class ConnectionInterfaceFactory
         string $requestedName,
         ?array $options = null
     ): ConnectionInterface&Connection {
-        if (! is_array($options['connection']) || $options['connection'] === []) {
+        $conn = $options['connection'] ?? [];
+        if (! is_array($conn) || $conn === []) {
             throw new InvalidConnectionParametersException(
                 'Connection configuration must be an array of parameters passed via $options["connection"]',
-                $options['connection']
+                $conn
             );
         }
 
-        return new Connection($options['connection']);
+        return new Connection($conn);
     }
 }

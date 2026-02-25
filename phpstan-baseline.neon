@@ -31,6 +31,24 @@ parameters:
 			path: src/Connection.php
 
 		-
+			message: '#^PHPDoc tag @var for variable \$connectionInstance contains unknown class PhpDb\\Mysql\\Driver\\ConnectionInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Container/DriverInterfaceFactory.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$resultInstance contains unknown class PhpDb\\Mysql\\Driver\\ResultInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Container/DriverInterfaceFactory.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$statementInstance contains unknown class PhpDb\\Mysql\\Driver\\StatementInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Container/DriverInterfaceFactory.php
+
+		-
 			message: '#^Instanceof between PhpDb\\Mysql\\Connection and PhpDb\\Adapter\\Driver\\DriverAwareInterface will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -175,7 +193,74 @@ parameters:
 			path: src/Statement.php
 
 		-
+			message: '#^Call to an undefined method PhpDb\\Mysql\\Driver\:\:quoteValue\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: test/integration/AdapterPlatformTest.php
+
+		-
+			message: '#^Parameter \#1 \$connection of class PhpDb\\Mysql\\Driver constructor expects PhpDb\\Mysql\\Connection, PDO given\.$#'
+			identifier: argument.type
+			count: 1
+			path: test/integration/AdapterPlatformTest.php
+
+		-
+			message: '#^Parameter \#1 \$connection of class PhpDb\\Mysql\\Driver constructor expects PhpDb\\Mysql\\Connection, mysqli given\.$#'
+			identifier: argument.type
+			count: 1
+			path: test/integration/AdapterPlatformTest.php
+
+		-
+			message: '#^Parameter \#2 \$statementPrototype of class PhpDb\\Mysql\\Driver constructor expects PhpDb\\Mysql\\Statement, PhpDb\\Adapter\\Driver\\Pdo\\Statement given\.$#'
+			identifier: argument.type
+			count: 1
+			path: test/integration/AdapterPlatformTest.php
+
+		-
+			message: '#^Property PhpDbIntegrationTest\\Mysql\\Platform\\AdapterPlatformTest\:\:\$adapters \(array\<string, mysqli\|PDO\>\) does not accept array\<string, mysqli\|PDO\|PhpDb\\Mysql\\Connection\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: test/integration/AdapterPlatformTest.php
+
+		-
+			message: '#^Property PhpDbIntegrationTest\\Mysql\\Platform\\AdapterPlatformTest\:\:\$adapters \(array\<string, mysqli\|PDO\>\) does not accept array\<string, mysqli\|PDO\|PhpDb\\Mysql\\Pdo\\Connection\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: test/integration/AdapterPlatformTest.php
+
+		-
+			message: '#^Parameter \#1 \$container of callable PhpDb\\Mysql\\Container\\DriverInterfaceFactory expects Laminas\\ServiceManager\\ServiceManager, Psr\\Container\\ContainerInterface given\.$#'
+			identifier: argument.type
+			count: 2
+			path: test/integration/Container/DriverInterfaceFactoryTest.php
+
+		-
+			message: '#^Parameter \#1 \$container of callable PhpDb\\Mysql\\Container\\PdoDriverInterfaceFactory expects Laminas\\ServiceManager\\ServiceManager, Psr\\Container\\ContainerInterface given\.$#'
+			identifier: argument.type
+			count: 1
+			path: test/integration/Container/PdoDriverInterfaceFactoryTest.php
+
+		-
 			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with int will always evaluate to true\.$#'
 			identifier: staticMethod.alreadyNarrowedType
 			count: 1
-			path: test/integration/Driver/Pdo/ConnectionTest.php
+			path: test/integration/Pdo/ConnectionTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: test/integration/Pdo/QueryTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: test/integration/Pdo/TableGatewayTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: test/integration/TableGatewayTest.php
+

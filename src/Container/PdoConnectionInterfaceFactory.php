@@ -5,22 +5,27 @@ declare(strict_types=1);
 namespace PhpDb\Mysql\Container;
 
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
+use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Mysql\Pdo\Connection;
 use Psr\Container\ContainerInterface;
 
+use function is_array;
+
 final class PdoConnectionInterfaceFactory
 {
-    public function __invoke(ContainerInterface $container): PdoConnectionInterface&Connection
-    {
-        /** @var array $config */
-        $config = $container->get('config');
+    public function __invoke(
+        ContainerInterface $container,
+        string $requestedName,
+        ?array $options = null
+    ): PdoConnectionInterface&Connection {
+        $conn = $options['connection'] ?? [];
+        if (! is_array($conn) || $conn === []) {
+            throw new InvalidConnectionParametersException(
+                'Connection configuration must be an array of parameters passed via $options["connection"]',
+                $conn
+            );
+        }
 
-        /** @var array $dbConfig */
-        $dbConfig = $config['db'] ?? [];
-
-        /** @var array $connectionConfig */
-        $connectionConfig = $dbConfig['connection'] ?? [];
-
-        return new Connection($connectionConfig);
+        return new Connection($conn);
     }
 }
