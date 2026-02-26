@@ -4,114 +4,53 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Mysql\Platform;
 
-use mysqli;
-use Override;
-use PhpDb\Adapter\Driver\Pdo;
 use PhpDb\Mysql\AdapterPlatform;
-use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
-use PhpDb\Mysql\Pdo\Connection as PdoConnection;
 use PhpDb\Mysql\Pdo\Driver as PdoDriver;
-use PhpDb\Mysql\Result;
-use PhpDb\Mysql\Statement;
+use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-use function extension_loaded;
-use function getenv;
-
 #[Group('integration')]
-#[CoversMethod(Driver::class, 'quoteValue')]
-#[CoversMethod(PdoDriver::class, 'quoteValue')]
+#[CoversMethod(AdapterPlatform::class, 'quoteValue')]
 final class AdapterPlatformTest extends TestCase
 {
-    /** @var array<string, mysqli|\PDO> */
-    public array $adapters = [];
+    use SetupTrait;
 
-    protected array $mysqliParams;
-
-    protected array $pdoParams;
-
-    #[Override]
-    protected function setUp(): void
+    /** @return array<string, array{string, string}> */
+    public static function quoteValueProvider(): array
     {
-        //$this->markTestSkipped(self::class . ' test need refactored');
-
-        if (extension_loaded('mysqli')) {
-            $this->mysqliParams = [
-                'hostname' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME'),
-                'username' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
-                'password' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
-                'database' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
-            ];
-
-            $this->adapters['mysqli'] = new Connection($this->mysqliParams);
-        }
-
-        if (extension_loaded('pdo')) {
-            $this->pdoParams = [
-                'hostname' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME'),
-                'username' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
-                'password' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
-                'database' => getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
-            ];
-
-            $this->adapters['pdo_mysql'] = new PdoConnection($this->pdoParams);
-        }
+        return [
+            'plain string' => ['value', '\'value\''],
+            'single quote' => ["it's", "'it\\'s'"],
+            'backslash'    => ['val\\ue', "'val\\\\ue'"],
+            'empty string' => ['', "''"],
+            'double quote' => ['say "hello"', "'say \\\"hello\\\"'"],
+            'null byte'    => ["val\x00ue", "'val\\0ue'"],
+        ];
     }
 
-    /**
-     * @return void
-     */
-    public function testQuoteValueWithMysqli()
+    #[DataProvider('quoteValueProvider')]
+    public function testQuoteValueWithMysqli(string $input, string $expected): void
     {
-        if (! $this->adapters['mysqli'] instanceof Mysqli) {
-            $this->markTestSkipped('MySQL (Mysqli) not configured in unit test configuration file');
-        }
-        $mysql = new Driver(
-            $this->adapters['mysqli'],
-            new Statement(),
-            new Result()
-        );
-        $value = $mysql->quoteValue('value');
-        self::assertEquals('\'value\'', $value);
+        $this->driver = Driver::class;
+        $adapter      = $this->getAdapter();
 
-        $mysql = new AdapterPlatform(
-            new Driver(
-                new Connection($this->mysqliParams),
-                new Statement(),
-                new Result()
-            )
-        );
-        $value = $mysql->quoteValue('value');
-        self::assertEquals('\'value\'', $value);
+        $platform = new AdapterPlatform($adapter->getDriver());
+        $value    = $platform->quoteValue($input);
+        self::assertSame($expected, $value);
     }
 
-    /**
-     * @return void
-     */
-    public function testQuoteValueWithPdoMysql()
+    #[DataProvider('quoteValueProvider')]
+    public function testQuoteValueWithPdoMysql(string $input, string $expected): void
     {
-        if (! $this->adapters['pdo_mysql'] instanceof \PDO) {
-            $this->markTestSkipped('MySQL (PDO_Mysql) not configured in unit test configuration file');
-        }
-        $mysql = new Driver(
-            $this->adapters['pdo_mysql'],
-            new Pdo\Statement(),
-            new Pdo\Result()
-        );
-        $value = $mysql->quoteValue('value');
-        self::assertEquals('\'value\'', $value);
+        $this->driver = PdoDriver::class;
+        $adapter      = $this->getAdapter();
 
-        $mysql = new AdapterPlatform(
-            new PdoDriver(
-                new PdoConnection($this->pdoParams),
-                new Pdo\Statement(),
-                new Pdo\Result()
-            )
-        );
-        $value = $mysql->quoteValue('value');
-        self::assertEquals('\'value\'', $value);
+        $platform = new AdapterPlatform($adapter->getDriver());
+        $value    = $platform->quoteValue($input);
+        self::assertSame($expected, $value);
     }
 }

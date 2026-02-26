@@ -8,6 +8,9 @@ use mysqli;
 use Override;
 use PhpDb\Exception\RuntimeException;
 use PhpDb\Mysql\Connection;
+use PhpDb\Mysql\Driver;
+use PhpDb\Mysql\Result;
+use PhpDb\Mysql\Statement;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -47,8 +50,8 @@ final class ConnectionTest extends TestCase
 
     public function testSetDriver(): void
     {
-        $this->markTestIncomplete('This test needs refactored');
-        //self::assertEquals($this->connection, $this->connection->setDriver(new Mysqli([])));
+        $driver = new Driver($this->connection, new Statement(), new Result());
+        self::assertSame($this->connection, $this->connection->setDriver($driver));
     }
 
     public function testSetConnectionParameters(): void

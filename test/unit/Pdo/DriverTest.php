@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Pdo;
 
 use Override;
+use PDOStatement;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
@@ -17,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Driver::class, 'getDatabasePlatformName')]
 #[CoversMethod(Driver::class, 'getResultPrototype')]
+#[CoversMethod(Driver::class, 'createResult')]
 final class DriverTest extends TestCase
 {
     protected Driver $pdo;
@@ -94,5 +96,22 @@ final class DriverTest extends TestCase
         $resultPrototype = $this->pdo->getResultPrototype();
 
         self::assertInstanceOf(Result::class, $resultPrototype);
+    }
+
+    public function testCreateResultPassesNullRowCount(): void
+    {
+        $pdoStatement = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $pdoStatement->expects($this->once())
+            ->method('rowCount')
+            ->willReturn(4);
+
+        $connection = $this->createMock(Connection::class);
+        $statement  = $this->createMock(Statement::class);
+        $driver     = new Driver($connection, $statement, new Result());
+
+        $result = $driver->createResult($pdoStatement);
+
+        self::assertInstanceOf(Result::class, $result);
+        self::assertSame(4, $result->count());
     }
 }

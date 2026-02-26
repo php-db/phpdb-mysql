@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace PhpDb\Mysql\Container;
 
 use Laminas\ServiceManager\ServiceManager;
+use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Exception\ContainerException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
@@ -29,16 +31,16 @@ final class DriverInterfaceFactory
             );
         }
 
-        /** @var Driver\ConnectionInterface&Connection $connectionInstance */
+        /** @var ConnectionInterface&Connection $connectionInstance */
         $connectionInstance = $container->build(Connection::class, $options);
 
-        /** @var Driver\StatementInterface&Statement $statementInstance */
+        /** @var StatementInterface&Statement $statementInstance */
         $statementInstance = $container->build(
             Statement::class,
             $options['options'] ?? []
         );
 
-        /** @var Driver\ResultInterface&Result $resultInstance */
+        /** @var ResultInterface&Result $resultInstance */
         $resultInstance = $container->has(ResultInterface::class)
             ? $container->get(ResultInterface::class)
             : new Result();

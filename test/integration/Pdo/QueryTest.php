@@ -80,10 +80,29 @@ final class QueryTest extends TestCase
      */
     public function testSelectWithNotPermittedBindParamName(): void
     {
-        $this->markTestIncomplete('Incorrect bound param name characters are not caught in a raw query.');
-
         $this->expectException(RuntimeException::class);
         $this->getAdapter()->query('SET @@session.time_zone = :tz$', [':tz$' => 'SYSTEM']);
+    }
+
+    public function testSelectResultCountReturnsActualRowCount(): void
+    {
+        $result = $this->getAdapter()->query('SELECT * FROM test WHERE value = ?', ['bar']);
+        $this->assertInstanceOf(ResultSet::class, $result);
+        self::assertSame(3, $result->count());
+    }
+
+    public function testSelectResultCountWithWhereClause(): void
+    {
+        $result = $this->getAdapter()->query('SELECT * FROM test WHERE name = ?', ['foo']);
+        $this->assertInstanceOf(ResultSet::class, $result);
+        self::assertSame(1, $result->count());
+    }
+
+    public function testSelectResultCountReturnsZeroForNoResults(): void
+    {
+        $result = $this->getAdapter()->query('SELECT * FROM test WHERE name = ?', ['nonexistent']);
+        $this->assertInstanceOf(ResultSet::class, $result);
+        self::assertSame(0, $result->count());
     }
 
     /**

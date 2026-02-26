@@ -9,6 +9,7 @@ use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
@@ -40,7 +41,7 @@ final class StatementTest extends TestCase
         $this->pdo       = new Driver(
             $this->createMock(Connection::class),
             $this->statement,
-            $this->createMock(Result::class),
+            new Result(),
         );
     }
 
@@ -93,31 +94,36 @@ final class StatementTest extends TestCase
         self::assertEquals('SELECT 1', $this->statement->getSql());
     }
 
-    /**
-     * @todo Implement testPrepare().
-     */
     public function testPrepare(): void
     {
-        $this->markTestSkipped('Needs to be covered by integration group');
-        // $this->statement->initialize(new TestAsset\SqliteMemoryPdo());
-        // self::assertNull($this->statement->prepare('SELECT 1'));
+        $mockPdoStatement = $this->createMock(PDOStatement::class);
+        $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
+        $this->statement->initialize($pdo);
+
+        $result = $this->statement->prepare('SELECT 1');
+        self::assertInstanceOf(Statement::class, $result);
     }
 
     public function testIsPrepared(): void
     {
-        $this->markTestSkipped('Needs to be covered by integration group');
-        // self::assertFalse($this->statement->isPrepared());
-        // $this->statement->initialize(new TestAsset\SqliteMemoryPdo());
-        // $this->statement->prepare('SELECT 1');
-        // self::assertTrue($this->statement->isPrepared());
+        self::assertFalse($this->statement->isPrepared());
+
+        $mockPdoStatement = $this->createMock(PDOStatement::class);
+        $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
+        $this->statement->initialize($pdo);
+        $this->statement->prepare('SELECT 1');
+
+        self::assertTrue($this->statement->isPrepared());
     }
 
     public function testExecute(): void
     {
-        $this->markTestSkipped('Needs to be covered by integration group');
-        // $this->statement->setDriver(new Pdo(new Connection($pdo = new TestAsset\SqliteMemoryPdo())));
-        // $this->statement->initialize($pdo);
-        // $this->statement->prepare('SELECT 1');
-        // self::assertInstanceOf(Result::class, $this->statement->execute());
+        $mockPdoStatement = $this->createMock(PDOStatement::class);
+        $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
+        $this->statement->initialize($pdo);
+        $this->statement->prepare('SELECT 1');
+
+        $result = $this->statement->execute();
+        self::assertInstanceOf(ResultInterface::class, $result);
     }
 }

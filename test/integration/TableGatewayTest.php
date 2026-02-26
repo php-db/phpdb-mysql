@@ -25,8 +25,6 @@ final class TableGatewayTest extends TestCase
      */
     public function testSelectWithEmptyCurrentWithBufferResult(): void
     {
-        $this->markTestSkipped('Unsure as to how rowset could ever be buffered with empty result');
-
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
             'db' => [
@@ -40,7 +38,6 @@ final class TableGatewayTest extends TestCase
         $tableGateway = new TableGateway('test', $adapter);
         /** @var AbstractResultSet $rowset */
         $rowset = $tableGateway->select('id = 0');
-        $this->assertEquals(true, $rowset->isBuffered());
 
         $this->assertNull($rowset->current());
 

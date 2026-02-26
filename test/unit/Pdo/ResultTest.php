@@ -17,6 +17,7 @@ use function assert;
 use function uniqid;
 
 #[CoversMethod(Result::class, 'current')]
+#[CoversMethod(Result::class, 'count')]
 #[Group('result-pdo')]
 final class ResultTest extends TestCase
 {
@@ -25,13 +26,13 @@ final class ResultTest extends TestCase
      */
     public function testCurrent(): void
     {
-        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $stub->expects($this->any())
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock->expects($this->any())
             ->method('fetch')
             ->willReturnCallback(fn() => uniqid());
 
         $result = new Result();
-        $result->initialize($stub, null);
+        $result->initialize($mock, null);
 
         self::assertEquals($result->current(), $result->current());
     }
@@ -49,13 +50,13 @@ final class ResultTest extends TestCase
      */
     public function testFetchModeAnonymousObject(): void
     {
-        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $stub->expects($this->any())
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock->expects($this->any())
             ->method('fetch')
             ->willReturnCallback(fn() => new stdClass());
 
         $result = new Result();
-        $result->initialize($stub, null);
+        $result->initialize($mock, null);
         $result->setFetchMode(PDO::FETCH_OBJ);
 
         self::assertEquals(5, $result->getFetchMode());
@@ -67,15 +68,64 @@ final class ResultTest extends TestCase
      */
     public function testFetchModeRange(): void
     {
-        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $stub->expects($this->any())
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock->expects($this->any())
             ->method('fetch')
             ->willReturnCallback(fn() => new stdClass());
         $result = new Result();
-        $result->initialize($stub, null);
+        $result->initialize($mock, null);
         $result->setFetchMode(PDO::FETCH_NAMED);
         self::assertEquals(11, $result->getFetchMode());
         self::assertInstanceOf('stdClass', $result->current());
+    }
+
+    public function testCountWithNullRowCountDelegatesToPdoStatement(): void
+    {
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock->expects($this->once())
+            ->method('rowCount')
+            ->willReturn(4);
+
+        $result = new Result();
+        $result->initialize($mock, null, null);
+
+        self::assertSame(4, $result->count());
+    }
+
+    public function testCountWithZeroRowCountReturnsZeroWithoutQueryingPdo(): void
+    {
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock->expects($this->never())
+            ->method('rowCount');
+
+        $result = new Result();
+        $result->initialize($mock, null, 0);
+
+        self::assertSame(0, $result->count());
+    }
+
+    public function testCountWithIntRowCountReturnsValueWithoutQueryingPdo(): void
+    {
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock->expects($this->never())
+            ->method('rowCount');
+
+        $result = new Result();
+        $result->initialize($mock, null, 7);
+
+        self::assertSame(7, $result->count());
+    }
+
+    public function testCountWithClosureRowCountInvokesClosure(): void
+    {
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock->expects($this->never())
+            ->method('rowCount');
+
+        $result = new Result();
+        $result->initialize($mock, null, fn() => 3);
+
+        self::assertSame(3, $result->count());
     }
 
     public function testMultipleRewind(): void
@@ -86,15 +136,15 @@ final class ResultTest extends TestCase
         ];
         $position = 0;
 
-        $stub = $this->getMockBuilder(PDOStatement::class)->getMock();
-        assert($stub instanceof PDOStatement); // to suppress IDE type warnings
-        $stub->expects($this->any())
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        assert($mock instanceof PDOStatement); // to suppress IDE type warnings
+        $mock->expects($this->any())
             ->method('fetch')
             ->willReturnCallback(function () use ($data, &$position) {
                 return $data[$position++];
             });
         $result = new Result();
-        $result->initialize($stub, null);
+        $result->initialize($mock, null);
 
         $result->rewind();
         $result->rewind();
