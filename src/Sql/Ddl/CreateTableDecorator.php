@@ -28,13 +28,15 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
     protected $columnOptionSortOrder = [
         'unsigned'      => 0,
         'zerofill'      => 1,
-        'identity'      => 2,
-        'serial'        => 2,
-        'autoincrement' => 2,
-        'comment'       => 3,
-        'columnformat'  => 4,
-        'format'        => 4,
-        'storage'       => 5,
+        'charset'       => 2,
+        'collate'       => 3,
+        'identity'      => 4,
+        'serial'        => 4,
+        'autoincrement' => 4,
+        'comment'       => 5,
+        'columnformat'  => 6,
+        'format'        => 6,
+        'storage'       => 7,
     ];
 
     public function setSubject(
@@ -111,6 +113,14 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                         break;
                     case 'zerofill':
                         $insert = ' ZEROFILL';
+                        $j      = 0;
+                        break;
+                    case 'charset':
+                        $insert = ' CHARACTER SET ' . $coValue;
+                        $j      = 0;
+                        break;
+                    case 'collate':
+                        $insert = ' COLLATE ' . $coValue;
                         $j      = 0;
                         break;
                     case 'identity':

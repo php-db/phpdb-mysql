@@ -27,6 +27,8 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
     /** @var array{
      *  unsigned: int,
      *  zerofill: int,
+     *  charset: int,
+     *  collate: int,
      *  identity: int,
      *  serial: int,
      *  autoincrement: int,
@@ -40,14 +42,16 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
     protected array $columnOptionSortOrder = [
         'unsigned'      => 0,
         'zerofill'      => 1,
-        'identity'      => 2,
-        'serial'        => 2,
-        'autoincrement' => 2,
-        'comment'       => 3,
-        'columnformat'  => 4,
-        'format'        => 4,
-        'storage'       => 5,
-        'after'         => 6,
+        'charset'       => 2,
+        'collate'       => 3,
+        'identity'      => 4,
+        'serial'        => 4,
+        'autoincrement' => 4,
+        'comment'       => 5,
+        'columnformat'  => 6,
+        'format'        => 6,
+        'storage'       => 7,
+        'after'         => 8,
     ];
 
     public function setSubject(
@@ -115,6 +119,14 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
                         $insert = ' ZEROFILL';
                         $j      = 0;
                         break;
+                    case 'charset':
+                        $insert = ' CHARACTER SET ' . $coValue;
+                        $j      = 0;
+                        break;
+                    case 'collate':
+                        $insert = ' COLLATE ' . $coValue;
+                        $j      = 0;
+                        break;
                     case 'identity':
                     case 'serial':
                     case 'autoincrement':
@@ -177,6 +189,14 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
                         break;
                     case 'zerofill':
                         $insert = ' ZEROFILL';
+                        $j      = 0;
+                        break;
+                    case 'charset':
+                        $insert = ' CHARACTER SET ' . $coValue;
+                        $j      = 0;
+                        break;
+                    case 'collate':
+                        $insert = ' COLLATE ' . $coValue;
                         $j      = 0;
                         break;
                     case 'identity':
