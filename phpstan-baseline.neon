@@ -55,12 +55,6 @@ parameters:
 			path: src/Driver.php
 
 		-
-			message: '#^Method PhpDb\\Mysql\\Driver\:\:getResultPrototype\(\) should return PhpDb\\Mysql\\Result but returns PhpDb\\Adapter\\Driver\\ResultInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Driver.php
-
-		-
 			message: '#^Parameter \#1 \$resource \(mysqli\|mysqli_stmt\|PhpDb\\Mysql\\mysqli_result\) of method PhpDb\\Mysql\\Driver\:\:createResult\(\) should be compatible with parameter \$resource \(resource\) of method PhpDb\\Adapter\\Driver\\DriverInterface\:\:createResult\(\)$#'
 			identifier: method.childParameterType
 			count: 1

@@ -14,12 +14,28 @@ use PhpDb\Adapter\Exception;
 
 use function array_diff_key;
 use function implode;
+use function is_array;
 use function is_int;
 use function is_string;
 use function strtolower;
 
 class Connection extends AbstractPdoConnection
 {
+    /**
+     * Constructor
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    public function __construct(
+        PDO|array $connectionParameters
+    ) {
+        if (is_array($connectionParameters)) {
+            $this->setConnectionParameters($connectionParameters);
+        } elseif ($connectionParameters instanceof PDO) {
+            $this->setResource($connectionParameters);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
