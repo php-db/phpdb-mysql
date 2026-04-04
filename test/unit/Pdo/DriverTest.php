@@ -40,14 +40,6 @@ final class DriverTest extends TestCase
         );
     }
 
-    public function testGetDatabasePlatformName(): void
-    {
-        // Test platform name for SqlServer
-        //$this->pdo->getConnection()->setConnectionParameters(['driver' => 'pdo_mysql']);
-        self::assertEquals('Mysql', $this->pdo->getDatabasePlatformName());
-        self::assertEquals('MySQL', $this->pdo->getDatabasePlatformName(DriverInterface::NAME_FORMAT_NATURAL));
-    }
-
     /** @psalm-return array<array-key, array{0: int|string, 1: null|string, 2: string}> */
     public static function getParamsAndType(): array
     {

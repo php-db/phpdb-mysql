@@ -22,8 +22,6 @@ use function is_string;
 
 final class Driver implements DriverInterface, ProfilerAwareInterface
 {
-    use DatabasePlatformNameTrait;
-
     protected ?ProfilerInterface $profiler = null;
 
     /** @var array */

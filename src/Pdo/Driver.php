@@ -14,19 +14,20 @@ use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverAwareInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
-use PhpDb\Mysql\DatabasePlatformNameTrait;
 
 class Driver extends AbstractPdo
 {
-    use DatabasePlatformNameTrait;
-
     public function __construct(
-        protected PdoConnectionInterface|PDO $connection,
-        protected StatementInterface&PdoDriverAwareInterface $statementPrototype,
-        protected ResultInterface $resultPrototype,
+        (PdoConnectionInterface&PdoDriverAwareInterface)|PDO $connection,
+        StatementInterface&PdoDriverAwareInterface $statementPrototype,
+        ResultInterface $resultPrototype,
         array $features = [],
     ) {
-        if ($this->connection instanceof PdoDriverAwareInterface) {
+        $this->connection         = $connection;
+        $this->statementPrototype = $statementPrototype;
+        $this->resultPrototype    = $resultPrototype;
+
+        if (! $this->connection instanceof PDO) {
             $this->connection->setDriver($this);
         }
 
