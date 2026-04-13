@@ -22,8 +22,6 @@ use function is_string;
 
 final class Driver implements DriverInterface, ProfilerAwareInterface
 {
-    use DatabasePlatformNameTrait;
-
     protected ?ProfilerInterface $profiler = null;
 
     /** @var array */
@@ -33,8 +31,8 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
 
     public function __construct(
         protected readonly ConnectionInterface&Connection $connection,
-        protected readonly StatementInterface&Statement $statementPrototype,
-        protected readonly ResultInterface $resultPrototype,
+        protected readonly StatementInterface&Statement $statementPrototype = new Statement(),
+        protected readonly ResultInterface&Result $resultPrototype = new Result(),
         array $options = []
     ) {
         $this->checkEnvironment();
@@ -44,6 +42,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         if ($this->connection instanceof DriverAwareInterface) {
             $this->connection->setDriver($this);
         }
+
         if ($this->statementPrototype instanceof DriverAwareInterface) {
             $this->statementPrototype->setDriver($this);
         }
