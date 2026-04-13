@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS test (
     name VARCHAR(255) NOT NULL,
     value VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 INSERT INTO test (name, value) VALUES
 ('foo', 'bar'),
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS test_charset (
     field$ VARCHAR(255) NOT NULL,
     field_ VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 INSERT INTO test_charset (field$, field_) VALUES
 ('foo', 'bar'),
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS test_audit_trail (
     test_value_new VARCHAR(255) NOT NULL,
     changed TIMESTAMP,
     PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 DROP VIEW IF EXISTS test_view;
 CREATE VIEW test_view
