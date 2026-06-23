@@ -27,7 +27,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
     protected Driver $driver;
 
-    protected ?ProfilerInterface $profiler;
+    protected ?ProfilerInterface $profiler = null;
 
     protected string $sql = '';
 
