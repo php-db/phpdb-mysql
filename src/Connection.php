@@ -286,8 +286,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             $flags |= MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
         }
 
-        if ($params->hasDriverOptions())
-            return $flags;
+        return $flags;
     }
 
     /**

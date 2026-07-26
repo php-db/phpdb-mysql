@@ -67,14 +67,4 @@ final readonly class MysqliConnectionParameters
             ssl          : MysqliSslOptions::fromArray($params),
         );
     }
-
-    public function hasDriverOption(string $key): bool
-    {
-        return $this->driverOptions[$key] ?? null !== null;
-    }
-
-    public function hasDriverOptions(): bool
-    {
-        return [] !== $this->driverOptions;
-    }
 }
