@@ -56,15 +56,25 @@ final readonly class MysqliConnectionParameters
         unset($result);
 
         return new self(
-            hostname: $hostname,
-            username: $username,
-            password: $password,
-            database: $database,
-            port: $port,
-            socket: $socket,
-            charset: $charset,
+            hostname     : $hostname,
+            username     : $username,
+            password     : $password,
+            database     : $database,
+            port         : $port,
+            socket       : $socket,
+            charset      : $charset,
             driverOptions: $driverOptions,
-            ssl: MysqliSslOptions::fromArray($params),
+            ssl          : MysqliSslOptions::fromArray($params),
         );
+    }
+
+    public function hasDriverOption(string $key): bool
+    {
+        return $this->driverOptions[$key] ?? null !== null;
+    }
+
+    public function hasDriverOptions(): bool
+    {
+        return [] !== $this->driverOptions;
     }
 }

@@ -195,8 +195,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      * Also normalizes the raw array into a {@see MysqliConnectionParameters} value
      * object, cached for the lifetime of the connection so that {@see connect()}
      * does not need to re-parse the raw array on every call.
-     *
-     * @return $this Provides a fluent interface
      */
     #[Override]
     public function setConnectionParameters(array $connectionParameters): ConnectionInterface
@@ -288,7 +286,8 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             $flags |= MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
         }
 
-        return $flags;
+        if ($params->hasDriverOptions())
+            return $flags;
     }
 
     /**
