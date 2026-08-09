@@ -1,45 +1,34 @@
 name: "Continuous Integration"
 
+# Branch protection blocks direct pushes to release branches, and pull_request
+# already re-triggers on every commit pushed to a PR branch (synchronize), so
+# there's no push:branches trigger here — only PRs (targeting numbered
+# release branches) and pushed version tags.
 on:
   pull_request:
-  push:
     branches:
+      - "[0-9]+.[0-9]+.x"
+  push:
     tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
-  matrix:
-    name: Generate job matrix
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.matrix.outputs.matrix }}
-    steps:
-      - name: Gather CI configuration
-        id: matrix
-        uses: laminas/laminas-ci-matrix-action@v1
-
   qa:
-    name: QA Checks
-    needs: [matrix]
-    runs-on: ${{ matrix.operatingSystem }}
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
-    steps:
-      - name: ${{ matrix.name }}
-        uses: laminas/laminas-continuous-integration-action@v1
-        with:
-          job: ${{ matrix.job }}
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_HOST: '%'
-          MYSQL_DATABASE: 'phpdb_test'
-          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 3
-        ports:
-          - 3306
+    uses: php-db/phpdb-qa-tools/.github/workflows/continuous-integration.yml@0.1.x
+    # CODECOV_TOKEN (org-wide) and INFECTION_DASHBOARD_API_KEY (per-repo) both
+    # come through here, whichever scope actually defines each one.
+    secrets: inherit
+    with:
+      php-versions: '["8.3", "8.4", "8.5"]'
+      run-integration: true
+      # Seeded MySQL container for integration tests; DB seeding itself is
+      # handled by the ListenerExtension PHPUnit bootstrap, not this workflow.
+      db-image: "mysql:8.0"
+      db-port: "3306"
+      db-env-json: '{"MYSQL_ROOT_HOST":"%","MYSQL_DATABASE":"phpdb_test","MYSQL_ALLOW_EMPTY_PASSWORD":"true"}'
+      db-health-cmd: "mysqladmin ping -h127.0.0.1 --silent"
+      enable-codecov: true
+      enable-infection: true
+      # Canonical leg for coverage + mutation testing (highest supported PHP).
+      coverage-php-version: "8.5"
+
