@@ -163,8 +163,9 @@ class Connection extends AbstractPdoConnection
     {
         try {
             return $this->resource->lastInsertId($name);
-        } catch (\Exception) {
-            // do nothing
+        } catch (PDOException) {
+            // not all pdo drivers support lastInsertId; fall through to false
+            // @mago-expect lint:no-empty-catch-clause
         }
 
         return false;

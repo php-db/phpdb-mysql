@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Mysql\Pdo;
 
-use Exception;
 use Override;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Adapter\Exception\RuntimeException;
@@ -33,7 +32,9 @@ final class ConnectionTest extends TestCase
         ]);
         try {
             $connection->connect();
-        } catch (Exception) {
+        } catch (InvalidConnectionParametersException|RuntimeException) {
+            // connection failure is expected/ignored here; only dsn construction is under test
+            // @mago-expect lint:no-empty-catch-clause
         }
         $responseString = $connection->getDsn();
 
@@ -54,7 +55,9 @@ final class ConnectionTest extends TestCase
         $this->connection->setConnectionParameters(['dsn' => $dsn]);
         try {
             $this->connection->connect();
-        } catch (Exception) {
+        } catch (InvalidConnectionParametersException|RuntimeException) {
+            // connection failure is expected/ignored here; only dsn construction is under test
+            // @mago-expect lint:no-empty-catch-clause
         }
         $responseString = $this->connection->getDsn();
 
