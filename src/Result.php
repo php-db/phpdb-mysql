@@ -330,6 +330,8 @@ final class Result implements Iterator, ResultInterface
 
     /**
      * Load from mysqli result
+     *
+     * @throws Exception\RuntimeException
      */
     protected function loadFromMysqliResult(): bool
     {
