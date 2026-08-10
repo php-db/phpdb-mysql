@@ -32,7 +32,7 @@ final class PlatformInterfaceFactoryTest extends TestCase
         $instance = $factory(
             $this->container,
             PlatformInterface::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
 
         self::assertInstanceOf(PlatformInterface::class, $instance);

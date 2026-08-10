@@ -33,12 +33,6 @@ trait SetupTrait
 
     protected DriverInterface|string|null $driver = null;
 
-    protected function setUp(): void
-    {
-        $this->getAdapter();
-        parent::setUp();
-    }
-
     protected function getAdapter(array $config = []): AdapterInterface
     {
         $connectionConfig = [
@@ -62,12 +56,12 @@ trait SetupTrait
         // merge service config from both PhpDb and PhpDb\Adapter\Mysql
         $serviceManagerConfig = ArrayUtils::merge(
             (new LaminasDbConfigProvider())()['dependencies'],
-            (new ConfigProvider())()['dependencies']
+            (new ConfigProvider())()['dependencies'],
         );
 
         $serviceManagerConfig = ArrayUtils::merge(
             $serviceManagerConfig,
-            $connectionConfig
+            $connectionConfig,
         );
 
         // prefer passed config over environment variables
@@ -81,7 +75,7 @@ trait SetupTrait
                 'services' => [
                     'config' => $serviceManagerConfig,
                 ],
-            ]
+            ],
         );
 
         $this->config    = $serviceManagerConfig;
@@ -99,5 +93,11 @@ trait SetupTrait
     protected function getHostname(): string
     {
         return $this->getConfig()[AdapterInterface::class]['connection']['hostname'];
+    }
+
+    protected function setUp(): void
+    {
+        $this->getAdapter();
+        parent::setUp();
     }
 }

@@ -26,15 +26,6 @@ final class ConnectionTransactionsTest extends TestCase
 {
     protected ConnectionWrapper $wrapper;
 
-    /**
-     * {@inheritDoc}
-     */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->wrapper = new ConnectionWrapper();
-    }
-
     public function testBeginTransactionReturnsInstanceOfConnection(): void
     {
         self::assertInstanceOf(Connection::class, $this->wrapper->beginTransaction());
@@ -157,5 +148,14 @@ final class ConnectionTransactionsTest extends TestCase
 
         self::assertFalse($this->wrapper->inTransaction());
         self::assertSame(0, $this->wrapper->getNestedTransactionsCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    protected function setUp(): void
+    {
+        $this->wrapper = new ConnectionWrapper();
     }
 }

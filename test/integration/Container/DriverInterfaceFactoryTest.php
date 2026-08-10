@@ -28,7 +28,7 @@ final class DriverInterfaceFactoryTest extends TestCase
         $driver  = $factory(
             $this->container,
             DriverInterface::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
         self::assertInstanceOf(DriverInterface::class, $driver);
         $this->assertInstanceOf(Driver::class, $driver);
@@ -41,7 +41,7 @@ final class DriverInterfaceFactoryTest extends TestCase
         $factory = new DriverInterfaceFactory();
         $factory(
             $this->container,
-            Connection::class
+            Connection::class,
         );
     }
 }

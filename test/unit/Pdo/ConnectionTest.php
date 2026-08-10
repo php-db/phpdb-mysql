@@ -19,41 +19,6 @@ final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->connection = new Connection([]);
-    }
-
-    /**
-     * Test getResource method tries to connect to  the database, it should never return null
-     */
-    public function testResource(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->connection->getResource();
-    }
-
-    /**
-     * Test getConnectedDsn returns a DSN string if it has been set
-     */
-    public function testGetDsn(): void
-    {
-        $dsn = "mysql:";
-        $this->connection->setConnectionParameters(['dsn' => $dsn]);
-        try {
-            $this->connection->connect();
-        } catch (Exception) {
-        }
-        $responseString = $this->connection->getDsn();
-
-        self::assertEquals($dsn, $responseString);
-    }
-
     #[Group('2622')]
     public function testArrayOfConnectionParametersCreatesCorrectDsn(): void
     {
@@ -77,11 +42,27 @@ final class ConnectionTest extends TestCase
         self::assertStringContainsString('unix_socket=/var/run/mysqld/mysqld.sock', $responseString);
     }
 
+    /**
+     * Test getConnectedDsn returns a DSN string if it has been set
+     */
+    public function testGetDsn(): void
+    {
+        $dsn = 'mysql:';
+        $this->connection->setConnectionParameters(['dsn' => $dsn]);
+        try {
+            $this->connection->connect();
+        } catch (Exception) {
+        }
+        $responseString = $this->connection->getDsn();
+
+        self::assertEquals($dsn, $responseString);
+    }
+
     public function testHostnameAndUnixSocketThrowsInvalidConnectionParametersException(): void
     {
         $this->expectException(InvalidConnectionParametersException::class);
         $this->expectExceptionMessage(
-            'Ambiguous connection parameters, both hostname and unix_socket parameters were set'
+            'Ambiguous connection parameters, both hostname and unix_socket parameters were set',
         );
 
         $connection = new Connection([
@@ -92,5 +73,24 @@ final class ConnectionTest extends TestCase
             'unix_socket' => '/var/run/mysqld/mysqld.sock',
         ]);
         $connection->connect();
+    }
+
+    /**
+     * Test getResource method tries to connect to  the database, it should never return null
+     */
+    public function testResource(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->connection->getResource();
+    }
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    #[Override]
+    protected function setUp(): void
+    {
+        $this->connection = new Connection([]);
     }
 }

@@ -12,13 +12,6 @@ use PhpDb\Metadata\MetadataInterface;
 
 final class ConfigProvider
 {
-    public function __invoke(): array
-    {
-        return [
-            'dependencies' => $this->getDependencies(),
-        ];
-    }
-
     public function getDependencies(): array
     {
         return [
@@ -48,6 +41,13 @@ final class ConfigProvider
                 PdoStatement::class      => Container\PdoStatementFactory::class,
                 PlatformInterface::class => Container\PlatformInterfaceFactory::class,
             ],
+        ];
+    }
+
+    public function __invoke(): array
+    {
+        return [
+            'dependencies' => $this->getDependencies(),
         ];
     }
 }

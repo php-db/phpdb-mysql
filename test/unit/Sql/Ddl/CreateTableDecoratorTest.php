@@ -22,59 +22,17 @@ final class CreateTableDecoratorTest extends TestCase
 {
     protected AdapterPlatform $platform;
 
-    protected function setUp(): void
-    {
-        $driver         = new Driver(
-            $this->createMock(Connection::class),
-            $this->createMock(Statement::class),
-            $this->createMock(Result::class),
-        );
-        $this->platform = new AdapterPlatform($driver);
-    }
-
-    private function buildSql(CreateTable $table): string
-    {
-        $decorator = new CreateTableDecorator();
-        $decorator->setSubject($table);
-
-        return $decorator->getSqlString($this->platform);
-    }
-
-    public function testColumnCharset(): void
+    public function testCharsetAppearsAfterUnsigned(): void
     {
         $table = new CreateTable('test');
-        $col   = new Column\Varchar('name', 255);
+        $col   = new Column\Integer('id');
+        $col->setOption('unsigned', true);
         $col->setOption('charset', 'utf8mb3');
         $table->addColumn($col);
 
         $sql = $this->buildSql($table);
 
-        self::assertStringContainsString('CHARACTER SET utf8mb3', $sql);
-    }
-
-    public function testColumnCollate(): void
-    {
-        $table = new CreateTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $table->addColumn($col);
-
-        $sql = $this->buildSql($table);
-
-        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
-    }
-
-    public function testColumnCharsetAndCollate(): void
-    {
-        $table = new CreateTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('charset', 'utf8mb3');
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $table->addColumn($col);
-
-        $sql = $this->buildSql($table);
-
-        self::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci', $sql);
+        self::assertMatchesRegularExpression('/UNSIGNED CHARACTER SET utf8mb3/', $sql);
     }
 
     public function testCharsetAppearsBeforeNotNull(): void
@@ -94,31 +52,41 @@ final class CreateTableDecoratorTest extends TestCase
         );
     }
 
-    public function testCharsetAppearsAfterUnsigned(): void
+    public function testColumnCharset(): void
     {
         $table = new CreateTable('test');
-        $col   = new Column\Integer('id');
-        $col->setOption('unsigned', true);
+        $col   = new Column\Varchar('name', 255);
         $col->setOption('charset', 'utf8mb3');
         $table->addColumn($col);
 
         $sql = $this->buildSql($table);
 
-        self::assertMatchesRegularExpression('/UNSIGNED CHARACTER SET utf8mb3/', $sql);
+        self::assertStringContainsString('CHARACTER SET utf8mb3', $sql);
     }
 
-    public function testUnsignedOption(): void
+    public function testColumnCharsetAndCollate(): void
     {
         $table = new CreateTable('test');
-        $col   = new Column\Integer('id');
-        $col->setOption('unsigned', true);
-        $col->setOption('auto_increment', true);
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption('charset', 'utf8mb3');
+        $col->setOption('collate', 'utf8mb3_unicode_ci');
         $table->addColumn($col);
 
         $sql = $this->buildSql($table);
 
-        self::assertStringContainsString('UNSIGNED', $sql);
-        self::assertStringContainsString('AUTO_INCREMENT', $sql);
+        self::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci', $sql);
+    }
+
+    public function testColumnCollate(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption('collate', 'utf8mb3_unicode_ci');
+        $table->addColumn($col);
+
+        $sql = $this->buildSql($table);
+
+        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
     }
 
     public function testCommentOption(): void
@@ -155,5 +123,37 @@ final class CreateTableDecoratorTest extends TestCase
         self::assertStringContainsString('UNSIGNED', $sql);
         self::assertStringContainsString('AUTO_INCREMENT', $sql);
         self::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL', $sql);
+    }
+
+    public function testUnsignedOption(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Integer('id');
+        $col->setOption('unsigned', true);
+        $col->setOption('auto_increment', true);
+        $table->addColumn($col);
+
+        $sql = $this->buildSql($table);
+
+        self::assertStringContainsString('UNSIGNED', $sql);
+        self::assertStringContainsString('AUTO_INCREMENT', $sql);
+    }
+
+    protected function setUp(): void
+    {
+        $driver = new Driver(
+            $this->createMock(Connection::class),
+            $this->createMock(Statement::class),
+            $this->createMock(Result::class),
+        );
+        $this->platform = new AdapterPlatform($driver);
+    }
+
+    private function buildSql(CreateTable $table): string
+    {
+        $decorator = new CreateTableDecorator();
+        $decorator->setSubject($table);
+
+        return $decorator->getSqlString($this->platform);
     }
 }

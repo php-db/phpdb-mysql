@@ -21,13 +21,13 @@ final class DriverInterfaceFactory
     public function __invoke(
         ContainerInterface&ServiceManager $container,
         string $requestedName,
-        ?array $options = null
+        ?array $options = null,
     ): DriverInterface&Driver {
         if (! isset($options['connection'])) {
             throw ContainerException::forService(
                 Driver::class,
                 self::class,
-                '$options["connection"] must contain an array of connection configuration.'
+                '$options["connection"] must contain an array of connection configuration.',
             );
         }
 
@@ -37,7 +37,7 @@ final class DriverInterfaceFactory
         /** @var StatementInterface&Statement $statementInstance */
         $statementInstance = $container->build(
             Statement::class,
-            $options['options'] ?? []
+            $options['options'] ?? [],
         );
 
         /** @var ResultInterface&Result $resultInstance */
@@ -49,7 +49,7 @@ final class DriverInterfaceFactory
             $connectionInstance,
             $statementInstance,
             $resultInstance,
-            $options
+            $options,
         );
     }
 }

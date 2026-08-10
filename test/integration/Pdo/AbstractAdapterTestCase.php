@@ -30,15 +30,6 @@ abstract class AbstractAdapterTestCase extends TestCase
         $this->assertInstanceOf(ConnectionInterface::class, $connection);
     }
 
-    public function testGetCurrentSchema(): void
-    {
-        /** @var AdapterInterface&SchemaAwareInterface&Adapter $adapter */
-        $adapter = $this->getAdapter();
-        $schema  = $adapter->getCurrentSchema();
-        self::assertIsString($schema);
-        self::assertNotEmpty($schema);
-    }
-
     public function testDriverDisconnectAfterQuoteWithPlatform(): void
     {
         $isTcpConnection = $this->isTcpConnection();
@@ -75,6 +66,15 @@ abstract class AbstractAdapterTestCase extends TestCase
         if ($isTcpConnection) {
             self::assertFalse($adapter->getDriver()->getConnection()->isConnected());
         }
+    }
+
+    public function testGetCurrentSchema(): void
+    {
+        /** @var AdapterInterface&SchemaAwareInterface&Adapter $adapter */
+        $adapter = $this->getAdapter();
+        $schema  = $adapter->getCurrentSchema();
+        self::assertIsString($schema);
+        self::assertNotEmpty($schema);
     }
 
     protected function isTcpConnection(): bool

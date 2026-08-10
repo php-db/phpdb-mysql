@@ -19,7 +19,7 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
 
     #[Override]
     public function setSubject(
-        SqlInterface|PreparableSqlInterface|null $subject
+        SqlInterface|PreparableSqlInterface|null $subject,
     ): PlatformDecoratorInterface {
         $this->subject = $subject;
         return $this;
@@ -39,7 +39,7 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
     protected function processLimit(
         PlatformInterface $platform,
         ?DriverInterface $driver = null,
-        ?ParameterContainer $parameterContainer = null
+        ?ParameterContainer $parameterContainer = null,
     ): ?array {
         if ($this->limit === null && $this->offset !== null) {
             return [''];
@@ -60,7 +60,7 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
     protected function processOffset(
         PlatformInterface $platform,
         ?DriverInterface $driver = null,
-        ?ParameterContainer $parameterContainer = null
+        ?ParameterContainer $parameterContainer = null,
     ): ?array {
         if ($this->offset === null) {
             return null;

@@ -29,7 +29,7 @@ final class PdoConnectionInterfaceFactoryTest extends TestCase
         $instance = $factory(
             $this->container,
             PdoConnectionInterface::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
         self::assertInstanceOf(ConnectionInterface::class, $instance);
         self::assertInstanceOf(PdoConnectionInterface::class, $instance);
@@ -43,7 +43,7 @@ final class PdoConnectionInterfaceFactoryTest extends TestCase
         $factory = new PdoConnectionInterfaceFactory();
         $factory(
             $this->container,
-            PdoConnectionInterface::class
+            PdoConnectionInterface::class,
         );
     }
 }

@@ -21,13 +21,13 @@ final class PdoDriverInterfaceFactory
     public function __invoke(
         ContainerInterface&ServiceManager $container,
         string $requestedName,
-        ?array $options = null
+        ?array $options = null,
     ): PdoDriverInterface&Driver {
         if (! isset($options['connection'])) {
             throw ContainerException::forService(
                 Driver::class,
                 self::class,
-                '$options["connection"] must contain an array of connection configuration.'
+                '$options["connection"] must contain an array of connection configuration.',
             );
         }
         /** @var PdoConnectionInterface&Connection $connectionInstance */
@@ -36,7 +36,7 @@ final class PdoDriverInterfaceFactory
         /** @var StatementInterface&Statement $statementInstance */
         $statementInstance = $container->build(
             Statement::class,
-            $options['options'] ?? []
+            $options['options'] ?? [],
         );
 
         /** @var ResultInterface&Result $resultInstance */
@@ -48,7 +48,7 @@ final class PdoDriverInterfaceFactory
             $connectionInstance,
             $statementInstance,
             $resultInstance,
-            $options['pdo_features'] ?? []
+            $options['pdo_features'] ?? [],
         );
     }
 }

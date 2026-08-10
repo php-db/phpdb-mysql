@@ -40,7 +40,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
     ];
 
     public function setSubject(
-        PreparableSqlInterface|SqlInterface|null $subject
+        PreparableSqlInterface|SqlInterface|null $subject,
     ): PlatformDecoratorInterface {
         $this->subject = $subject;
 
@@ -63,11 +63,11 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                 switch ($needle) {
                     case 'REFERENCES':
                         $insertStart[2] = ! isset($insertStart[2]) ? $insertPos : $insertStart[2];
-                        // no break
+                    // no break
                     case 'PRIMARY':
                     case 'UNIQUE':
                         $insertStart[1] = ! isset($insertStart[1]) ? $insertPos : $insertStart[1];
-                        // no break
+                    // no break
                     default:
                         $insertStart[0] = ! isset($insertStart[0]) ? $insertPos : $insertStart[0];
                 }
@@ -161,15 +161,6 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
     }
 
     /**
-     * @param string $name
-     * @return string
-     */
-    private function normalizeColumnOption($name)
-    {
-        return strtolower(str_replace(['-', '_', ' '], '', $name));
-    }
-
-    /**
      * @param string $columnA
      * @param string $columnB
      * @return int
@@ -184,5 +175,14 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         $columnB = $this->columnOptionSortOrder[$columnB] ?? count($this->columnOptionSortOrder);
 
         return $columnA - $columnB;
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    private function normalizeColumnOption($name)
+    {
+        return strtolower(str_replace(['-', '_', ' '], '', $name));
     }
 }

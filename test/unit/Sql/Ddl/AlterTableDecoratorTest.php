@@ -22,22 +22,16 @@ final class AlterTableDecoratorTest extends TestCase
 {
     protected AdapterPlatform $platform;
 
-    protected function setUp(): void
+    public function testAddColumnAfter(): void
     {
-        $driver         = new Driver(
-            $this->createMock(Connection::class),
-            $this->createMock(Statement::class),
-            $this->createMock(Result::class),
-        );
-        $this->platform = new AdapterPlatform($driver);
-    }
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption('after', 'id');
+        $alter->addColumn($col);
 
-    private function buildSql(AlterTable $table): string
-    {
-        $decorator = new AlterTableDecorator();
-        $decorator->setSubject($table);
+        $sql = $this->buildSql($alter);
 
-        return $decorator->getSqlString($this->platform);
+        self::assertStringContainsString('AFTER `id`', $sql);
     }
 
     public function testAddColumnCharset(): void
@@ -50,18 +44,6 @@ final class AlterTableDecoratorTest extends TestCase
         $sql = $this->buildSql($alter);
 
         self::assertStringContainsString('CHARACTER SET utf8mb3', $sql);
-    }
-
-    public function testAddColumnCollate(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $alter->addColumn($col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
     }
 
     public function testAddColumnCharsetAndCollate(): void
@@ -94,6 +76,32 @@ final class AlterTableDecoratorTest extends TestCase
         );
     }
 
+    public function testAddColumnCollate(): void
+    {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption('collate', 'utf8mb3_unicode_ci');
+        $alter->addColumn($col);
+
+        $sql = $this->buildSql($alter);
+
+        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
+    }
+
+    public function testAddColumnUnsigned(): void
+    {
+        $alter = new AlterTable('test');
+        $col   = new Column\Integer('id');
+        $col->setOption('unsigned', true);
+        $col->setOption('auto_increment', true);
+        $alter->addColumn($col);
+
+        $sql = $this->buildSql($alter);
+
+        self::assertStringContainsString('UNSIGNED', $sql);
+        self::assertStringContainsString('AUTO_INCREMENT', $sql);
+    }
+
     public function testChangeColumnCharset(): void
     {
         $alter = new AlterTable('test');
@@ -104,18 +112,6 @@ final class AlterTableDecoratorTest extends TestCase
         $sql = $this->buildSql($alter);
 
         self::assertStringContainsString('CHARACTER SET utf8mb3', $sql);
-    }
-
-    public function testChangeColumnCollate(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $alter->changeColumn('name', $col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
     }
 
     public function testChangeColumnCharsetAndCollate(): void
@@ -135,29 +131,33 @@ final class AlterTableDecoratorTest extends TestCase
         );
     }
 
-    public function testAddColumnAfter(): void
+    public function testChangeColumnCollate(): void
     {
         $alter = new AlterTable('test');
         $col   = new Column\Varchar('name', 255);
-        $col->setOption('after', 'id');
-        $alter->addColumn($col);
+        $col->setOption('collate', 'utf8mb3_unicode_ci');
+        $alter->changeColumn('name', $col);
 
         $sql = $this->buildSql($alter);
 
-        self::assertStringContainsString('AFTER `id`', $sql);
+        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
     }
 
-    public function testAddColumnUnsigned(): void
+    protected function setUp(): void
     {
-        $alter = new AlterTable('test');
-        $col   = new Column\Integer('id');
-        $col->setOption('unsigned', true);
-        $col->setOption('auto_increment', true);
-        $alter->addColumn($col);
+        $driver = new Driver(
+            $this->createMock(Connection::class),
+            $this->createMock(Statement::class),
+            $this->createMock(Result::class),
+        );
+        $this->platform = new AdapterPlatform($driver);
+    }
 
-        $sql = $this->buildSql($alter);
+    private function buildSql(AlterTable $table): string
+    {
+        $decorator = new AlterTableDecorator();
+        $decorator->setSubject($table);
 
-        self::assertStringContainsString('UNSIGNED', $sql);
-        self::assertStringContainsString('AUTO_INCREMENT', $sql);
+        return $decorator->getSqlString($this->platform);
     }
 }

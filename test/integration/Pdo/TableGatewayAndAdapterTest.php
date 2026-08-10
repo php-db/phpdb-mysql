@@ -26,6 +26,11 @@ final class TableGatewayAndAdapterTest extends TestCase
 {
     use SetupTrait;
 
+    public static function connections(): array
+    {
+        return array_fill(0, 200, []);
+    }
+
     /**
      * @throws Exception
      */
@@ -34,9 +39,9 @@ final class TableGatewayAndAdapterTest extends TestCase
     {
         $adapter = $this->getAdapter();
         $adapter->query('SELECT VERSION();');
-        $table  = new TableGateway(
+        $table = new TableGateway(
             'test',
-            $this->adapter
+            $this->adapter,
         );
         $select = $table->getSql()->select()->where(['name' => 'foo']);
         /** @var AbstractResultSet $result */
@@ -50,10 +55,5 @@ final class TableGatewayAndAdapterTest extends TestCase
             $this->adapter->getDriver()->getConnection()->disconnect();
         }
         $this->adapter = null;
-    }
-
-    public static function connections(): array
-    {
-        return array_fill(0, 200, []);
     }
 }

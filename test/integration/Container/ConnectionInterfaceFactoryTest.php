@@ -27,7 +27,7 @@ final class ConnectionInterfaceFactoryTest extends TestCase
         $connection = $factory(
             $this->container,
             Connection::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
 
         self::assertInstanceOf(ConnectionInterface::class, $connection);
@@ -41,7 +41,7 @@ final class ConnectionInterfaceFactoryTest extends TestCase
         $factory = new ConnectionInterfaceFactory();
         $factory(
             $this->container,
-            Connection::class
+            Connection::class,
         );
     }
 }

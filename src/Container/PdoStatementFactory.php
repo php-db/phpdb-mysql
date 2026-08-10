@@ -13,7 +13,7 @@ final class PdoStatementFactory
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,
-        ?array $options = null
+        ?array $options = null,
     ): StatementInterface&Statement {
         return new Statement(options: $options);
     }

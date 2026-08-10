@@ -50,7 +50,7 @@ final class TableGatewayTest extends TestCase
     public function testSelectWithEmptyCurrentWithoutBufferResult(): void
     {
         /** @var AdapterInterface&Adapter $adapter */
-        $adapter      = $this->getAdapter([
+        $adapter = $this->getAdapter([
             'db' => [
                 'driver'  => Driver::class,
                 'options' => [

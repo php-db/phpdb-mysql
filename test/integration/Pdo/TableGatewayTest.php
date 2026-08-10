@@ -29,6 +29,17 @@ final class TableGatewayTest extends TestCase
 {
     use SetupTrait;
 
+    /** @psalm-return array<string, array{0: mixed}> */
+    public static function tableProvider(): array
+    {
+        return [
+            'string'                  => ['test'],
+            'aliased string'          => [['foo' => 'test']],
+            'TableIdentifier'         => [new TableIdentifier('test')],
+            'aliased TableIdentifier' => [['foo' => new TableIdentifier('test')]],
+        ];
+    }
+
     public function testConstructor(): void
     {
         /** @var AdapterInterface&Adapter $adapter */
@@ -37,26 +48,12 @@ final class TableGatewayTest extends TestCase
         $this->assertInstanceOf(TableGateway::class, $tableGateway);
     }
 
-    public function testSelect(): void
-    {
-        $tableGateway = new TableGateway('test', $this->getAdapter(['db' => ['driver' => Driver::class]]));
-        /** @var ResultSet $rowset */
-        $rowset = $tableGateway->select();
-        $this->assertTrue(count($rowset) > 0);
-        /** @var ArrayObject $row */
-        foreach ($rowset as $row) {
-            $this->assertTrue(isset($row->id));
-            $this->assertNotEmpty(isset($row->name));
-            $this->assertNotEmpty(isset($row->value));
-        }
-    }
-
     public function testInsert(): void
     {
         $tableGateway = new TableGateway('test', $this->getAdapter(['db' => ['driver' => Driver::class]]));
 
         $tableGateway->select();
-        $data         = [
+        $data = [
             'name'  => 'test_name',
             'value' => 'test_value',
         ];
@@ -89,24 +86,17 @@ final class TableGatewayTest extends TestCase
         return $tableGateway->getLastInsertValue();
     }
 
-    #[Depends('testInsertWithExtendedCharsetFieldName')]
-    public function testUpdateWithExtendedCharsetFieldName(mixed $id): void
+    public function testSelect(): void
     {
-        $tableGateway = new TableGateway('test_charset', $this->getAdapter(['db' => ['driver' => Driver::class]]));
-
-        $data         = [
-            'field$' => 'test_value3',
-            'field_' => 'test_value4',
-        ];
-        $affectedRows = $tableGateway->update($data, ['id' => $id]);
-        $this->assertEquals(1, $affectedRows);
-        /** @var ResultSet $rowSet */
-        $rowSet = $tableGateway->select(['id' => $id]);
+        $tableGateway = new TableGateway('test', $this->getAdapter(['db' => ['driver' => Driver::class]]));
+        /** @var ResultSet $rowset */
+        $rowset = $tableGateway->select();
+        $this->assertTrue(count($rowset) > 0);
         /** @var ArrayObject $row */
-        $row = $rowSet->current();
-
-        foreach ($data as $key => $value) {
-            $this->assertEquals($row->$key, $value);
+        foreach ($rowset as $row) {
+            $this->assertTrue(isset($row->id));
+            $this->assertNotEmpty(isset($row->name));
+            $this->assertNotEmpty(isset($row->value));
         }
     }
 
@@ -120,21 +110,31 @@ final class TableGatewayTest extends TestCase
             $adapter,
             new MetadataFeature(
                 new Source($adapter),
-            )
+            ),
         );
 
         self::assertInstanceOf(TableGateway::class, $tableGateway);
         self::assertSame($table, $tableGateway->getTable());
     }
 
-    /** @psalm-return array<string, array{0: mixed}> */
-    public static function tableProvider(): array
+    #[Depends('testInsertWithExtendedCharsetFieldName')]
+    public function testUpdateWithExtendedCharsetFieldName(mixed $id): void
     {
-        return [
-            'string'                  => ['test'],
-            'aliased string'          => [['foo' => 'test']],
-            'TableIdentifier'         => [new TableIdentifier('test')],
-            'aliased TableIdentifier' => [['foo' => new TableIdentifier('test')]],
+        $tableGateway = new TableGateway('test_charset', $this->getAdapter(['db' => ['driver' => Driver::class]]));
+
+        $data = [
+            'field$' => 'test_value3',
+            'field_' => 'test_value4',
         ];
+        $affectedRows = $tableGateway->update($data, ['id' => $id]);
+        $this->assertEquals(1, $affectedRows);
+        /** @var ResultSet $rowSet */
+        $rowSet = $tableGateway->select(['id' => $id]);
+        /** @var ArrayObject $row */
+        $row = $rowSet->current();
+
+        foreach ($data as $key => $value) {
+            $this->assertEquals($row->$key, $value);
+        }
     }
 }

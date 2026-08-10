@@ -37,105 +37,8 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
     public function __construct(
         protected ParameterContainer $parameterContainer = new ParameterContainer(),
-        protected bool $bufferResults = false
-    ) {
-    }
-
-    #[Override]
-    public function setDriver(DriverInterface $driver): DriverAwareInterface
-    {
-        $this->driver = $driver;
-        return $this;
-    }
-
-    #[Override]
-    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
-    {
-        $this->profiler = $profiler;
-        return $this;
-    }
-
-    public function getProfiler(): ?ProfilerInterface
-    {
-        return $this->profiler;
-    }
-
-    public function initialize(mysqli $mysqli): static
-    {
-        $this->mysqli = $mysqli;
-        return $this;
-    }
-
-    #[Override]
-    public function getSql(): ?string
-    {
-        return $this->sql;
-    }
-
-    #[Override]
-    public function setSql(?string $sql): StatementContainerInterface
-    {
-        $this->sql = $sql;
-        return $this;
-    }
-
-    #[Override]
-    public function setParameterContainer(
-        ParameterContainer $parameterContainer
-    ): StatementContainerInterface {
-        $this->parameterContainer = $parameterContainer;
-        return $this;
-    }
-
-    /**
-     * @phpstan-ignore method.childReturnType
-     */
-    #[Override]
-    public function getResource(): mysqli_stmt
-    {
-        return $this->resource;
-    }
-
-    public function setResource(mysqli_stmt $mysqliStatement): StatementInterface
-    {
-        $this->resource   = $mysqliStatement;
-        $this->isPrepared = true;
-        return $this;
-    }
-
-    #[Override]
-    public function getParameterContainer(): ?ParameterContainer
-    {
-        return $this->parameterContainer;
-    }
-
-    #[Override]
-    public function isPrepared(): bool
-    {
-        return $this->isPrepared;
-    }
-
-    #[Override]
-    public function prepare(?string $sql = null): StatementInterface
-    {
-        if ($this->isPrepared) {
-            throw new Exception\RuntimeException('This statement has already been prepared');
-        }
-
-        $sql = $sql ?: $this->sql;
-
-        $this->resource = $this->mysqli->prepare($sql);
-        if (! $this->resource instanceof mysqli_stmt) {
-            throw new Exception\InvalidQueryException(
-                'Statement couldn\'t be produced with sql: ' . $sql,
-                $this->mysqli->errno,
-                new Exception\ErrorException($this->mysqli->error, $this->mysqli->errno)
-            );
-        }
-
-        $this->isPrepared = true;
-        return $this;
-    }
+        protected bool $bufferResults = false,
+    ) {}
 
     /**
      * Execute
@@ -187,6 +90,102 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         }
 
         return $this->driver->createResult($this->resource, $buffered);
+    }
+
+    #[Override]
+    public function getParameterContainer(): ?ParameterContainer
+    {
+        return $this->parameterContainer;
+    }
+
+    public function getProfiler(): ?ProfilerInterface
+    {
+        return $this->profiler;
+    }
+
+    /**
+     * @phpstan-ignore method.childReturnType
+     */
+    #[Override]
+    public function getResource(): mysqli_stmt
+    {
+        return $this->resource;
+    }
+
+    #[Override]
+    public function getSql(): ?string
+    {
+        return $this->sql;
+    }
+
+    public function initialize(mysqli $mysqli): static
+    {
+        $this->mysqli = $mysqli;
+        return $this;
+    }
+
+    #[Override]
+    public function isPrepared(): bool
+    {
+        return $this->isPrepared;
+    }
+
+    #[Override]
+    public function prepare(?string $sql = null): StatementInterface
+    {
+        if ($this->isPrepared) {
+            throw new Exception\RuntimeException('This statement has already been prepared');
+        }
+
+        $sql = $sql ?: $this->sql;
+
+        $this->resource = $this->mysqli->prepare($sql);
+        if (! $this->resource instanceof mysqli_stmt) {
+            throw new Exception\InvalidQueryException(
+                'Statement couldn\'t be produced with sql: ' . $sql,
+                $this->mysqli->errno,
+                new Exception\ErrorException($this->mysqli->error, $this->mysqli->errno),
+            );
+        }
+
+        $this->isPrepared = true;
+        return $this;
+    }
+
+    #[Override]
+    public function setDriver(DriverInterface $driver): DriverAwareInterface
+    {
+        $this->driver = $driver;
+        return $this;
+    }
+
+    #[Override]
+    public function setParameterContainer(
+        ParameterContainer $parameterContainer,
+    ): StatementContainerInterface {
+        $this->parameterContainer = $parameterContainer;
+        return $this;
+    }
+
+    #[Override]
+    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
+    {
+        $this->profiler = $profiler;
+        return $this;
+    }
+
+    public function setResource(mysqli_stmt $mysqliStatement): StatementInterface
+    {
+        $this->resource   = $mysqliStatement;
+        $this->isPrepared = true;
+        return $this;
+    }
+
+    #[Override]
+    public function setSql(?string $sql): StatementContainerInterface
+    {
+        $this->sql = $sql;
+        return $this;
     }
 
     /**

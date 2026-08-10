@@ -27,36 +27,13 @@ final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    #[Override]
-    protected function setUp(): void
+    public function testConnectionFails(): void
     {
-        // if (! (bool) getenv('TESTS_PHPDB_ADAPTER_MYSQL')) {
-        //     $this->markTestSkipped('Mysqli test disabled');
-        // }
-        $this->connection = new Connection([]);
-    }
+        $connection = new Connection([]);
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown(): void
-    {
-    }
-
-    public function testSetDriver(): void
-    {
-        $driver = new Driver($this->connection, new Statement(), new Result());
-        self::assertSame($this->connection, $this->connection->setDriver($driver));
-    }
-
-    public function testSetConnectionParameters(): void
-    {
-        self::assertEquals($this->connection, $this->connection->setConnectionParameters([]));
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Connection error');
+        $connection->connect();
     }
 
     public function testGetConnectionParameters(): void
@@ -77,10 +54,21 @@ final class ConnectionTest extends TestCase
                 'password' => '1234',
                 'database' => 'main',
                 'port'     => 123,
-            ]
+            ],
         );
 
         $connection->connect();
+    }
+
+    public function testSetConnectionParameters(): void
+    {
+        self::assertEquals($this->connection, $this->connection->setConnectionParameters([]));
+    }
+
+    public function testSetDriver(): void
+    {
+        $driver = new Driver($this->connection, new Statement(), new Result());
+        self::assertSame($this->connection, $this->connection->setDriver($driver));
     }
 
     public function testSslConnection(): void
@@ -96,7 +84,7 @@ final class ConnectionTest extends TestCase
                 'database' => 'main',
                 'port'     => 123,
                 'use_ssl'  => true,
-            ]
+            ],
         );
 
         $connection->connect();
@@ -118,69 +106,10 @@ final class ConnectionTest extends TestCase
                 'driver_options' => [
                     MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT => true,
                 ],
-            ]
+            ],
         );
 
         $connection->connect();
-    }
-
-    public function testConnectionFails(): void
-    {
-        $connection = new Connection([]);
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Connection error');
-        $connection->connect();
-    }
-
-    /**
-     * Create a mock mysqli
-     *
-     * @param int $flags Expected flags to real_connect
-     */
-    protected function createMockMysqli(int $flags): MockObject
-    {
-        $mysqli = $this->getMockBuilder(mysqli::class)->getMock();
-        $mysqli->expects($flags ? $this->once() : $this->never())
-            ->method('ssl_set')
-            ->with(
-                $this->equalTo(''),
-                $this->equalTo(''),
-                $this->equalTo(''),
-                $this->equalTo(''),
-                $this->equalTo('')
-            );
-
-        if ($flags === 0) {
-            // Do not pass $flags argument if invalid flags provided
-            $mysqli->expects($this->once())
-                ->method('real_connect')
-                ->with(
-                    $this->equalTo('localhost'),
-                    $this->equalTo('superuser'),
-                    $this->equalTo('1234'),
-                    $this->equalTo('main'),
-                    $this->equalTo(123),
-                    $this->equalTo('')
-                )
-                ->willReturn(true);
-            return $mysqli;
-        }
-
-        $mysqli->expects($this->once())
-            ->method('real_connect')
-            ->with(
-                $this->equalTo('localhost'),
-                $this->equalTo('superuser'),
-                $this->equalTo('1234'),
-                $this->equalTo('main'),
-                $this->equalTo(123),
-                $this->equalTo(''),
-                $this->equalTo($flags)
-            )
-            ->willReturn(true);
-
-        return $mysqli;
     }
 
     /**
@@ -201,4 +130,73 @@ final class ConnectionTest extends TestCase
 
         return $connection;
     }
+
+    /**
+     * Create a mock mysqli
+     *
+     * @param int $flags Expected flags to real_connect
+     */
+    protected function createMockMysqli(int $flags): MockObject
+    {
+        $mysqli = $this->getMockBuilder(mysqli::class)->getMock();
+        $mysqli->expects($flags ? $this->once() : $this->never())
+            ->method('ssl_set')
+            ->with(
+                $this->equalTo(''),
+                $this->equalTo(''),
+                $this->equalTo(''),
+                $this->equalTo(''),
+                $this->equalTo(''),
+            );
+
+        if ($flags === 0) {
+            // Do not pass $flags argument if invalid flags provided
+            $mysqli->expects($this->once())
+                ->method('real_connect')
+                ->with(
+                    $this->equalTo('localhost'),
+                    $this->equalTo('superuser'),
+                    $this->equalTo('1234'),
+                    $this->equalTo('main'),
+                    $this->equalTo(123),
+                    $this->equalTo(''),
+                )
+                ->willReturn(true);
+            return $mysqli;
+        }
+
+        $mysqli->expects($this->once())
+            ->method('real_connect')
+            ->with(
+                $this->equalTo('localhost'),
+                $this->equalTo('superuser'),
+                $this->equalTo('1234'),
+                $this->equalTo('main'),
+                $this->equalTo(123),
+                $this->equalTo(''),
+                $this->equalTo($flags),
+            )
+            ->willReturn(true);
+
+        return $mysqli;
+    }
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    #[Override]
+    protected function setUp(): void
+    {
+        // if (! (bool) getenv('TESTS_PHPDB_ADAPTER_MYSQL')) {
+        //     $this->markTestSkipped('Mysqli test disabled');
+        // }
+        $this->connection = new Connection([]);
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void {}
 }

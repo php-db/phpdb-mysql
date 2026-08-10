@@ -46,66 +46,6 @@ final class QueryTest extends TestCase
     }
 
     /**
-     * @throws Exception
-     */
-    #[DataProvider('getQueriesWithRowResult')]
-    public function testQuery(string $query, array $params, array $expected): void
-    {
-        /** @todo Have AdapterInterface implement query */
-        $result = $this->getAdapter()->query($query, $params);
-        $this->assertInstanceOf(ResultSet::class, $result);
-        $current = $result->current();
-        // test as array value
-        $this->assertEquals($expected, (array) $current);
-        // test as object value
-        /** @var string $value */
-        foreach ($expected as $key => $value) {
-            $this->assertEquals($value, $current->$key);
-        }
-    }
-
-    /**
-     * @see https://github.com/zendframework/zend-db/issues/288
-     *
-     * @throws Exception
-     */
-    public function testSetSessionTimeZone(): void
-    {
-        $result = $this->getAdapter()->query('SET @@session.time_zone = :tz', [':tz' => 'SYSTEM']);
-        $this->assertInstanceOf(PdoResult::class, $result);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testSelectWithNotPermittedBindParamName(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->getAdapter()->query('SET @@session.time_zone = :tz$', [':tz$' => 'SYSTEM']);
-    }
-
-    public function testSelectResultCountReturnsActualRowCount(): void
-    {
-        $result = $this->getAdapter()->query('SELECT * FROM test WHERE value = ?', ['bar']);
-        $this->assertInstanceOf(ResultSet::class, $result);
-        self::assertSame(3, $result->count());
-    }
-
-    public function testSelectResultCountWithWhereClause(): void
-    {
-        $result = $this->getAdapter()->query('SELECT * FROM test WHERE name = ?', ['foo']);
-        $this->assertInstanceOf(ResultSet::class, $result);
-        self::assertSame(1, $result->count());
-    }
-
-    public function testSelectResultCountReturnsZeroForNoResults(): void
-    {
-        $result = $this->getAdapter()->query('SELECT * FROM test WHERE name = ?', ['nonexistent']);
-        $this->assertInstanceOf(ResultSet::class, $result);
-        self::assertSame(0, $result->count());
-    }
-
-    /**
      * @see https://github.com/laminas/laminas-db/issues/47
      */
     public function testNamedParameters(): void
@@ -142,5 +82,65 @@ final class QueryTest extends TestCase
             'name'  => 'foo',
             'value' => 'bar',
         ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[DataProvider('getQueriesWithRowResult')]
+    public function testQuery(string $query, array $params, array $expected): void
+    {
+        /** @todo Have AdapterInterface implement query */
+        $result = $this->getAdapter()->query($query, $params);
+        $this->assertInstanceOf(ResultSet::class, $result);
+        $current = $result->current();
+        // test as array value
+        $this->assertEquals($expected, (array) $current);
+        // test as object value
+        /** @var string $value */
+        foreach ($expected as $key => $value) {
+            $this->assertEquals($value, $current->$key);
+        }
+    }
+
+    public function testSelectResultCountReturnsActualRowCount(): void
+    {
+        $result = $this->getAdapter()->query('SELECT * FROM test WHERE value = ?', ['bar']);
+        $this->assertInstanceOf(ResultSet::class, $result);
+        self::assertSame(3, $result->count());
+    }
+
+    public function testSelectResultCountReturnsZeroForNoResults(): void
+    {
+        $result = $this->getAdapter()->query('SELECT * FROM test WHERE name = ?', ['nonexistent']);
+        $this->assertInstanceOf(ResultSet::class, $result);
+        self::assertSame(0, $result->count());
+    }
+
+    public function testSelectResultCountWithWhereClause(): void
+    {
+        $result = $this->getAdapter()->query('SELECT * FROM test WHERE name = ?', ['foo']);
+        $this->assertInstanceOf(ResultSet::class, $result);
+        self::assertSame(1, $result->count());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testSelectWithNotPermittedBindParamName(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->getAdapter()->query('SET @@session.time_zone = :tz$', [':tz$' => 'SYSTEM']);
+    }
+
+    /**
+     * @see https://github.com/zendframework/zend-db/issues/288
+     *
+     * @throws Exception
+     */
+    public function testSetSessionTimeZone(): void
+    {
+        $result = $this->getAdapter()->query('SET @@session.time_zone = :tz', [':tz' => 'SYSTEM']);
+        $this->assertInstanceOf(PdoResult::class, $result);
     }
 }

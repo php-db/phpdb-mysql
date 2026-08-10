@@ -27,7 +27,7 @@ final class PdoStatementFactoryTest extends TestCase
         $statement = $factory(
             $this->container,
             StatementInterface::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
         self::assertInstanceOf(StatementInterface::class, $statement);
         self::assertInstanceOf(Statement::class, $statement);

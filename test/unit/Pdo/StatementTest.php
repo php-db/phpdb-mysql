@@ -30,38 +30,15 @@ final class StatementTest extends TestCase
     protected ?Driver $pdo;
     protected Statement $statement;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    #[Override]
-    protected function setUp(): void
+    public function testExecute(): void
     {
-        $this->statement = new Statement();
-        $this->pdo       = new Driver(
-            $this->createMock(Connection::class),
-            $this->statement,
-            new Result(),
-        );
-    }
+        $mockPdoStatement = $this->createMock(PDOStatement::class);
+        $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
+        $this->statement->initialize($pdo);
+        $this->statement->prepare('SELECT 1');
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown(): void
-    {
-    }
-
-    public function testSetDriver(): void
-    {
-        self::assertInstanceOf(PdoDriverInterface::class, $this->pdo);
-        self::assertEquals($this->statement, $this->statement->setDriver($this->pdo));
-    }
-
-    public function testSetParameterContainer(): void
-    {
-        self::assertSame($this->statement, $this->statement->setParameterContainer(new ParameterContainer()));
+        $result = $this->statement->execute();
+        self::assertInstanceOf(ResultInterface::class, $result);
     }
 
     /**
@@ -82,26 +59,10 @@ final class StatementTest extends TestCase
         self::assertSame($stmt, $this->statement->getResource());
     }
 
-    public function testSetSql(): void
-    {
-        $this->statement->setSql('SELECT 1');
-        self::assertEquals('SELECT 1', $this->statement->getSql());
-    }
-
     public function testGetSql(): void
     {
         $this->statement->setSql('SELECT 1');
         self::assertEquals('SELECT 1', $this->statement->getSql());
-    }
-
-    public function testPrepare(): void
-    {
-        $mockPdoStatement = $this->createMock(PDOStatement::class);
-        $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
-        $this->statement->initialize($pdo);
-
-        $result = $this->statement->prepare('SELECT 1');
-        self::assertInstanceOf(Statement::class, $result);
     }
 
     public function testIsPrepared(): void
@@ -116,14 +77,51 @@ final class StatementTest extends TestCase
         self::assertTrue($this->statement->isPrepared());
     }
 
-    public function testExecute(): void
+    public function testPrepare(): void
     {
         $mockPdoStatement = $this->createMock(PDOStatement::class);
         $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
         $this->statement->initialize($pdo);
-        $this->statement->prepare('SELECT 1');
 
-        $result = $this->statement->execute();
-        self::assertInstanceOf(ResultInterface::class, $result);
+        $result = $this->statement->prepare('SELECT 1');
+        self::assertInstanceOf(Statement::class, $result);
     }
+
+    public function testSetDriver(): void
+    {
+        self::assertInstanceOf(PdoDriverInterface::class, $this->pdo);
+        self::assertEquals($this->statement, $this->statement->setDriver($this->pdo));
+    }
+
+    public function testSetParameterContainer(): void
+    {
+        self::assertSame($this->statement, $this->statement->setParameterContainer(new ParameterContainer()));
+    }
+
+    public function testSetSql(): void
+    {
+        $this->statement->setSql('SELECT 1');
+        self::assertEquals('SELECT 1', $this->statement->getSql());
+    }
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    #[Override]
+    protected function setUp(): void
+    {
+        $this->statement = new Statement();
+        $this->pdo       = new Driver(
+            $this->createMock(Connection::class),
+            $this->statement,
+            new Result(),
+        );
+    }
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void {}
 }

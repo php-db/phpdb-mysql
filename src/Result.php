@@ -43,44 +43,6 @@ final class Result implements Iterator, ResultInterface
     protected mixed $generatedValue;
 
     /**
-     * Initialize
-     *
-     * @throws Exception\InvalidArgumentException
-     * psalm-suppress PossiblyUnusedMethod
-     */
-    public function initialize(
-        mysqli|mysqli_result|mysqli_stmt $resource,
-        mixed $generatedValue,
-        ?bool $isBuffered = null
-    ): ResultInterface {
-        if (
-            ! $resource instanceof mysqli
-            && ! $resource instanceof mysqli_result
-            && ! $resource instanceof mysqli_stmt
-        ) {
-            throw new Exception\InvalidArgumentException('Invalid resource provided.');
-        }
-
-        /**
-         * todo: examine this closely to see if this is the correct behavior
-         */
-        if ($isBuffered !== null) {
-            $this->isBuffered = $isBuffered;
-        } else {
-            if (
-                $resource instanceof mysqli || $resource instanceof mysqli_result
-                || $resource instanceof mysqli_stmt && $resource->num_rows !== 0
-            ) {
-                $this->isBuffered = true;
-            }
-        }
-
-        $this->resource       = $resource;
-        $this->generatedValue = $generatedValue;
-        return $this;
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @throws Exception\RuntimeException
@@ -98,42 +60,18 @@ final class Result implements Iterator, ResultInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Count
+     *
+     * @throws Exception\RuntimeException
+     * @return int
      */
+    #[ReturnTypeWillChange]
     #[Override]
-    public function isBuffered(): ?bool
+    public function count()
     {
-        return $this->isBuffered;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    #[Override]
-    public function getResource(): mysqli|mysqli_result|mysqli_stmt
-    {
-        return $this->resource;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    #[Override]
-    public function isQueryResult(): bool
-    {
-        return $this->resource->field_count > 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    #[Override]
-    public function getAffectedRows(): int
-    {
-        if ($this->resource instanceof mysqli || $this->resource instanceof mysqli_stmt) {
-            return $this->resource->affected_rows;
+        if ($this->isBuffered === false) {
+            throw new Exception\RuntimeException('Row count is not available in unbuffered result sets.');
         }
-
         return $this->resource->num_rows;
     }
 
@@ -157,6 +95,173 @@ final class Result implements Iterator, ResultInterface
             $this->loadFromMysqliResult();
             return $this->currentData;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    public function getAffectedRows(): int
+    {
+        if ($this->resource instanceof mysqli || $this->resource instanceof mysqli_stmt) {
+            return $this->resource->affected_rows;
+        }
+
+        return $this->resource->num_rows;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    public function getFieldCount(): int
+    {
+        return $this->resource->field_count;
+    }
+
+    /**
+     * Get generated value
+     */
+    #[Override]
+    public function getGeneratedValue(): string|int|false|null
+    {
+        return $this->generatedValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    public function getResource(): mysqli|mysqli_result|mysqli_stmt
+    {
+        return $this->resource;
+    }
+
+    /**
+     * Initialize
+     *
+     * @throws Exception\InvalidArgumentException
+     * psalm-suppress PossiblyUnusedMethod
+     */
+    public function initialize(
+        mysqli|mysqli_result|mysqli_stmt $resource,
+        mixed $generatedValue,
+        ?bool $isBuffered = null,
+    ): ResultInterface {
+        if (
+            ! $resource instanceof mysqli
+                && ! $resource instanceof mysqli_result
+                && ! $resource instanceof mysqli_stmt
+        ) {
+            throw new Exception\InvalidArgumentException('Invalid resource provided.');
+        }
+
+        /**
+         * todo: examine this closely to see if this is the correct behavior
+         */
+        if ($isBuffered !== null) {
+            $this->isBuffered = $isBuffered;
+        } else {
+            if (
+                $resource instanceof mysqli
+                    || $resource instanceof mysqli_result
+                    || $resource instanceof mysqli_stmt
+                    && $resource->num_rows !== 0
+            ) {
+                $this->isBuffered = true;
+            }
+        }
+
+        $this->resource       = $resource;
+        $this->generatedValue = $generatedValue;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    public function isBuffered(): ?bool
+    {
+        return $this->isBuffered;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    public function isQueryResult(): bool
+    {
+        return $this->resource->field_count > 0;
+    }
+
+    /**
+     * Key
+     *
+     * @return mixed
+     */
+    #[ReturnTypeWillChange]
+    #[Override]
+    public function key()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Next
+     *
+     * @return void
+     */
+    #[ReturnTypeWillChange]
+    #[Override]
+    public function next()
+    {
+        $this->currentComplete = false;
+
+        if ($this->nextComplete === false) {
+            $this->position++;
+        }
+
+        $this->nextComplete = false;
+    }
+
+    /**
+     * Rewind
+     *
+     * @throws Exception\RuntimeException
+     * @return void
+     */
+    #[ReturnTypeWillChange]
+    #[Override]
+    public function rewind()
+    {
+        if (0 !== $this->position && false === $this->isBuffered) {
+            throw new Exception\RuntimeException('Unbuffered results cannot be rewound for multiple iterations');
+        }
+
+        $this->resource->data_seek(0); // works for both mysqli_result & mysqli_stmt
+        $this->currentComplete = false;
+        $this->position        = 0;
+    }
+
+    /**
+     * Valid
+     *
+     * @return bool
+     */
+    #[ReturnTypeWillChange]
+    #[Override]
+    public function valid()
+    {
+        if ($this->currentComplete) {
+            return true;
+        }
+
+        if ($this->resource instanceof mysqli_stmt) {
+            return $this->loadDataFromMysqliStatement();
+        }
+
+        return $this->loadFromMysqliResult();
     }
 
     /**
@@ -222,108 +327,5 @@ final class Result implements Iterator, ResultInterface
         $this->nextComplete    = true;
         $this->position++;
         return true;
-    }
-
-    /**
-     * Next
-     *
-     * @return void
-     */
-    #[ReturnTypeWillChange]
-    #[Override]
-    public function next()
-    {
-        $this->currentComplete = false;
-
-        if ($this->nextComplete === false) {
-            $this->position++;
-        }
-
-        $this->nextComplete = false;
-    }
-
-    /**
-     * Key
-     *
-     * @return mixed
-     */
-    #[ReturnTypeWillChange]
-    #[Override]
-    public function key()
-    {
-        return $this->position;
-    }
-
-    /**
-     * Rewind
-     *
-     * @throws Exception\RuntimeException
-     * @return void
-     */
-    #[ReturnTypeWillChange]
-    #[Override]
-    public function rewind()
-    {
-        if (0 !== $this->position && false === $this->isBuffered) {
-            throw new Exception\RuntimeException('Unbuffered results cannot be rewound for multiple iterations');
-        }
-
-        $this->resource->data_seek(0); // works for both mysqli_result & mysqli_stmt
-        $this->currentComplete = false;
-        $this->position        = 0;
-    }
-
-    /**
-     * Valid
-     *
-     * @return bool
-     */
-    #[ReturnTypeWillChange]
-    #[Override]
-    public function valid()
-    {
-        if ($this->currentComplete) {
-            return true;
-        }
-
-        if ($this->resource instanceof mysqli_stmt) {
-            return $this->loadDataFromMysqliStatement();
-        }
-
-        return $this->loadFromMysqliResult();
-    }
-
-    /**
-     * Count
-     *
-     * @throws Exception\RuntimeException
-     * @return int
-     */
-    #[ReturnTypeWillChange]
-    #[Override]
-    public function count()
-    {
-        if ($this->isBuffered === false) {
-            throw new Exception\RuntimeException('Row count is not available in unbuffered result sets.');
-        }
-        return $this->resource->num_rows;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    #[Override]
-    public function getFieldCount(): int
-    {
-        return $this->resource->field_count;
-    }
-
-    /**
-     * Get generated value
-     */
-    #[Override]
-    public function getGeneratedValue(): string|int|false|null
-    {
-        return $this->generatedValue;
     }
 }

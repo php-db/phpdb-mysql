@@ -11,9 +11,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class CtorlessPdo extends PDO
 {
-    public function __construct(protected PDOStatement&MockObject $mockStatement)
-    {
-    }
+    public function __construct(
+        protected PDOStatement&MockObject $mockStatement,
+    ) {}
 
     /**
      * @param array<array-key, mixed> $options

@@ -37,7 +37,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      * @throws InvalidArgumentException
      */
     public function __construct(
-        array|mysqli|null $connectionInfo = null
+        array|mysqli|null $connectionInfo = null,
     ) {
         if (is_array($connectionInfo)) {
             $this->setConnectionParameters($connectionInfo);
@@ -45,40 +45,36 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             $this->setResource($connectionInfo);
         } elseif (null !== $connectionInfo) {
             throw new Exception\InvalidArgumentException(
-                '$connection must be an array of parameters, a mysqli object or null'
+                '$connection must be an array of parameters, a mysqli object or null',
             );
         }
     }
 
-    public function setDriver(DriverInterface $driver): DriverAwareInterface
+    /** @inheritDoc */
+    #[Override]
+    public function beginTransaction(): ConnectionInterface
     {
-        $this->driver = $driver;
+        if (! $this->isConnected()) {
+            $this->connect();
+        }
+
+        $this->resource->autocommit(false);
+        $this->inTransaction = true;
 
         return $this;
     }
 
     /** @inheritDoc */
     #[Override]
-    public function getCurrentSchema(): string|false
+    public function commit(): ConnectionInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
         }
 
-        $result = $this->resource->query('SELECT DATABASE()');
-        $r      = $result->fetch_row();
-
-        return $r[0];
-    }
-
-    /**
-     * Set resource
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function setResource(mysqli $resource): static
-    {
-        $this->resource = $resource;
+        $this->resource->commit();
+        $this->inTransaction = false;
+        $this->resource->autocommit(true);
 
         return $this;
     }
@@ -96,7 +92,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
         // given a list of key names, test for existence in $p
         /** @var string[] $names */
-        $findParameterValue = function (array $names) use ($p): string|null {
+        $findParameterValue = function (array $names) use ($p): ?string {
             foreach ($names as $name) {
                 if (isset($p[$name])) {
                     return $p[$name];
@@ -164,7 +160,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             throw new Exception\RuntimeException(
                 'Connection error',
                 $this->resource->connect_errno,
-                new Exception\ErrorException($this->resource->connect_error, $this->resource->connect_errno)
+                new Exception\ErrorException($this->resource->connect_error, $this->resource->connect_errno),
             );
         }
 
@@ -172,7 +168,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             throw new Exception\RuntimeException(
                 'Connection error',
                 $this->resource->connect_errno,
-                new Exception\ErrorException($this->resource->connect_error, $this->resource->connect_errno)
+                new Exception\ErrorException($this->resource->connect_error, $this->resource->connect_errno),
             );
         }
 
@@ -184,12 +180,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     }
 
     /** @inheritDoc */
-    public function isConnected(): bool
-    {
-        return $this->resource instanceof mysqli;
-    }
-
-    /** @inheritDoc */
     #[Override]
     public function disconnect(): ConnectionInterface
     {
@@ -197,54 +187,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             $this->resource->close();
         }
         $this->resource = null;
-        return $this;
-    }
-
-    /** @inheritDoc */
-    #[Override]
-    public function beginTransaction(): ConnectionInterface
-    {
-        if (! $this->isConnected()) {
-            $this->connect();
-        }
-
-        $this->resource->autocommit(false);
-        $this->inTransaction = true;
-
-        return $this;
-    }
-
-    /** @inheritDoc */
-    #[Override]
-    public function commit(): ConnectionInterface
-    {
-        if (! $this->isConnected()) {
-            $this->connect();
-        }
-
-        $this->resource->commit();
-        $this->inTransaction = false;
-        $this->resource->autocommit(true);
-
-        return $this;
-    }
-
-    /** @inheritDoc */
-    #[Override]
-    public function rollback(): ConnectionInterface
-    {
-        if (! $this->isConnected()) {
-            throw new Exception\RuntimeException('Must be connected before you can rollback.');
-        }
-
-        if (! $this->inTransaction) {
-            throw new Exception\RuntimeException('Must call beginTransaction() before you can rollback.');
-        }
-
-        $this->resource->rollback();
-        $this->resource->autocommit(true);
-        $this->inTransaction = false;
-
         return $this;
     }
 
@@ -276,9 +218,67 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     /** @inheritDoc */
     #[Override]
+    public function getCurrentSchema(): string|false
+    {
+        if (! $this->isConnected()) {
+            $this->connect();
+        }
+
+        $result = $this->resource->query('SELECT DATABASE()');
+        $r      = $result->fetch_row();
+
+        return $r[0];
+    }
+
+    /** @inheritDoc */
+    #[Override]
     public function getLastGeneratedValue(?string $name = null): string|int|false|null
     {
         return $this->resource->insert_id;
+    }
+
+    /** @inheritDoc */
+    public function isConnected(): bool
+    {
+        return $this->resource instanceof mysqli;
+    }
+
+    /** @inheritDoc */
+    #[Override]
+    public function rollback(): ConnectionInterface
+    {
+        if (! $this->isConnected()) {
+            throw new Exception\RuntimeException('Must be connected before you can rollback.');
+        }
+
+        if (! $this->inTransaction) {
+            throw new Exception\RuntimeException('Must call beginTransaction() before you can rollback.');
+        }
+
+        $this->resource->rollback();
+        $this->resource->autocommit(true);
+        $this->inTransaction = false;
+
+        return $this;
+    }
+
+    public function setDriver(DriverInterface $driver): DriverAwareInterface
+    {
+        $this->driver = $driver;
+
+        return $this;
+    }
+
+    /**
+     * Set resource
+     *
+     * @return $this Provides a fluent interface
+     */
+    public function setResource(mysqli $resource): static
+    {
+        $this->resource = $resource;
+
+        return $this;
     }
 
     /**

@@ -16,14 +16,14 @@ final class PlatformInterfaceFactory
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,
-        ?array $options = null
+        ?array $options = null,
     ): PlatformInterface&AdapterPlatform {
         $driverInstance = $options['driver'] ?? null;
         if (! $driverInstance instanceof MysqliDriver && ! $driverInstance instanceof PdoDriver) {
             throw ContainerException::forService(
                 AdapterPlatform::class,
                 self::class,
-                '$options["driver"] must be an instance of ' . MysqliDriver::class . ' or ' . PdoDriver::class . '.'
+                '$options["driver"] must be an instance of ' . MysqliDriver::class . ' or ' . PdoDriver::class . '.',
             );
         }
         return new AdapterPlatform($driverInstance);

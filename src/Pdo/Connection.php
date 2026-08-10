@@ -27,32 +27,13 @@ class Connection extends AbstractPdoConnection
      * @throws Exception\InvalidArgumentException
      */
     public function __construct(
-        PDO|array $connectionParameters
+        PDO|array $connectionParameters,
     ) {
         if (is_array($connectionParameters)) {
             $this->setConnectionParameters($connectionParameters);
         } elseif ($connectionParameters instanceof PDO) {
             $this->setResource($connectionParameters);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    #[Override]
-    public function getCurrentSchema(): string|false
-    {
-        if (! $this->isConnected()) {
-            $this->connect();
-        }
-
-        /** @var PDOStatement $result */
-        $result = $this->resource->query('SELECT DATABASE()');
-        if ($result instanceof PDOStatement) {
-            return $result->fetchColumn();
-        }
-
-        return false;
     }
 
     /**
@@ -73,21 +54,21 @@ class Connection extends AbstractPdoConnection
 
         foreach ($this->connectionParameters as $key => $value) {
             $result = match (strtolower($key)) {
-                'dsn'                                => $dsn        = (string) $value,
-                'user', 'username'                   => $username   = (string) $value,
-                'password', 'passwd', 'pw'           => $password   = (string) $value,
-                'host', 'hostname'                   => $hostname   = (string) $value,
-                'port'                               => $port       = (int) $value,
-                'charset'                            => $charset    = (string) $value,
-                'dbname', 'database', 'db', 'schema' => $database   = (string) $value,
+                'dsn'                                => $dsn = (string) $value,
+                'user', 'username'                   => $username = (string) $value,
+                'password', 'passwd', 'pw'           => $password = (string) $value,
+                'host', 'hostname'                   => $hostname = (string) $value,
+                'port'                               => $port = (int) $value,
+                'charset'                            => $charset = (string) $value,
+                'dbname', 'database', 'db', 'schema' => $database = (string) $value,
                 'unix_socket'                        => $unixSocket = (string) $value,
-                'version'                            => $version    = (string) $value,
+                'version'                            => $version = (string) $value,
                 // todo: should we suppport sslmode for pdo pgsql?
                 'driver_options' => (function (&$options, $value): void {
                     $value   = (array) $value;
                     $options = array_diff_key($options, $value) + $value;
                 })($options, $value),
-                default => $options[$key] = $value,
+                default          => $options[$key] = $value,
             };
         }
         unset($result);
@@ -95,7 +76,7 @@ class Connection extends AbstractPdoConnection
         if (isset($hostname) && isset($unixSocket)) {
             throw new Exception\InvalidConnectionParametersException(
                 'Ambiguous connection parameters, both hostname and unix_socket parameters were set',
-                $this->connectionParameters
+                $this->connectionParameters,
             );
         }
 
@@ -125,7 +106,7 @@ class Connection extends AbstractPdoConnection
         if (! is_string($dsn)) {
             throw new Exception\InvalidConnectionParametersException(
                 'A dsn was not provided or could not be constructed from your parameters',
-                $this->connectionParameters
+                $this->connectionParameters,
             );
         }
 
@@ -144,6 +125,25 @@ class Connection extends AbstractPdoConnection
         }
 
         return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
+    public function getCurrentSchema(): string|false
+    {
+        if (! $this->isConnected()) {
+            $this->connect();
+        }
+
+        /** @var PDOStatement $result */
+        $result = $this->resource->query('SELECT DATABASE()');
+        if ($result instanceof PDOStatement) {
+            return $result->fetchColumn();
+        }
+
+        return false;
     }
 
     #[Override]

@@ -21,62 +21,28 @@ use function uniqid;
 #[Group('result-pdo')]
 final class ResultTest extends TestCase
 {
-    /**
-     * Tests current method returns same data on consecutive calls.
-     */
-    public function testCurrent(): void
+    public function testCountWithClosureRowCountInvokesClosure(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $mock->expects($this->any())
-            ->method('fetch')
-            ->willReturnCallback(fn() => uniqid());
+        $mock->expects($this->never())
+            ->method('rowCount');
 
         $result = new Result();
-        $result->initialize($mock, null);
+        $result->initialize($mock, null, fn() => 3);
 
-        self::assertEquals($result->current(), $result->current());
+        self::assertSame(3, $result->count());
     }
 
-    public function testFetchModeException(): void
-    {
-        $result = new Result();
-
-        $this->expectException(InvalidArgumentException::class);
-        $result->setFetchMode(13);
-    }
-
-    /**
-     * Tests whether the fetch mode was set properly and
-     */
-    public function testFetchModeAnonymousObject(): void
+    public function testCountWithIntRowCountReturnsValueWithoutQueryingPdo(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $mock->expects($this->any())
-            ->method('fetch')
-            ->willReturnCallback(fn() => new stdClass());
+        $mock->expects($this->never())
+            ->method('rowCount');
 
         $result = new Result();
-        $result->initialize($mock, null);
-        $result->setFetchMode(PDO::FETCH_OBJ);
+        $result->initialize($mock, null, 7);
 
-        self::assertEquals(5, $result->getFetchMode());
-        self::assertInstanceOf('stdClass', $result->current());
-    }
-
-    /**
-     * Tests whether the fetch mode has a broader range
-     */
-    public function testFetchModeRange(): void
-    {
-        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $mock->expects($this->any())
-            ->method('fetch')
-            ->willReturnCallback(fn() => new stdClass());
-        $result = new Result();
-        $result->initialize($mock, null);
-        $result->setFetchMode(PDO::FETCH_NAMED);
-        self::assertEquals(11, $result->getFetchMode());
-        self::assertInstanceOf('stdClass', $result->current());
+        self::assertSame(7, $result->count());
     }
 
     public function testCountWithNullRowCountDelegatesToPdoStatement(): void
@@ -104,33 +70,67 @@ final class ResultTest extends TestCase
         self::assertSame(0, $result->count());
     }
 
-    public function testCountWithIntRowCountReturnsValueWithoutQueryingPdo(): void
+    /**
+     * Tests current method returns same data on consecutive calls.
+     */
+    public function testCurrent(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $mock->expects($this->never())
-            ->method('rowCount');
+        $mock->expects($this->any())
+            ->method('fetch')
+            ->willReturnCallback(fn() => uniqid());
 
         $result = new Result();
-        $result->initialize($mock, null, 7);
+        $result->initialize($mock, null);
 
-        self::assertSame(7, $result->count());
+        self::assertEquals($result->current(), $result->current());
     }
 
-    public function testCountWithClosureRowCountInvokesClosure(): void
+    /**
+     * Tests whether the fetch mode was set properly and
+     */
+    public function testFetchModeAnonymousObject(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $mock->expects($this->never())
-            ->method('rowCount');
+        $mock->expects($this->any())
+            ->method('fetch')
+            ->willReturnCallback(fn() => new stdClass());
 
         $result = new Result();
-        $result->initialize($mock, null, fn() => 3);
+        $result->initialize($mock, null);
+        $result->setFetchMode(PDO::FETCH_OBJ);
 
-        self::assertSame(3, $result->count());
+        self::assertEquals(5, $result->getFetchMode());
+        self::assertInstanceOf('stdClass', $result->current());
+    }
+
+    public function testFetchModeException(): void
+    {
+        $result = new Result();
+
+        $this->expectException(InvalidArgumentException::class);
+        $result->setFetchMode(13);
+    }
+
+    /**
+     * Tests whether the fetch mode has a broader range
+     */
+    public function testFetchModeRange(): void
+    {
+        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock->expects($this->any())
+            ->method('fetch')
+            ->willReturnCallback(fn() => new stdClass());
+        $result = new Result();
+        $result->initialize($mock, null);
+        $result->setFetchMode(PDO::FETCH_NAMED);
+        self::assertEquals(11, $result->getFetchMode());
+        self::assertInstanceOf('stdClass', $result->current());
     }
 
     public function testMultipleRewind(): void
     {
-        $data     = [
+        $data = [
             ['test' => 1],
             ['test' => 2],
         ];

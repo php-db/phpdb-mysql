@@ -16,7 +16,7 @@ use function str_replace;
 
 class AdapterPlatform extends AbstractPlatform
 {
-    public final const PLATFORM_NAME = 'MySQL';
+    final public const PLATFORM_NAME = 'MySQL';
 
     /**
      * {@inheritDoc}
@@ -34,9 +34,8 @@ class AdapterPlatform extends AbstractPlatform
     protected string $quoteIdentifierFragmentPattern = '/([^0-9,a-z,A-Z$_\-:])/i';
 
     public function __construct(
-        protected readonly DriverInterface|mysqli|PDO $driver
-    ) {
-    }
+        protected readonly DriverInterface|mysqli|PDO $driver,
+    ) {}
 
     /**
      * {@inheritDoc}
@@ -69,22 +68,22 @@ class AdapterPlatform extends AbstractPlatform
      * {@inheritDoc}
      */
     #[Override]
-    public function quoteValue(string $value): string
+    public function quoteTrustedValue(int|float|string|bool $value): ?string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
 
-        return $quotedViaDriverValue ?? parent::quoteValue($value);
+        return $quotedViaDriverValue ?? parent::quoteTrustedValue($value);
     }
 
     /**
      * {@inheritDoc}
      */
     #[Override]
-    public function quoteTrustedValue(int|float|string|bool $value): ?string
+    public function quoteValue(string $value): string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
 
-        return $quotedViaDriverValue ?? parent::quoteTrustedValue($value);
+        return $quotedViaDriverValue ?? parent::quoteValue($value);
     }
 
     protected function quoteViaDriver(string $value): ?string

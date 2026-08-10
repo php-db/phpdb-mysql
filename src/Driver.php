@@ -33,7 +33,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         protected readonly ConnectionInterface&Connection $connection,
         protected readonly StatementInterface&Statement $statementPrototype = new Statement(),
         protected readonly ResultInterface&Result $resultPrototype = new Result(),
-        array $options = []
+        array $options = [],
     ) {
         $this->checkEnvironment();
 
@@ -48,49 +48,27 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         }
     }
 
-    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
-    {
-        $this->profiler = $profiler;
-        if ($this->connection instanceof ProfilerAwareInterface) {
-            $this->connection->setProfiler($profiler);
-        }
-        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
-            $this->statementPrototype->setProfiler($profiler);
-        }
-        return $this;
-    }
-
-    public function getProfiler(): ?ProfilerInterface
-    {
-        return $this->profiler;
-    }
-
-    /**
-     * Get statement prototype
-     */
-    public function getStatementPrototype(): StatementInterface&Statement
-    {
-        return $this->statementPrototype;
-    }
-
-    public function getResultPrototype(): ResultInterface&Result
-    {
-        return $this->resultPrototype;
-    }
-
     public function checkEnvironment(): bool
     {
         if (! extension_loaded('mysqli')) {
             throw new Exception\RuntimeException(
-                'The Mysqli extension is required for this adapter but the extension is not loaded'
+                'The Mysqli extension is required for this adapter but the extension is not loaded',
             );
         }
         return true;
     }
 
-    public function getConnection(): ConnectionInterface&Connection
+    /**
+     * Create result
+     *
+     * @param mysqli|mysqli_result|mysqli_stmt $resource
+     */
+    public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
     {
-        return $this->connection;
+        /** @var Result $result */
+        $result = clone $this->resultPrototype;
+        $result->initialize($resource, $this->connection->getLastGeneratedValue(), $isBuffered);
+        return $result;
     }
 
     /**
@@ -125,16 +103,24 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     }
 
     /**
-     * Create result
-     *
-     * @param mysqli|mysqli_result|mysqli_stmt $resource
+     * Format parameter name
      */
-    public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
+    public function formatParameterName(string $name, ?string $type = null): string
     {
-        /** @var Result $result */
-        $result = clone $this->resultPrototype;
-        $result->initialize($resource, $this->connection->getLastGeneratedValue(), $isBuffered);
-        return $result;
+        return '?';
+    }
+
+    public function getConnection(): ConnectionInterface&Connection
+    {
+        return $this->connection;
+    }
+
+    /**
+     * Get last generated value
+     */
+    public function getLastGeneratedValue(): int|string|false|null
+    {
+        return $this->getConnection()->getLastGeneratedValue();
     }
 
     /**
@@ -145,19 +131,33 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         return self::PARAMETERIZATION_POSITIONAL;
     }
 
-    /**
-     * Format parameter name
-     */
-    public function formatParameterName(string $name, ?string $type = null): string
+    public function getProfiler(): ?ProfilerInterface
     {
-        return '?';
+        return $this->profiler;
+    }
+
+    public function getResultPrototype(): ResultInterface&Result
+    {
+        return $this->resultPrototype;
     }
 
     /**
-     * Get last generated value
+     * Get statement prototype
      */
-    public function getLastGeneratedValue(): int|string|null|false
+    public function getStatementPrototype(): StatementInterface&Statement
     {
-        return $this->getConnection()->getLastGeneratedValue();
+        return $this->statementPrototype;
+    }
+
+    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
+    {
+        $this->profiler = $profiler;
+        if ($this->connection instanceof ProfilerAwareInterface) {
+            $this->connection->setProfiler($profiler);
+        }
+        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
+            $this->statementPrototype->setProfiler($profiler);
+        }
+        return $this;
     }
 }
