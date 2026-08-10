@@ -87,17 +87,19 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         $statement = clone $this->statementPrototype;
         if ($sqlOrResource instanceof mysqli_stmt) {
             $statement->setResource($sqlOrResource);
-        } else {
-            if (is_string($sqlOrResource)) {
-                $statement->setSql($sqlOrResource);
-            }
-            if (! $this->connection->isConnected()) {
-                $this->connection->connect();
-            }
-            /** @var mysqli $resource */
-            $resource = $this->connection->getResource();
-            $statement->initialize($resource);
+
+            return $statement;
         }
+
+        if (is_string($sqlOrResource)) {
+            $statement->setSql($sqlOrResource);
+        }
+        if (! $this->connection->isConnected()) {
+            $this->connection->connect();
+        }
+        /** @var mysqli $resource */
+        $resource = $this->connection->getResource();
+        $statement->initialize($resource);
         return $statement;
     }
 

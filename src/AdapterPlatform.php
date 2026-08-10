@@ -88,12 +88,10 @@ class AdapterPlatform extends AbstractPlatform
 
     protected function quoteViaDriver(string $value): ?string
     {
-        if ($this->driver instanceof DriverInterface) {
-            // todo: verify this can not return a PDOStatement instance
-            $resource = $this->driver->getConnection()->getResource();
-        } else {
-            $resource = $this->driver;
-        }
+        // todo: verify this can not return a PDOStatement instance
+        $resource = $this->driver instanceof DriverInterface
+            ? $this->driver->getConnection()->getResource()
+            : $this->driver;
 
         if ($resource instanceof mysqli) {
             // @mago-expect lint:string-style

@@ -53,13 +53,8 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         }
 
         /** START Standard ParameterContainer Merging Block */
-        if (! $this->parameterContainer instanceof ParameterContainer) {
-            if ($parameters instanceof ParameterContainer) {
-                $this->parameterContainer = $parameters;
-                $parameters               = null;
-            } else {
-                $this->parameterContainer = new ParameterContainer();
-            }
+        if ($parameters instanceof ParameterContainer) {
+            $this->parameterContainer = $parameters;
         }
 
         if (is_array($parameters)) {
@@ -81,12 +76,11 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
             throw new Exception\RuntimeException($this->resource->error);
         }
 
+        $buffered = false;
         if (true === $this->bufferResults) {
             $this->resource->store_result();
             $this->isPrepared = false;
             $buffered         = true;
-        } else {
-            $buffered = false;
         }
 
         return $this->driver->createResult($this->resource, $buffered);
@@ -213,8 +207,6 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
                         $type .= 's';
                         break;
                 }
-            } else {
-                $type .= 's';
             }
             $args[] = &$value;
         }

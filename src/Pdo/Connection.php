@@ -31,9 +31,11 @@ class Connection extends AbstractPdoConnection
     ) {
         if (is_array($connectionParameters)) {
             $this->setConnectionParameters($connectionParameters);
-        } elseif ($connectionParameters instanceof PDO) {
-            $this->setResource($connectionParameters);
+
+            return;
         }
+
+        $this->setResource($connectionParameters);
     }
 
     /**

@@ -159,18 +159,14 @@ final class Result implements Iterator, ResultInterface
         /**
          * todo: examine this closely to see if this is the correct behavior
          */
-        if (null !== $isBuffered) {
-            $this->isBuffered = $isBuffered;
-        } else {
-            if (
-                $resource instanceof mysqli
-                    || $resource instanceof mysqli_result
-                    || $resource instanceof mysqli_stmt
-                    && 0 !== $resource->num_rows
-            ) {
-                $this->isBuffered = true;
-            }
-        }
+        $this->isBuffered = match (true) {
+            null !== $isBuffered => $isBuffered,
+            $resource instanceof mysqli
+                || $resource instanceof mysqli_result
+                || ($resource instanceof mysqli_stmt && 0 !== $resource->num_rows)
+                => true,
+            default => $this->isBuffered,
+        };
 
         $this->resource       = $resource;
         $this->generatedValue = $generatedValue;

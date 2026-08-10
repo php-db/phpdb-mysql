@@ -41,9 +41,17 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     ) {
         if (is_array($connectionInfo)) {
             $this->setConnectionParameters($connectionInfo);
-        } elseif ($connectionInfo instanceof mysqli) {
+
+            return;
+        }
+
+        if ($connectionInfo instanceof mysqli) {
             $this->setResource($connectionInfo);
-        } elseif (null !== $connectionInfo) {
+
+            return;
+        }
+
+        if (null !== $connectionInfo) {
             throw new Exception\InvalidArgumentException(
                 '$connection must be an array of parameters, a mysqli object or null',
             );
