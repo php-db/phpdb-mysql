@@ -116,7 +116,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         $password = $findParameterValue(['password', 'passwd', 'pw']);
         $database = $findParameterValue(['database', 'dbname', 'db', 'schema']);
         /** @var int|null $port */
-        $port = null !== ($p['port'] ?? null) ? (int) $p['port'] : null;
+        $port = null === ($p['port'] ?? null) ? null : (int) $p['port'];
         /** @var string|null $socket */
         $socket = $p['socket'] ?? null;
 
