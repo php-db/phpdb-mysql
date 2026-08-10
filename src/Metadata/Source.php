@@ -89,7 +89,7 @@ final class Source extends AbstractSource
                     $matches,
                     PREG_PATTERN_ORDER,
                 )
-                    ? str_replace("''", "'", $matches[1])
+                    ? str_replace("''", replace: "'", subject: $matches[1])
                     : [$permittedValues];
                 $erratas['permitted_values'] = $permittedValues;
             }

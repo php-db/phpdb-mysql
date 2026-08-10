@@ -279,8 +279,12 @@ final class Result implements Iterator, ResultInterface
             foreach ($resultResource->fetch_fields() as $col) {
                 $this->statementBindValues['keys'][] = $col->name;
             }
-            $this->statementBindValues['values'] = array_fill(0, count($this->statementBindValues['keys']), null);
-            $refs                                = [];
+            $this->statementBindValues['values'] = array_fill(
+                0,
+                count($this->statementBindValues['keys']),
+                value: null,
+            );
+            $refs = [];
             foreach ($this->statementBindValues['values'] as $i => &$f) {
                 $refs[$i] = &$f;
             }

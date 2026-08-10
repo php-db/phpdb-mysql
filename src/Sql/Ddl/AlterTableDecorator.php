@@ -85,7 +85,10 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
             }
         }
 
-        foreach (range(0, 3) as $i) {
+        foreach (range(
+            start: 0,
+            end: 3,
+        ) as $i) {
             $insertStart[$i] ??= $sqlLength;
         }
 
@@ -153,7 +156,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
 
                 if ($insert) {
                     $j                ??= 0;
-                    $sql              = substr_replace($sql, $insert, $insertStart[$j], 0);
+                    $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
                     $insertStartCount = count($insertStart);
                     for (; $j < $insertStartCount; ++$j) {
                         $insertStart[$j] += strlen($insert);
@@ -222,7 +225,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
 
                 if ($insert) {
                     $j                ??= 0;
-                    $sql              = substr_replace($sql, $insert, $insertStart[$j], 0);
+                    $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
                     $insertStartCount = count($insertStart);
                     for (; $j < $insertStartCount; ++$j) {
                         $insertStart[$j] += strlen($insert);
@@ -261,6 +264,6 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
      */
     private function normalizeColumnOption($name)
     {
-        return strtolower(str_replace(['-', '_', ' '], '', $name));
+        return strtolower(str_replace(['-', '_', ' '], replace: '', subject: $name));
     }
 }

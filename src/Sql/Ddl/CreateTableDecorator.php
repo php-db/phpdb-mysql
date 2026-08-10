@@ -74,7 +74,10 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
             }
         }
 
-        foreach (range(0, 3) as $i) {
+        foreach (range(
+            start: 0,
+            end: 3,
+        ) as $i) {
             $insertStart[$i] ??= $sqlLength;
         }
 
@@ -146,7 +149,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
 
                 if ($insert) {
                     $j                ??= 0;
-                    $sql              = substr_replace($sql, $insert, $insertStart[$j], 0);
+                    $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
                     $insertStartCount = count($insertStart);
                     for (; $j < $insertStartCount; ++$j) {
                         $insertStart[$j] += strlen($insert);
@@ -183,6 +186,6 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
      */
     private function normalizeColumnOption($name)
     {
-        return strtolower(str_replace(['-', '_', ' '], '', $name));
+        return strtolower(str_replace(['-', '_', ' '], replace: '', subject: $name));
     }
 }

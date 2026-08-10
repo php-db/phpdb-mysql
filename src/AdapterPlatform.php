@@ -61,7 +61,7 @@ class AdapterPlatform extends AbstractPlatform
     #[Override]
     public function quoteIdentifierChain(array|string $identifierChain): string
     {
-        return '`' . implode('`.`', (array) str_replace('`', '``', $identifierChain)) . '`';
+        return '`' . implode('`.`', (array) str_replace('`', replace: '``', subject: $identifierChain)) . '`';
     }
 
     /**

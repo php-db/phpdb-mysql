@@ -29,7 +29,7 @@ final class TableGatewayAndAdapterTest extends TestCase
 
     public static function connections(): array
     {
-        return array_fill(0, 200, []);
+        return array_fill(0, count: 200, value: []);
     }
 
     /**
