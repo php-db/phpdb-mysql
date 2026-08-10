@@ -20,10 +20,10 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "8.2.99"
+            "php": "8.3.99"
         },
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "infection/extension-installer": true
         }
     },
     "extra": {
@@ -32,15 +32,14 @@
         }
     },
     "require": {
-        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
         "php-db/phpdb": "^0.6.0"
     },
     "require-dev": {
         "ext-mysqli": "*",
         "ext-pdo_mysql": "*",
-        "laminas/laminas-coding-standard": "^3.0.1",
-        "phpstan/phpstan": "^2.1",
-        "phpstan/phpstan-phpunit": "^2.0",
+        "infection/infection": "^0.34.1",
+        "php-db/phpdb-qa-tools": "0.1.x-dev",
         "phpunit/phpunit": "^11.5.42"
     },
     "suggest": {
@@ -62,18 +61,22 @@
     "scripts": {
         "check": [
             "@cs-check",
-            "@sa",
+            "@static-analysis",
             "@test",
             "@test-integration"
         ],
-        "cs-check": "phpcs",
-        "cs-fix": "phpcbf",
+        "cs-check": [
+            "mago format --check",
+            "mago lint"
+        ],
+        "cs-fix": [
+            "mago format",
+            "mago lint --fix"
+        ],
         "test": "phpunit --colors=always --testsuite \"unit test\"",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
-        "sa": "vendor/bin/phpstan analyse --memory-limit=256M",
-        "sa-gen-baseline": "vendor/bin/phpstan analyse --memory-limit=256M --generate-baseline",
-        "sa-verbose": "vendor/bin/phpstan analyse --memory-limit=256M -vv",
-        "upload-coverage": "coveralls -v"
+        "static-analysis": "mago analyze",
+        "mutation-test": "infection"
     }
 }
