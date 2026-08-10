@@ -85,6 +85,7 @@ final class Source extends AbstractSource
         /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
         $columns = [];
+        /** @var array{ORDINAL_POSITION: string, COLUMN_DEFAULT: ?string, IS_NULLABLE: string, DATA_TYPE: string, CHARACTER_MAXIMUM_LENGTH: ?string, CHARACTER_OCTET_LENGTH: ?string, NUMERIC_PRECISION: ?string, NUMERIC_SCALE: ?string, COLUMN_NAME: string, COLUMN_TYPE: string} $row */
         foreach ($results->toArray() as $row) {
             $erratas = [];
             $matches = [];
@@ -215,6 +216,7 @@ final class Source extends AbstractSource
 
         $realName    = null;
         $constraints = [];
+        /** @var array{TABLE_NAME: string, CONSTRAINT_NAME: string, CONSTRAINT_TYPE: string, COLUMN_NAME: ?string, MATCH_OPTION: ?string, UPDATE_RULE: ?string, DELETE_RULE: ?string, REFERENCED_TABLE_SCHEMA: ?string, REFERENCED_TABLE_NAME: ?string, REFERENCED_COLUMN_NAME: ?string} $row */
         foreach ($results->toArray() as $row) {
             if ($row['CONSTRAINT_NAME'] !== $realName) {
                 $realName           = $row['CONSTRAINT_NAME'];
@@ -297,6 +299,7 @@ final class Source extends AbstractSource
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
+        /** @var array<string, mixed> $row */
         foreach ($results->toArray() as $row) {
             $data[] = array_change_key_case($row, CASE_LOWER);
         }
@@ -353,6 +356,7 @@ final class Source extends AbstractSource
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
+        /** @var array<string, mixed> $row */
         foreach ($results->toArray() as $row) {
             $data[] = array_change_key_case($row, CASE_LOWER);
         }
@@ -425,6 +429,7 @@ final class Source extends AbstractSource
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
+        /** @var array<string, mixed> $row */
         foreach ($results->toArray() as $row) {
             $data[] = array_change_key_case($row, CASE_LOWER);
         }
@@ -455,6 +460,7 @@ final class Source extends AbstractSource
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $schemas = [];
+        /** @var array{SCHEMA_NAME: string} $row */
         foreach ($results->toArray() as $row) {
             $schemas[] = $row['SCHEMA_NAME'];
         }
@@ -513,6 +519,7 @@ final class Source extends AbstractSource
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $tables = [];
+        /** @var array{TABLE_NAME: string, TABLE_TYPE: string, VIEW_DEFINITION: ?string, CHECK_OPTION: ?string, IS_UPDATABLE: ?string} $row */
         foreach ($results->toArray() as $row) {
             $tables[$row['TABLE_NAME']] = [
                 'table_type'      => $row['TABLE_TYPE'],
@@ -575,7 +582,9 @@ final class Source extends AbstractSource
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
+        /** @var array{TRIGGER_NAME: string, EVENT_MANIPULATION: string, EVENT_OBJECT_CATALOG: string, EVENT_OBJECT_SCHEMA: string, EVENT_OBJECT_TABLE: string, ACTION_ORDER: string, ACTION_CONDITION: ?string, ACTION_STATEMENT: string, ACTION_ORIENTATION: string, ACTION_TIMING: string, ACTION_REFERENCE_OLD_TABLE: ?string, ACTION_REFERENCE_NEW_TABLE: ?string, ACTION_REFERENCE_OLD_ROW: ?string, ACTION_REFERENCE_NEW_ROW: ?string, CREATED: ?string} $row */
         foreach ($results->toArray() as $row) {
+            /** @var array{trigger_name: string, event_manipulation: string, event_object_catalog: string, event_object_schema: string, event_object_table: string, action_order: string, action_condition: ?string, action_statement: string, action_orientation: string, action_timing: string, action_reference_old_table: ?string, action_reference_new_table: ?string, action_reference_old_row: ?string, action_reference_new_row: ?string, created: ?string} $row */
             $row = array_change_key_case($row, CASE_LOWER);
             if (null !== $row['created']) {
                 $row['created'] = new DateTime($row['created']);
