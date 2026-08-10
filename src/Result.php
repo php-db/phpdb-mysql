@@ -21,11 +21,12 @@ use function count;
 // @mago-expect lint:cyclomatic-complexity
 // @mago-expect lint:kan-defect
 // @mago-expect lint:too-many-methods
+/** @implements Iterator<int, array<array-key, mixed>|null> */
 final class Result implements Iterator, ResultInterface
 {
     protected mysqli|mysqli_result|mysqli_stmt $resource;
 
-    protected bool $isBuffered;
+    protected ?bool $isBuffered = null;
 
     protected int $position = 0;
 
@@ -38,13 +39,13 @@ final class Result implements Iterator, ResultInterface
 
     protected bool $nextComplete = false;
 
-    /** @var mixed */
-    protected $currentData;
+    /** @var array<array-key, mixed>|null */
+    protected ?array $currentData = null;
 
     /** @var array{keys: string[]|null, values: array<int, mixed>} */
     protected array $statementBindValues = ['keys' => null, 'values' => []];
 
-    protected mixed $generatedValue;
+    protected string|int|false|null $generatedValue = null;
 
     /**
      * {@inheritDoc}
@@ -76,7 +77,12 @@ final class Result implements Iterator, ResultInterface
         if (! $this->isBuffered) {
             throw new Exception\RuntimeException('Row count is not available in unbuffered result sets.');
         }
-        return $this->resource->num_rows;
+
+        if (! $this->resource instanceof mysqli_result && ! $this->resource instanceof mysqli_stmt) {
+            throw new Exception\RuntimeException('Cannot count rows in a result that is not a query result');
+        }
+
+        return (int) $this->resource->num_rows;
     }
 
     /**
@@ -84,7 +90,7 @@ final class Result implements Iterator, ResultInterface
      *
      * @throws Exception\ExceptionInterface
      *
-     * @return mixed
+     * @return array<array-key, mixed>|null
      */
     #[ReturnTypeWillChange]
     #[Override]
@@ -110,10 +116,10 @@ final class Result implements Iterator, ResultInterface
     public function getAffectedRows(): int
     {
         if ($this->resource instanceof mysqli || $this->resource instanceof mysqli_stmt) {
-            return $this->resource->affected_rows;
+            return (int) $this->resource->affected_rows;
         }
 
-        return $this->resource->num_rows;
+        return (int) $this->resource->num_rows;
     }
 
     /**
@@ -151,17 +157,9 @@ final class Result implements Iterator, ResultInterface
      */
     public function initialize(
         mysqli|mysqli_result|mysqli_stmt $resource,
-        mixed $generatedValue,
+        string|int|false|null $generatedValue,
         ?bool $isBuffered = null,
     ): ResultInterface {
-        if (
-            ! $resource instanceof mysqli
-                && ! $resource instanceof mysqli_result
-                && ! $resource instanceof mysqli_stmt
-        ) {
-            throw new Exception\InvalidArgumentException('Invalid resource provided.');
-        }
-
         /**
          * todo(@tyrsson): examine this closely to see if this is the correct behavior
          */
@@ -169,7 +167,7 @@ final class Result implements Iterator, ResultInterface
             null !== $isBuffered => $isBuffered,
             $resource instanceof mysqli
                 || $resource instanceof mysqli_result
-                || ($resource instanceof mysqli_stmt && 0 !== $resource->num_rows)
+                || 0 !== $resource->num_rows
                 => true,
             default => $this->isBuffered,
         };
@@ -200,7 +198,7 @@ final class Result implements Iterator, ResultInterface
     /**
      * Key
      *
-     * @return mixed
+     * @return int
      */
     #[ReturnTypeWillChange]
     #[Override]
@@ -292,7 +290,12 @@ final class Result implements Iterator, ResultInterface
         if (null === $this->statementBindValues['keys']) {
             $this->statementBindValues['keys'] = [];
             $resultResource                    = $this->resource->result_metadata();
+            if (false === $resultResource) {
+                return $resultResource;
+            }
+
             foreach ($resultResource->fetch_fields() as $col) {
+                /** @var object{name: string} $col */
                 $this->statementBindValues['keys'][] = $col->name;
             }
             $this->statementBindValues['values'] = array_fill(
@@ -314,7 +317,7 @@ final class Result implements Iterator, ResultInterface
             return false;
         }
 
-        if (false === $r) {
+        if (! $r) {
             throw new Exception\RuntimeException($this->resource->error);
         }
 
@@ -341,7 +344,10 @@ final class Result implements Iterator, ResultInterface
             throw new Exception\RuntimeException('Cannot fetch from a result that is not a mysqli_result');
         }
 
-        if (($data = $this->resource->fetch_assoc()) === null) {
+        /** @var array<array-key, mixed>|null $data */
+        $data = $this->resource->fetch_assoc();
+
+        if (null === $data) {
             return false;
         }
 
