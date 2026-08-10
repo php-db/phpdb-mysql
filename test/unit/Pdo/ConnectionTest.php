@@ -6,7 +6,6 @@ namespace PhpDbTest\Mysql\Pdo;
 
 use Exception;
 use Override;
-use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Pdo\Connection;
@@ -16,7 +15,6 @@ use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Connection::class, 'getResource')]
 #[CoversMethod(Connection::class, 'getDsn')]
-#[CoversMethod(PdoConnectionInterface::class, 'getDsn')]
 final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
