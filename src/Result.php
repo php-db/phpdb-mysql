@@ -240,6 +240,10 @@ final class Result implements Iterator, ResultInterface
             throw new Exception\RuntimeException('Unbuffered results cannot be rewound for multiple iterations');
         }
 
+        if (! $this->resource instanceof mysqli_result && ! $this->resource instanceof mysqli_stmt) {
+            throw new Exception\RuntimeException('Cannot rewind a result that is not a query result');
+        }
+
         $this->resource->data_seek(0); // works for both mysqli_result & mysqli_stmt
         $this->currentComplete = false;
         $this->position        = 0;
@@ -279,6 +283,10 @@ final class Result implements Iterator, ResultInterface
      */
     protected function loadDataFromMysqliStatement(): bool
     {
+        if (! $this->resource instanceof mysqli_stmt) {
+            throw new Exception\RuntimeException('Expected resource to be an instance of mysqli_stmt');
+        }
+
         // build the default reference based bind structure, if it does not already exist
         if (null === $this->statementBindValues['keys']) {
             $this->statementBindValues['keys'] = [];
@@ -325,6 +333,10 @@ final class Result implements Iterator, ResultInterface
     protected function loadFromMysqliResult(): bool
     {
         $this->currentData = null;
+
+        if (! $this->resource instanceof mysqli_result) {
+            throw new Exception\RuntimeException('Cannot fetch from a result that is not a mysqli_result');
+        }
 
         if (($data = $this->resource->fetch_assoc()) === null) {
             return false;

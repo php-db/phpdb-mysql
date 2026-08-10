@@ -9,6 +9,7 @@ use Exception;
 use Override;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Metadata\Source\AbstractSource;
+use PhpDb\ResultSet\ResultSetInterface;
 
 use function array_change_key_case;
 use function array_walk;
@@ -81,6 +82,7 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
         $columns = [];
         foreach ($results->toArray() as $row) {
@@ -208,6 +210,7 @@ final class Source extends AbstractSource
      'CONSTRAINT_NAME',
  ])}, {$p->quoteIdentifierChain(['KCU', 'ORDINAL_POSITION'])}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $realName    = null;
@@ -290,6 +293,7 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
@@ -345,6 +349,7 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
@@ -416,6 +421,7 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
@@ -445,6 +451,7 @@ final class Source extends AbstractSource
             WHERE {$p->quoteIdentifier('SCHEMA_NAME')} != 'INFORMATION_SCHEMA'
             SQL;
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $schemas = [];
@@ -502,6 +509,7 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $tables = [];
@@ -563,6 +571,7 @@ final class Source extends AbstractSource
             ? "{$p->quoteIdentifier('TRIGGER_SCHEMA')} != 'INFORMATION_SCHEMA'"
             : "{$p->quoteIdentifier('TRIGGER_SCHEMA')} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
