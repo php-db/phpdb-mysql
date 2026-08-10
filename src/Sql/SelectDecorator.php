@@ -29,7 +29,7 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
     protected function localizeVariables(): void
     {
         parent::localizeVariables();
-        if ($this->limit === null && $this->offset !== null) {
+        if (null === $this->limit && null !== $this->offset) {
             $this->specifications[self::LIMIT] = 'LIMIT 18446744073709551615';
         }
     }
@@ -41,16 +41,16 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
         ?DriverInterface $driver = null,
         ?ParameterContainer $parameterContainer = null,
     ): ?array {
-        if ($this->limit === null && $this->offset !== null) {
+        if (null === $this->limit && null !== $this->offset) {
             return [''];
         }
-        if ($this->limit === null) {
+        if (null === $this->limit) {
             return null;
         }
         if ($parameterContainer) {
             $paramPrefix = $this->processInfo['paramPrefix'];
-            $parameterContainer->offsetSet($paramPrefix . 'limit', $this->limit, ParameterContainer::TYPE_INTEGER);
-            return [$driver->formatParameterName($paramPrefix . 'limit')];
+            $parameterContainer->offsetSet("{$paramPrefix}limit", $this->limit, ParameterContainer::TYPE_INTEGER);
+            return [$driver->formatParameterName("{$paramPrefix}limit")];
         }
 
         return [$this->limit];
@@ -62,13 +62,13 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
         ?DriverInterface $driver = null,
         ?ParameterContainer $parameterContainer = null,
     ): ?array {
-        if ($this->offset === null) {
+        if (null === $this->offset) {
             return null;
         }
         if ($parameterContainer) {
             $paramPrefix = $this->processInfo['paramPrefix'];
-            $parameterContainer->offsetSet($paramPrefix . 'offset', $this->offset, ParameterContainer::TYPE_INTEGER);
-            return [$driver->formatParameterName($paramPrefix . 'offset')];
+            $parameterContainer->offsetSet("{$paramPrefix}offset", $this->offset, ParameterContainer::TYPE_INTEGER);
+            return [$driver->formatParameterName("{$paramPrefix}offset")];
         }
 
         return [$this->offset];

@@ -92,9 +92,9 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
         // given a list of key names, test for existence in $p
         /** @var string[] $names */
-        $findParameterValue = function (array $names) use ($p): ?string {
+        $findParameterValue = static function (array $names) use ($p): ?string {
             foreach ($names as $name) {
-                if (isset($p[$name])) {
+                if (null !== ($p[$name] ?? null)) {
                     return $p[$name];
                 }
             }
@@ -108,7 +108,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         $password = $findParameterValue(['password', 'passwd', 'pw']);
         $database = $findParameterValue(['database', 'dbname', 'db', 'schema']);
         /** @var int|null $port */
-        $port = isset($p['port']) ? (int) $p['port'] : null;
+        $port = null !== ($p['port'] ?? null) ? (int) $p['port'] : null;
         /** @var string|null $socket */
         $socket = $p['socket'] ?? null;
 
@@ -146,14 +146,14 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             $this->resource->ssl_set($clientKey, $clientCert, $caCert, $caPath, $cipher);
             //MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT is not valid option, needs to be set as flag
             if (
-                isset($p['driver_options'][MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT])
+                null !== ($p['driver_options'][MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT] ?? null)
             ) {
                 $flags |= MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
             }
         }
 
         try {
-            $flags === null
+            null === $flags
                 ? $this->resource->real_connect($hostname, $username, $password, $database, $port, $socket)
                 : $this->resource->real_connect($hostname, $username, $password, $database, $port, $socket, $flags);
         } catch (GenericException) {
@@ -209,11 +209,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         $this->profiler?->profilerFinish($sql);
 
         // if the returnValue is something other than a mysqli_result, bypass wrapping it
-        if ($resultResource === false) {
+        if (false === $resultResource) {
             throw new Exception\InvalidQueryException($this->resource->error);
         }
 
-        return $this->driver->createResult($resultResource === true ? $this->resource : $resultResource);
+        return $this->driver->createResult(true === $resultResource ? $this->resource : $resultResource);
     }
 
     /** @inheritDoc */

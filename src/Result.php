@@ -50,7 +50,7 @@ final class Result implements Iterator, ResultInterface
     #[Override]
     public function buffer(): void
     {
-        if ($this->resource instanceof mysqli_stmt && $this->isBuffered !== true) {
+        if ($this->resource instanceof mysqli_stmt && true !== $this->isBuffered) {
             if ($this->position > 0) {
                 throw new Exception\RuntimeException('Cannot buffer a result set that has started iteration.');
             }
@@ -69,7 +69,7 @@ final class Result implements Iterator, ResultInterface
     #[Override]
     public function count()
     {
-        if ($this->isBuffered === false) {
+        if (false === $this->isBuffered) {
             throw new Exception\RuntimeException('Row count is not available in unbuffered result sets.');
         }
         return $this->resource->num_rows;
@@ -91,10 +91,10 @@ final class Result implements Iterator, ResultInterface
         if ($this->resource instanceof mysqli_stmt) {
             $this->loadDataFromMysqliStatement();
             return $this->currentData;
-        } else {
-            $this->loadFromMysqliResult();
-            return $this->currentData;
         }
+
+        $this->loadFromMysqliResult();
+        return $this->currentData;
     }
 
     /**
@@ -159,14 +159,14 @@ final class Result implements Iterator, ResultInterface
         /**
          * todo: examine this closely to see if this is the correct behavior
          */
-        if ($isBuffered !== null) {
+        if (null !== $isBuffered) {
             $this->isBuffered = $isBuffered;
         } else {
             if (
                 $resource instanceof mysqli
                     || $resource instanceof mysqli_result
                     || $resource instanceof mysqli_stmt
-                    && $resource->num_rows !== 0
+                    && 0 !== $resource->num_rows
             ) {
                 $this->isBuffered = true;
             }
@@ -218,7 +218,7 @@ final class Result implements Iterator, ResultInterface
     {
         $this->currentComplete = false;
 
-        if ($this->nextComplete === false) {
+        if (false === $this->nextComplete) {
             $this->position++;
         }
 
@@ -277,7 +277,7 @@ final class Result implements Iterator, ResultInterface
     protected function loadDataFromMysqliStatement(): bool
     {
         // build the default reference based bind structure, if it does not already exist
-        if ($this->statementBindValues['keys'] === null) {
+        if (null === $this->statementBindValues['keys']) {
             $this->statementBindValues['keys'] = [];
             $resultResource                    = $this->resource->result_metadata();
             foreach ($resultResource->fetch_fields() as $col) {
@@ -296,7 +296,9 @@ final class Result implements Iterator, ResultInterface
                 $this->resource->close();
             }
             return false;
-        } elseif ($r === false) {
+        }
+
+        if (false === $r) {
             throw new Exception\RuntimeException($this->resource->error);
         }
 

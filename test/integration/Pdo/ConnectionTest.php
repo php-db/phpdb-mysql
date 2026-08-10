@@ -18,6 +18,7 @@ use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('integration')]
@@ -31,17 +32,18 @@ final class ConnectionTest extends TestCase
 {
     use SetupTrait;
 
-    public function testAutocommitRestoredAfterCommit(): void
+    #[Test]
+    public function autocommitRestoredAfterCommit(): void
     {
         /** @var Connection $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $connection->connect();
-        self::assertTrue($connection->isConnected());
+        static::assertTrue($connection->isConnected());
 
         $connection->beginTransaction();
-        self::assertTrue($connection->inTransaction());
+        static::assertTrue($connection->inTransaction());
         $connection->commit();
-        self::assertFalse($connection->inTransaction());
+        static::assertFalse($connection->inTransaction());
 
         $connection->execute("INSERT INTO test (name, value) VALUES ('tx_autocommit', 'test')");
 
@@ -49,23 +51,24 @@ final class ConnectionTest extends TestCase
 
         $connection->connect();
         $result = $connection->execute("SELECT COUNT(*) AS cnt FROM test WHERE name = 'tx_autocommit'");
-        self::assertSame(1, $result->getResource()->fetchColumn());
+        static::assertSame(1, $result->getResource()->fetchColumn());
 
         $connection->execute("DELETE FROM test WHERE name = 'tx_autocommit'");
         $connection->disconnect();
     }
 
-    public function testAutocommitRestoredAfterRollback(): void
+    #[Test]
+    public function autocommitRestoredAfterRollback(): void
     {
         /** @var Connection $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $connection->connect();
-        self::assertTrue($connection->isConnected());
+        static::assertTrue($connection->isConnected());
 
         $connection->beginTransaction();
-        self::assertTrue($connection->inTransaction());
+        static::assertTrue($connection->inTransaction());
         $connection->rollback();
-        self::assertFalse($connection->inTransaction());
+        static::assertFalse($connection->inTransaction());
 
         $connection->execute("INSERT INTO test (name, value) VALUES ('tx_autocommit_rb', 'test')");
 
@@ -73,112 +76,120 @@ final class ConnectionTest extends TestCase
 
         $connection->connect();
         $result = $connection->execute("SELECT COUNT(*) AS cnt FROM test WHERE name = 'tx_autocommit_rb'");
-        self::assertSame(1, $result->getResource()->fetchColumn());
+        static::assertSame(1, $result->getResource()->fetchColumn());
 
         $connection->execute("DELETE FROM test WHERE name = 'tx_autocommit_rb'");
         $connection->disconnect();
     }
 
-    public function testBeginTransaction(): void
+    #[Test]
+    public function beginTransaction(): void
     {
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $connection->connect();
 
-        self::assertTrue($connection->isConnected());
-        self::assertFalse($connection->inTransaction());
+        static::assertTrue($connection->isConnected());
+        static::assertFalse($connection->inTransaction());
 
         $result = $connection->beginTransaction();
 
-        self::assertInstanceOf(Connection::class, $result);
-        self::assertTrue($connection->inTransaction());
+        static::assertInstanceOf(Connection::class, $result);
+        static::assertTrue($connection->inTransaction());
 
         $connection->rollback();
-        self::assertFalse($connection->inTransaction());
+        static::assertFalse($connection->inTransaction());
         $connection->disconnect();
     }
 
-    public function testCommit(): void
+    #[Test]
+    public function commit(): void
     {
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $connection->connect();
-        self::assertTrue($connection->isConnected());
+        static::assertTrue($connection->isConnected());
 
         $connection->beginTransaction();
-        self::assertTrue($connection->inTransaction());
+        static::assertTrue($connection->inTransaction());
 
         $connection->execute("INSERT INTO test (name, value) VALUES ('tx_commit', 'test')");
 
         $result = $connection->commit();
-        self::assertInstanceOf(Connection::class, $result);
-        self::assertFalse($connection->inTransaction());
+        static::assertInstanceOf(Connection::class, $result);
+        static::assertFalse($connection->inTransaction());
 
         $result = $connection->execute("SELECT COUNT(*) AS cnt FROM test WHERE name = 'tx_commit'");
-        self::assertSame(1, $result->getResource()->fetchColumn());
+        static::assertSame(1, $result->getResource()->fetchColumn());
 
         $connection->execute("DELETE FROM test WHERE name = 'tx_commit'");
         $connection->disconnect();
     }
 
-    public function testConnectMethodReturnsConnectionInterface(): void
+    #[Test]
+    public function connectMethodReturnsConnectionInterface(): void
     {
         /** @var ConnectionInterface&PdoConnectionInterface&AbstractConnection&AbstractPdoConnection&Connection $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
-        self::assertInstanceOf(ConnectionInterface::class, $connection->connect());
+        static::assertInstanceOf(ConnectionInterface::class, $connection->connect());
         $connection->disconnect();
     }
 
-    public function testExecute(): void
+    #[Test]
+    public function execute(): void
     {
         $connection = $this->getAdapter()->getDriver()->getConnection();
         /** @var ResultInterface&Result $result */
         $result = $connection->execute('SELECT \'foo\'');
-        self::assertInstanceOf(ResultInterface::class, $result);
-        self::assertInstanceOf(Result::class, $result);
+        static::assertInstanceOf(ResultInterface::class, $result);
+        static::assertInstanceOf(Result::class, $result);
     }
 
-    public function testGetLastGeneratedValue(): void
+    #[Test]
+    public function getLastGeneratedValue(): void
     {
         /** @var ConnectionInterface&PdoConnectionInterface&AbstractConnection&AbstractPdoConnection&Connection $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $connection->connect();
         $lastId = (int) $connection->getLastGeneratedValue();
-        self::assertIsInt($lastId);
+        static::assertIsInt($lastId);
         $connection->disconnect();
     }
 
-    public function testGetResource(): void
+    #[Test]
+    public function getResource(): void
     {
         $connection = $this->getAdapter()->getDriver()->getConnection();
-        self::assertInstanceOf(PDO::class, $connection->getResource());
+        static::assertInstanceOf(PDO::class, $connection->getResource());
     }
 
-    public function testPrepare(): void
+    #[Test]
+    public function prepare(): void
     {
         /** @var ConnectionInterface&PdoConnectionInterface&AbstractConnection&AbstractPdoConnection&Connection $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
         /** @var StatementInterface&Statement $statement */
         $statement = $connection->prepare('SELECT \'foo\'');
-        self::assertInstanceOf(StatementInterface::class, $statement);
-        self::assertInstanceOf(Statement::class, $statement);
+        static::assertInstanceOf(StatementInterface::class, $statement);
+        static::assertInstanceOf(Statement::class, $statement);
     }
 
-    public function testRollback(): void
+    #[Test]
+    public function rollback(): void
     {
         $connection = $this->getAdapter()->getDriver()->getConnection();
         $connection->connect();
-        self::assertTrue($connection->isConnected());
+        static::assertTrue($connection->isConnected());
 
         $connection->beginTransaction();
-        self::assertTrue($connection->inTransaction());
+        static::assertTrue($connection->inTransaction());
 
         $connection->execute("INSERT INTO test (name, value) VALUES ('tx_rollback', 'test')");
 
         $result = $connection->rollback();
-        self::assertInstanceOf(Connection::class, $result);
-        self::assertFalse($connection->inTransaction());
+        static::assertInstanceOf(Connection::class, $result);
+        static::assertFalse($connection->inTransaction());
 
         $result = $connection->execute("SELECT COUNT(*) AS cnt FROM test WHERE name = 'tx_rollback'");
-        self::assertSame(0, $result->getResource()->fetchColumn());
+        static::assertSame(0, $result->getResource()->fetchColumn());
 
         $connection->disconnect();
     }

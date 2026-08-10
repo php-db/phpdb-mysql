@@ -11,6 +11,7 @@ use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Connection::class, 'getResource')]
@@ -19,8 +20,9 @@ final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
 
+    #[Test]
     #[Group('2622')]
-    public function testArrayOfConnectionParametersCreatesCorrectDsn(): void
+    public function arrayOfConnectionParametersCreatesCorrectDsn(): void
     {
         $connection = new Connection([
             'driver'      => 'pdo_mysql',
@@ -35,17 +37,18 @@ final class ConnectionTest extends TestCase
         }
         $responseString = $connection->getDsn();
 
-        self::assertStringStartsWith('mysql:', $responseString);
-        self::assertStringContainsString('charset=utf8', $responseString);
-        self::assertStringContainsString('dbname=foo', $responseString);
-        self::assertStringContainsString('port=3306', $responseString);
-        self::assertStringContainsString('unix_socket=/var/run/mysqld/mysqld.sock', $responseString);
+        static::assertStringStartsWith('mysql:', $responseString);
+        static::assertStringContainsString('charset=utf8', $responseString);
+        static::assertStringContainsString('dbname=foo', $responseString);
+        static::assertStringContainsString('port=3306', $responseString);
+        static::assertStringContainsString('unix_socket=/var/run/mysqld/mysqld.sock', $responseString);
     }
 
     /**
      * Test getConnectedDsn returns a DSN string if it has been set
      */
-    public function testGetDsn(): void
+    #[Test]
+    public function getDsn(): void
     {
         $dsn = 'mysql:';
         $this->connection->setConnectionParameters(['dsn' => $dsn]);
@@ -55,10 +58,11 @@ final class ConnectionTest extends TestCase
         }
         $responseString = $this->connection->getDsn();
 
-        self::assertEquals($dsn, $responseString);
+        static::assertEquals($dsn, $responseString);
     }
 
-    public function testHostnameAndUnixSocketThrowsInvalidConnectionParametersException(): void
+    #[Test]
+    public function hostnameAndUnixSocketThrowsInvalidConnectionParametersException(): void
     {
         $this->expectException(InvalidConnectionParametersException::class);
         $this->expectExceptionMessage(
@@ -78,7 +82,8 @@ final class ConnectionTest extends TestCase
     /**
      * Test getResource method tries to connect to  the database, it should never return null
      */
-    public function testResource(): void
+    #[Test]
+    public function resource(): void
     {
         $this->expectException(RuntimeException::class);
         $this->connection->getResource();

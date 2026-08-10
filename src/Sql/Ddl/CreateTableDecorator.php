@@ -57,25 +57,25 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         $insertStart = [];
 
         foreach (['NOT NULL', 'NULL', 'DEFAULT', 'UNIQUE', 'PRIMARY', 'REFERENCES'] as $needle) {
-            $insertPos = strpos($sql, ' ' . $needle);
+            $insertPos = strpos($sql, " {$needle}");
 
-            if ($insertPos !== false) {
+            if (false !== $insertPos) {
                 switch ($needle) {
                     case 'REFERENCES':
-                        $insertStart[2] = ! isset($insertStart[2]) ? $insertPos : $insertStart[2];
+                        $insertStart[2] ??= $insertPos;
                     // no break
                     case 'PRIMARY':
                     case 'UNIQUE':
-                        $insertStart[1] = ! isset($insertStart[1]) ? $insertPos : $insertStart[1];
+                        $insertStart[1] ??= $insertPos;
                     // no break
                     default:
-                        $insertStart[0] = ! isset($insertStart[0]) ? $insertPos : $insertStart[0];
+                        $insertStart[0] ??= $insertPos;
                 }
             }
         }
 
         foreach (range(0, 3) as $i) {
-            $insertStart[$i] = $insertStart[$i] ?? $sqlLength;
+            $insertStart[$i] ??= $sqlLength;
         }
 
         return $insertStart;
@@ -116,11 +116,11 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                         $j      = 0;
                         break;
                     case 'charset':
-                        $insert = ' CHARACTER SET ' . $coValue;
+                        $insert = " CHARACTER SET {$coValue}";
                         $j      = 0;
                         break;
                     case 'collate':
-                        $insert = ' COLLATE ' . $coValue;
+                        $insert = " COLLATE {$coValue}";
                         $j      = 0;
                         break;
                     case 'identity':
@@ -130,7 +130,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                         $j      = 1;
                         break;
                     case 'comment':
-                        $insert = ' COMMENT ' . $platform->quoteValue($coValue);
+                        $insert = " COMMENT {$platform->quoteValue($coValue)}";
                         $j      = 2;
                         break;
                     case 'columnformat':
@@ -145,7 +145,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                 }
 
                 if ($insert) {
-                    $j                = $j ?? 0;
+                    $j                ??= 0;
                     $sql              = substr_replace($sql, $insert, $insertStart[$j], 0);
                     $insertStartCount = count($insertStart);
                     for (; $j < $insertStartCount; ++$j) {

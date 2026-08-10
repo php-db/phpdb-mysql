@@ -14,6 +14,7 @@ use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Statement::class, 'setDriver')]
@@ -30,7 +31,8 @@ final class StatementTest extends TestCase
     protected ?Driver $pdo;
     protected Statement $statement;
 
-    public function testExecute(): void
+    #[Test]
+    public function execute(): void
     {
         $mockPdoStatement = $this->createMock(PDOStatement::class);
         $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
@@ -38,70 +40,78 @@ final class StatementTest extends TestCase
         $this->statement->prepare('SELECT 1');
 
         $result = $this->statement->execute();
-        self::assertInstanceOf(ResultInterface::class, $result);
+        static::assertInstanceOf(ResultInterface::class, $result);
     }
 
     /**
      * @todo Implement testGetParameterContainer().
      */
-    public function testGetParameterContainer(): void
+    #[Test]
+    public function getParameterContainer(): void
     {
         $container = new ParameterContainer();
         $this->statement->setParameterContainer($container);
-        self::assertSame($container, $this->statement->getParameterContainer());
+        static::assertSame($container, $this->statement->getParameterContainer());
     }
 
-    public function testGetResource(): void
+    #[Test]
+    public function getResource(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $this->statement->setResource($stmt);
 
-        self::assertSame($stmt, $this->statement->getResource());
+        static::assertSame($stmt, $this->statement->getResource());
     }
 
-    public function testGetSql(): void
+    #[Test]
+    public function getSql(): void
     {
         $this->statement->setSql('SELECT 1');
-        self::assertEquals('SELECT 1', $this->statement->getSql());
+        static::assertSame('SELECT 1', $this->statement->getSql());
     }
 
-    public function testIsPrepared(): void
+    #[Test]
+    public function isPrepared(): void
     {
-        self::assertFalse($this->statement->isPrepared());
+        static::assertFalse($this->statement->isPrepared());
 
         $mockPdoStatement = $this->createMock(PDOStatement::class);
         $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
         $this->statement->initialize($pdo);
         $this->statement->prepare('SELECT 1');
 
-        self::assertTrue($this->statement->isPrepared());
+        static::assertTrue($this->statement->isPrepared());
     }
 
-    public function testPrepare(): void
+    #[Test]
+    public function prepare(): void
     {
         $mockPdoStatement = $this->createMock(PDOStatement::class);
         $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
         $this->statement->initialize($pdo);
 
         $result = $this->statement->prepare('SELECT 1');
-        self::assertInstanceOf(Statement::class, $result);
+        static::assertInstanceOf(Statement::class, $result);
     }
 
-    public function testSetDriver(): void
+    #[Test]
+    public function setDriver(): void
     {
-        self::assertInstanceOf(PdoDriverInterface::class, $this->pdo);
-        self::assertEquals($this->statement, $this->statement->setDriver($this->pdo));
+        static::assertInstanceOf(PdoDriverInterface::class, $this->pdo);
+        static::assertEquals($this->statement, $this->statement->setDriver($this->pdo));
     }
 
-    public function testSetParameterContainer(): void
+    #[Test]
+    public function setParameterContainer(): void
     {
-        self::assertSame($this->statement, $this->statement->setParameterContainer(new ParameterContainer()));
+        static::assertSame($this->statement, $this->statement->setParameterContainer(new ParameterContainer()));
     }
 
-    public function testSetSql(): void
+    #[Test]
+    public function setSql(): void
     {
         $this->statement->setSql('SELECT 1');
-        self::assertEquals('SELECT 1', $this->statement->getSql());
+        static::assertSame('SELECT 1', $this->statement->getSql());
     }
 
     /**

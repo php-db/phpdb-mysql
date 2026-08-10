@@ -96,6 +96,7 @@ class AdapterPlatform extends AbstractPlatform
         }
 
         if ($resource instanceof mysqli) {
+            // @mago-expect lint:string-style
             return '\'' . $resource->real_escape_string($value) . '\'';
         }
 

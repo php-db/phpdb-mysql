@@ -49,8 +49,16 @@ class Connection extends AbstractPdoConnection
             return $this;
         }
 
-        $dsn     = $username = $password = $hostname = $port = $charset = $database = $unixSocket = $version = null;
-        $options = [];
+        $dsn        = null;
+        $username   = null;
+        $password   = null;
+        $hostname   = null;
+        $port       = null;
+        $charset    = null;
+        $database   = null;
+        $unixSocket = null;
+        $version    = null;
+        $options    = [];
 
         foreach ($this->connectionParameters as $key => $value) {
             $result = match (strtolower($key)) {
@@ -64,7 +72,7 @@ class Connection extends AbstractPdoConnection
                 'unix_socket'                        => $unixSocket = (string) $value,
                 'version'                            => $version = (string) $value,
                 // todo: should we suppport sslmode for pdo pgsql?
-                'driver_options' => (function (&$options, $value): void {
+                'driver_options' => (static function (&$options, $value): void {
                     $value   = (array) $value;
                     $options = array_diff_key($options, $value) + $value;
                 })($options, $value),
@@ -73,31 +81,31 @@ class Connection extends AbstractPdoConnection
         }
         unset($result);
 
-        if (isset($hostname) && isset($unixSocket)) {
+        if (null !== $hostname && null !== $unixSocket) {
             throw new Exception\InvalidConnectionParametersException(
                 'Ambiguous connection parameters, both hostname and unix_socket parameters were set',
                 $this->connectionParameters,
             );
         }
 
-        if (! isset($dsn)) {
+        if (null === $dsn) {
             $dsn = [];
-            if (isset($database)) {
+            if (null !== $database) {
                 $dsn[] = "dbname={$database}";
             }
-            if (isset($hostname)) {
+            if (null !== $hostname) {
                 $dsn[] = "host={$hostname}";
             }
-            if (isset($port)) {
+            if (null !== $port) {
                 $dsn[] = "port={$port}";
             }
-            if (isset($charset)) {
+            if (null !== $charset) {
                 $dsn[] = "charset={$charset}";
             }
-            if (isset($unixSocket)) {
+            if (null !== $unixSocket) {
                 $dsn[] = "unix_socket={$unixSocket}";
             }
-            if (isset($version)) {
+            if (null !== $version) {
                 $dsn[] = "version={$version}";
             }
             $dsn = 'mysql:' . implode(';', $dsn);
@@ -121,7 +129,7 @@ class Connection extends AbstractPdoConnection
             if (! is_int($code)) {
                 $code = 0;
             }
-            throw new Exception\RuntimeException('Connect Error: ' . $e->getMessage(), $code, $e);
+            throw new Exception\RuntimeException("Connect Error: {$e->getMessage()}", $code, $e);
         }
 
         return $this;

@@ -24,7 +24,7 @@ final class Source extends AbstractSource
 {
     protected function loadColumnData(string $table, string $schema): void
     {
-        if (isset($this->data['columns'][$schema][$table])) {
+        if (null !== ($this->data['columns'][$schema][$table] ?? null)) {
             return;
         }
         $this->prepareDataHierarchy('columns', $schema, $table);
@@ -43,7 +43,7 @@ final class Source extends AbstractSource
             ['C', 'COLUMN_TYPE'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) {
+        array_walk($isColumns, static function (&$c) use ($p) {
             $c = $p->quoteIdentifierChain($c);
         });
 
@@ -72,17 +72,10 @@ final class Source extends AbstractSource
             . '  = '
             . $p->quoteTrustedValue($table);
 
-        if ($schema !== self::DEFAULT_SCHEMA) {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' = '
-                . $p->quoteTrustedValue($schema);
+        if (self::DEFAULT_SCHEMA !== $schema) {
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
         } else {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' != \'INFORMATION_SCHEMA\'';
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'";
         }
 
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
@@ -126,7 +119,7 @@ final class Source extends AbstractSource
     protected function loadConstraintData(string $table, string $schema): void
     {
         // phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
-        if (isset($this->data['constraints'][$schema][$table])) {
+        if (null !== ($this->data['constraints'][$schema][$table] ?? null)) {
             return;
         }
 
@@ -147,7 +140,7 @@ final class Source extends AbstractSource
 
         $p = $this->adapter->getPlatform();
 
-        array_walk($isColumns, function (&$c) use ($p) {
+        array_walk($isColumns, static function (&$c) use ($p) {
             $c = $p->quoteIdentifierChain($c);
         });
 
@@ -202,30 +195,19 @@ final class Source extends AbstractSource
             . $p->quoteIdentifierChain(['T', 'TABLE_TYPE'])
             . ' IN (\'BASE TABLE\', \'VIEW\')';
 
-        if ($schema !== self::DEFAULT_SCHEMA) {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' = '
-                . $p->quoteTrustedValue($schema);
+        if (self::DEFAULT_SCHEMA !== $schema) {
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
         } else {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' != \'INFORMATION_SCHEMA\'';
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'";
         }
 
-        $sql .=
-            ' ORDER BY CASE '
-            . $p->quoteIdentifierChain(['TC', 'CONSTRAINT_TYPE'])
-            . " WHEN 'PRIMARY KEY' THEN 1"
-            . " WHEN 'UNIQUE' THEN 2"
-            . " WHEN 'FOREIGN KEY' THEN 3"
-            . ' ELSE 4 END'
-            . ', '
-            . $p->quoteIdentifierChain(['TC', 'CONSTRAINT_NAME'])
-            . ', '
-            . $p->quoteIdentifierChain(['KCU', 'ORDINAL_POSITION']);
+        $sql .= " ORDER BY CASE {$p->quoteIdentifierChain([
+     'TC',
+     'CONSTRAINT_TYPE',
+ ])} WHEN 'PRIMARY KEY' THEN 1 WHEN 'UNIQUE' THEN 2 WHEN 'FOREIGN KEY' THEN 3 ELSE 4 END, {$p->quoteIdentifierChain([
+     'TC',
+     'CONSTRAINT_NAME',
+ ])}, {$p->quoteIdentifierChain(['KCU', 'ORDINAL_POSITION'])}";
 
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
@@ -238,7 +220,7 @@ final class Source extends AbstractSource
                 if ($isFK) {
                     $name = $realName;
                 } else {
-                    $name = '_laminas_' . $row['TABLE_NAME'] . '_' . $realName;
+                    $name = "_laminas_{$row['TABLE_NAME']}_{$realName}";
                 }
                 $constraints[$name] = [
                     'constraint_name' => $name,
@@ -268,7 +250,7 @@ final class Source extends AbstractSource
 
     protected function loadConstraintDataKeys(string $schema): void
     {
-        if (isset($this->data['constraint_keys'][$schema])) {
+        if (null !== ($this->data['constraint_keys'][$schema] ?? null)) {
             return;
         }
 
@@ -283,7 +265,7 @@ final class Source extends AbstractSource
             ['KCU', 'ORDINAL_POSITION'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) {
+        array_walk($isColumns, static function (&$c) use ($p) {
             $c = $p->quoteIdentifierChain($c);
         });
 
@@ -308,17 +290,10 @@ final class Source extends AbstractSource
             . $p->quoteIdentifierChain(['T', 'TABLE_TYPE'])
             . ' IN (\'BASE TABLE\', \'VIEW\')';
 
-        if ($schema !== self::DEFAULT_SCHEMA) {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' = '
-                . $p->quoteTrustedValue($schema);
+        if (self::DEFAULT_SCHEMA !== $schema) {
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
         } else {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' != \'INFORMATION_SCHEMA\'';
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'";
         }
 
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
@@ -333,7 +308,7 @@ final class Source extends AbstractSource
 
     protected function loadConstraintDataNames(string $schema): void
     {
-        if (isset($this->data['constraint_names'][$schema])) {
+        if (null !== ($this->data['constraint_names'][$schema] ?? null)) {
             return;
         }
 
@@ -347,7 +322,7 @@ final class Source extends AbstractSource
             ['TC', 'CONSTRAINT_TYPE'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) {
+        array_walk($isColumns, static function (&$c) use ($p) {
             $c = $p->quoteIdentifierChain($c);
         });
 
@@ -372,17 +347,10 @@ final class Source extends AbstractSource
             . $p->quoteIdentifierChain(['T', 'TABLE_TYPE'])
             . ' IN (\'BASE TABLE\', \'VIEW\')';
 
-        if ($schema !== self::DEFAULT_SCHEMA) {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' = '
-                . $p->quoteTrustedValue($schema);
+        if (self::DEFAULT_SCHEMA !== $schema) {
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
         } else {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' != \'INFORMATION_SCHEMA\'';
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'";
         }
 
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
@@ -411,7 +379,7 @@ final class Source extends AbstractSource
             ['KCU', 'REFERENCED_COLUMN_NAME'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) {
+        array_walk($isColumns, static function (&$c) use ($p) {
             $c = $p->quoteIdentifierChain($c);
         });
 
@@ -451,17 +419,10 @@ final class Source extends AbstractSource
             . $p->quoteIdentifierChain(['T', 'TABLE_TYPE'])
             . ' IN (\'BASE TABLE\', \'VIEW\')';
 
-        if ($schema !== self::DEFAULT_SCHEMA) {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' = '
-                . $p->quoteTrustedValue($schema);
+        if (self::DEFAULT_SCHEMA !== $schema) {
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
         } else {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' != \'INFORMATION_SCHEMA\'';
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'";
         }
 
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
@@ -479,21 +440,18 @@ final class Source extends AbstractSource
      */
     protected function loadSchemaData(): void
     {
-        if (isset($this->data['schemas'])) {
+        if (null !== ($this->data['schemas'] ?? null)) {
             return;
         }
         $this->prepareDataHierarchy('schemas');
 
         $p = $this->adapter->getPlatform();
 
-        $sql =
-            'SELECT '
-            . $p->quoteIdentifier('SCHEMA_NAME')
-            . ' FROM '
-            . $p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'SCHEMATA'])
-            . ' WHERE '
-            . $p->quoteIdentifier('SCHEMA_NAME')
-            . ' != \'INFORMATION_SCHEMA\'';
+        $sql = <<<SQL
+            SELECT {$p->quoteIdentifier('SCHEMA_NAME')}
+            FROM {$p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'SCHEMATA'])}
+            WHERE {$p->quoteIdentifier('SCHEMA_NAME')} != 'INFORMATION_SCHEMA'
+            SQL;
 
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
@@ -507,7 +465,7 @@ final class Source extends AbstractSource
 
     protected function loadTableNameData(string $schema): void
     {
-        if (isset($this->data['table_names'][$schema])) {
+        if (null !== ($this->data['table_names'][$schema] ?? null)) {
             return;
         }
         $this->prepareDataHierarchy('table_names', $schema);
@@ -522,7 +480,7 @@ final class Source extends AbstractSource
             ['V', 'IS_UPDATABLE'],
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) {
+        array_walk($isColumns, static function (&$c) use ($p) {
             $c = $p->quoteIdentifierChain($c);
         });
 
@@ -547,17 +505,10 @@ final class Source extends AbstractSource
             . $p->quoteIdentifierChain(['T', 'TABLE_TYPE'])
             . ' IN (\'BASE TABLE\', \'VIEW\')';
 
-        if ($schema !== self::DEFAULT_SCHEMA) {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' = '
-                . $p->quoteTrustedValue($schema);
+        if (self::DEFAULT_SCHEMA !== $schema) {
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
         } else {
-            $sql .=
-                ' AND '
-                . $p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])
-                . ' != \'INFORMATION_SCHEMA\'';
+            $sql .= " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'";
         }
 
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
@@ -577,7 +528,7 @@ final class Source extends AbstractSource
 
     protected function loadTriggerData(string $schema): void
     {
-        if (isset($this->data['triggers'][$schema])) {
+        if (null !== ($this->data['triggers'][$schema] ?? null)) {
             return;
         }
 
@@ -605,7 +556,7 @@ final class Source extends AbstractSource
             'CREATED',
         ];
 
-        array_walk($isColumns, function (&$c) use ($p) {
+        array_walk($isColumns, static function (&$c) use ($p) {
             $c = $p->quoteIdentifier($c);
         });
 
@@ -616,15 +567,10 @@ final class Source extends AbstractSource
             . $p->quoteIdentifierChain(['INFORMATION_SCHEMA', 'TRIGGERS'])
             . ' WHERE ';
 
-        if ($schema !== self::DEFAULT_SCHEMA) {
-            $sql .=
-                $p->quoteIdentifier('TRIGGER_SCHEMA')
-                . ' = '
-                . $p->quoteTrustedValue($schema);
+        if (self::DEFAULT_SCHEMA !== $schema) {
+            $sql .= "{$p->quoteIdentifier('TRIGGER_SCHEMA')} = {$p->quoteTrustedValue($schema)}";
         } else {
-            $sql .=
-                $p->quoteIdentifier('TRIGGER_SCHEMA')
-                . ' != \'INFORMATION_SCHEMA\'';
+            $sql .= "{$p->quoteIdentifier('TRIGGER_SCHEMA')} != 'INFORMATION_SCHEMA'";
         }
 
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);

@@ -23,7 +23,7 @@ final class PdoDriverInterfaceFactory
         string $requestedName,
         ?array $options = null,
     ): PdoDriverInterface&Driver {
-        if (! isset($options['connection'])) {
+        if (null === $options || ! array_key_exists('connection', $options)) {
             throw ContainerException::forService(
                 Driver::class,
                 self::class,

@@ -16,7 +16,6 @@ use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 
 use function array_intersect_key;
-use function array_merge;
 use function extension_loaded;
 use function is_string;
 
@@ -37,7 +36,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     ) {
         $this->checkEnvironment();
 
-        $options = array_intersect_key(array_merge($this->options, $options), $this->options);
+        $options = array_intersect_key([...$this->options, ...$options], $this->options);
 
         if ($this->connection instanceof DriverAwareInterface) {
             $this->connection->setDriver($this);

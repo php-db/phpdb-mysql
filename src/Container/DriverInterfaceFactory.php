@@ -23,7 +23,7 @@ final class DriverInterfaceFactory
         string $requestedName,
         ?array $options = null,
     ): DriverInterface&Driver {
-        if (! isset($options['connection'])) {
+        if (null === $options || ! array_key_exists('connection', $options)) {
             throw ContainerException::forService(
                 Driver::class,
                 self::class,

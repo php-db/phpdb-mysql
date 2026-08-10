@@ -65,7 +65,7 @@ trait SetupTrait
         );
 
         // prefer passed config over environment variables
-        if ($config !== []) {
+        if ([] !== $config) {
             $serviceManagerConfig = ArrayUtils::merge($serviceManagerConfig, $config);
         }
 

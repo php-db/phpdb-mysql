@@ -19,7 +19,7 @@ final class ConnectionInterfaceFactory
         ?array $options = null,
     ): ConnectionInterface&Connection {
         $conn = $options['connection'] ?? [];
-        if (! is_array($conn) || $conn === []) {
+        if (! is_array($conn) || [] === $conn) {
             throw new InvalidConnectionParametersException(
                 'Connection configuration must be an array of parameters passed via $options["connection"]',
                 $conn,

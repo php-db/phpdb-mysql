@@ -14,6 +14,7 @@ use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Driver::class, 'getResultPrototype')]
@@ -51,7 +52,8 @@ final class DriverTest extends TestCase
         ];
     }
 
-    public function testCreateResultPassesNullRowCount(): void
+    #[Test]
+    public function createResultPassesNullRowCount(): void
     {
         $pdoStatement = $this->getMockBuilder(PDOStatement::class)->getMock();
         $pdoStatement->expects($this->once())
@@ -64,29 +66,32 @@ final class DriverTest extends TestCase
 
         $result = $driver->createResult($pdoStatement);
 
-        self::assertInstanceOf(Result::class, $result);
-        self::assertSame(4, $result->count());
+        static::assertInstanceOf(Result::class, $result);
+        static::assertSame(4, $result->count());
     }
 
+    #[Test]
     #[DataProvider('getParamsAndType')]
-    public function testFormatParameterName(int|string $name, ?string $type, string $expected): void
+    public function formatParameterName(int|string $name, ?string $type, string $expected): void
     {
         $result = $this->pdo->formatParameterName($name, $type);
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
+    #[Test]
     #[DataProvider('getInvalidParamName')]
-    public function testFormatParameterNameWithInvalidCharacters(string $name): void
+    public function formatParameterNameWithInvalidCharacters(string $name): void
     {
         $this->expectException(RuntimeException::class);
         $this->pdo->formatParameterName($name);
     }
 
-    public function testGetResultPrototype(): void
+    #[Test]
+    public function getResultPrototype(): void
     {
         $resultPrototype = $this->pdo->getResultPrototype();
 
-        self::assertInstanceOf(Result::class, $resultPrototype);
+        static::assertInstanceOf(Result::class, $resultPrototype);
     }
 
     /**

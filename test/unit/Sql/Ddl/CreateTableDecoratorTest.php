@@ -14,6 +14,7 @@ use PhpDb\Sql\Ddl\Column;
 use PhpDb\Sql\Ddl\Constraint;
 use PhpDb\Sql\Ddl\CreateTable;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(CreateTableDecorator::class, 'processColumns')]
@@ -22,7 +23,8 @@ final class CreateTableDecoratorTest extends TestCase
 {
     protected AdapterPlatform $platform;
 
-    public function testCharsetAppearsAfterUnsigned(): void
+    #[Test]
+    public function charsetAppearsAfterUnsigned(): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Integer('id');
@@ -32,10 +34,11 @@ final class CreateTableDecoratorTest extends TestCase
 
         $sql = $this->buildSql($table);
 
-        self::assertMatchesRegularExpression('/UNSIGNED CHARACTER SET utf8mb3/', $sql);
+        static::assertMatchesRegularExpression('/UNSIGNED CHARACTER SET utf8mb3/', $sql);
     }
 
-    public function testCharsetAppearsBeforeNotNull(): void
+    #[Test]
+    public function charsetAppearsBeforeNotNull(): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Varchar('name', 255);
@@ -46,13 +49,14 @@ final class CreateTableDecoratorTest extends TestCase
 
         $sql = $this->buildSql($table);
 
-        self::assertMatchesRegularExpression(
+        static::assertMatchesRegularExpression(
             '/CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL/',
             $sql,
         );
     }
 
-    public function testColumnCharset(): void
+    #[Test]
+    public function columnCharset(): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Varchar('name', 255);
@@ -61,10 +65,11 @@ final class CreateTableDecoratorTest extends TestCase
 
         $sql = $this->buildSql($table);
 
-        self::assertStringContainsString('CHARACTER SET utf8mb3', $sql);
+        static::assertStringContainsString('CHARACTER SET utf8mb3', $sql);
     }
 
-    public function testColumnCharsetAndCollate(): void
+    #[Test]
+    public function columnCharsetAndCollate(): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Varchar('name', 255);
@@ -74,10 +79,11 @@ final class CreateTableDecoratorTest extends TestCase
 
         $sql = $this->buildSql($table);
 
-        self::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci', $sql);
+        static::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci', $sql);
     }
 
-    public function testColumnCollate(): void
+    #[Test]
+    public function columnCollate(): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Varchar('name', 255);
@@ -86,10 +92,11 @@ final class CreateTableDecoratorTest extends TestCase
 
         $sql = $this->buildSql($table);
 
-        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
+        static::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
     }
 
-    public function testCommentOption(): void
+    #[Test]
+    public function commentOption(): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Varchar('name', 255);
@@ -98,10 +105,11 @@ final class CreateTableDecoratorTest extends TestCase
 
         $sql = $this->buildSql($table);
 
-        self::assertStringContainsString('COMMENT', $sql);
+        static::assertStringContainsString('COMMENT', $sql);
     }
 
-    public function testFullColumnDefinition(): void
+    #[Test]
+    public function fullColumnDefinition(): void
     {
         $table = new CreateTable('test');
 
@@ -120,12 +128,13 @@ final class CreateTableDecoratorTest extends TestCase
 
         $sql = $this->buildSql($table);
 
-        self::assertStringContainsString('UNSIGNED', $sql);
-        self::assertStringContainsString('AUTO_INCREMENT', $sql);
-        self::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL', $sql);
+        static::assertStringContainsString('UNSIGNED', $sql);
+        static::assertStringContainsString('AUTO_INCREMENT', $sql);
+        static::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL', $sql);
     }
 
-    public function testUnsignedOption(): void
+    #[Test]
+    public function unsignedOption(): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Integer('id');
@@ -135,8 +144,8 @@ final class CreateTableDecoratorTest extends TestCase
 
         $sql = $this->buildSql($table);
 
-        self::assertStringContainsString('UNSIGNED', $sql);
-        self::assertStringContainsString('AUTO_INCREMENT', $sql);
+        static::assertStringContainsString('UNSIGNED', $sql);
+        static::assertStringContainsString('AUTO_INCREMENT', $sql);
     }
 
     protected function setUp(): void

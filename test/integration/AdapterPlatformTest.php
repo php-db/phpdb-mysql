@@ -11,6 +11,7 @@ use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('integration')]
@@ -32,25 +33,27 @@ final class AdapterPlatformTest extends TestCase
         ];
     }
 
+    #[Test]
     #[DataProvider('quoteValueProvider')]
-    public function testQuoteValueWithMysqli(string $input, string $expected): void
+    public function quoteValueWithMysqli(string $input, string $expected): void
     {
         $this->driver = Driver::class;
         $adapter      = $this->getAdapter();
 
         $platform = new AdapterPlatform($adapter->getDriver());
         $value    = $platform->quoteValue($input);
-        self::assertSame($expected, $value);
+        static::assertSame($expected, $value);
     }
 
+    #[Test]
     #[DataProvider('quoteValueProvider')]
-    public function testQuoteValueWithPdoMysql(string $input, string $expected): void
+    public function quoteValueWithPdoMysql(string $input, string $expected): void
     {
         $this->driver = PdoDriver::class;
         $adapter      = $this->getAdapter();
 
         $platform = new AdapterPlatform($adapter->getDriver());
         $value    = $platform->quoteValue($input);
-        self::assertSame($expected, $value);
+        static::assertSame($expected, $value);
     }
 }

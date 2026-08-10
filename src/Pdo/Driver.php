@@ -35,7 +35,7 @@ class Driver extends AbstractPdo
         $this->statementPrototype->setDriver($this);
 
         // $features is not constructor promoted because $this->features is defined in the trait
-        if ($features !== [] && $this instanceof DriverFeatureProviderInterface) {
+        if ([] !== $features && $this instanceof DriverFeatureProviderInterface) {
             $this->addFeatures($features);
         }
     }

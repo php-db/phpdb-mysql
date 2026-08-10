@@ -77,11 +77,11 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
         $this->profiler?->profilerFinish();
 
-        if ($return === false) {
+        if (false === $return) {
             throw new Exception\RuntimeException($this->resource->error);
         }
 
-        if ($this->bufferResults === true) {
+        if (true === $this->bufferResults) {
             $this->resource->store_result();
             $this->isPrepared = false;
             $buffered         = true;
@@ -142,7 +142,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         $this->resource = $this->mysqli->prepare($sql);
         if (! $this->resource instanceof mysqli_stmt) {
             throw new Exception\InvalidQueryException(
-                'Statement couldn\'t be produced with sql: ' . $sql,
+                "Statement couldn't be produced with sql: {$sql}",
                 $this->mysqli->errno,
                 new Exception\ErrorException($this->mysqli->error, $this->mysqli->errno),
             );
