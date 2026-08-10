@@ -250,6 +250,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     }
 
     /** @inheritDoc */
+    #[Override]
     public function isConnected(): bool
     {
         return $this->resource instanceof mysqli;
@@ -274,6 +275,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
+    #[Override]
     public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
         $this->driver = $driver;

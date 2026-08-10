@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Sql\Ddl;
 
+use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
@@ -56,6 +57,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         'after'         => 8,
     ];
 
+    #[Override]
     public function setSubject(
         SqlInterface|PreparableSqlInterface|null $subject,
     ): PlatformDecoratorInterface {
@@ -97,6 +99,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return $insertStart;
     }
 
+    #[Override]
     protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
     {
         $sqls = [];
@@ -170,6 +173,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return [$sqls];
     }
 
+    #[Override]
     protected function processChangeColumns(?PlatformInterface $adapterPlatform = null): array
     {
         $sqls = [];

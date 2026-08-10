@@ -6,6 +6,7 @@ namespace PhpDb\Mysql;
 
 use mysqli;
 use mysqli_stmt;
+use Override;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
@@ -47,6 +48,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         }
     }
 
+    #[Override]
     public function checkEnvironment(): bool
     {
         if (! extension_loaded('mysqli')) {
@@ -62,6 +64,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
      *
      * @param mysqli|mysqli_result|mysqli_stmt $resource
      */
+    #[Override]
     public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
     {
         /** @var Result $result */
@@ -75,6 +78,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
      *
      * @param mysqli|mysqli_stmt|string $sqlOrResource
      */
+    #[Override]
     public function createStatement($sqlOrResource = null): StatementInterface&Statement
     {
         /**
@@ -106,11 +110,13 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Format parameter name
      */
+    #[Override]
     public function formatParameterName(string $name, ?string $type = null): string
     {
         return '?';
     }
 
+    #[Override]
     public function getConnection(): ConnectionInterface&Connection
     {
         return $this->connection;
@@ -119,6 +125,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Get last generated value
      */
+    #[Override]
     public function getLastGeneratedValue(): int|string|false|null
     {
         return $this->getConnection()->getLastGeneratedValue();
@@ -127,6 +134,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Get prepare type
      */
+    #[Override]
     public function getPrepareType(): string
     {
         return self::PARAMETERIZATION_POSITIONAL;
@@ -150,6 +158,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         return $this->statementPrototype;
     }
 
+    #[Override]
     public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;

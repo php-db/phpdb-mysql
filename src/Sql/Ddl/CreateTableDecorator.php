@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Sql\Ddl;
 
+use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
@@ -40,6 +41,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         'storage'       => 7,
     ];
 
+    #[Override]
     public function setSubject(
         PreparableSqlInterface|SqlInterface|null $subject,
     ): PlatformDecoratorInterface {
@@ -88,6 +90,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
     /**
      * {@inheritDoc}
      */
+    #[Override]
     protected function processColumns(?PlatformInterface $platform = null): ?array
     {
         if (! $this->columns) {

@@ -6,6 +6,7 @@ namespace PhpDb\Mysql\Metadata;
 
 use DateTime;
 use Exception;
+use Override;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Metadata\Source\AbstractSource;
 
@@ -25,6 +26,7 @@ use const PREG_PATTERN_ORDER;
 final class Source extends AbstractSource
 {
     // @mago-expect lint:halstead
+    #[Override]
     protected function loadColumnData(string $table, string $schema): void
     {
         if (null !== ($this->data['columns'][$schema][$table] ?? null)) {
@@ -114,6 +116,7 @@ final class Source extends AbstractSource
     }
 
     // @mago-expect lint:halstead
+    #[Override]
     protected function loadConstraintData(string $table, string $schema): void
     {
         // phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
@@ -240,6 +243,7 @@ final class Source extends AbstractSource
         // phpcs:enable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
     }
 
+    #[Override]
     protected function loadConstraintDataKeys(string $schema): void
     {
         if (null !== ($this->data['constraint_keys'][$schema] ?? null)) {
@@ -351,6 +355,7 @@ final class Source extends AbstractSource
         $this->data['constraint_names'][$schema] = $data;
     }
 
+    #[Override]
     protected function loadConstraintReferences(string $table, string $schema): void
     {
         parent::loadConstraintReferences($table, $schema);
@@ -424,6 +429,7 @@ final class Source extends AbstractSource
     /**
      * @throws Exception
      */
+    #[Override]
     protected function loadSchemaData(): void
     {
         if (null !== ($this->data['schemas'] ?? null)) {
@@ -449,6 +455,7 @@ final class Source extends AbstractSource
         $this->data['schemas'] = $schemas;
     }
 
+    #[Override]
     protected function loadTableNameData(string $schema): void
     {
         if (null !== ($this->data['table_names'][$schema] ?? null)) {
@@ -510,6 +517,7 @@ final class Source extends AbstractSource
         $this->data['table_names'][$schema] = $tables;
     }
 
+    #[Override]
     protected function loadTriggerData(string $schema): void
     {
         if (null !== ($this->data['triggers'][$schema] ?? null)) {
