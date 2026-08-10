@@ -134,7 +134,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
         $this->resource = $this->createResource();
 
-        if (! empty($p['driver_options'])) {
+        if ([] !== ($p['driver_options'] ?? [])) {
             foreach ($p['driver_options'] as $option => $value) {
                 if (is_string($option)) {
                     $option = strtoupper($option);
@@ -184,7 +184,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             );
         }
 
-        if (! empty($p['charset'])) {
+        if ('' !== ($p['charset'] ?? '')) {
             $this->resource->set_charset($p['charset']);
         }
 

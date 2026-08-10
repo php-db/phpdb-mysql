@@ -183,15 +183,15 @@ final class AdapterPlatformTest extends TestCase
     #[Test]
     public function quoteValue(): void
     {
-        static::assertSame("'value'", @$this->platform->quoteValue('value'));
-        static::assertSame("'Foo O\\'Bar'", @$this->platform->quoteValue("Foo O'Bar"));
+        static::assertSame("'value'", $this->platform->quoteValue('value'));
+        static::assertSame("'Foo O\\'Bar'", $this->platform->quoteValue("Foo O'Bar"));
         static::assertSame(
             '\'\\\'; DELETE FROM some_table; -- \'',
-            @$this->platform->quoteValue('\'; DELETE FROM some_table; -- '),
+            $this->platform->quoteValue('\'; DELETE FROM some_table; -- '),
         );
         static::assertSame(
             "'\\\\\\'; DELETE FROM some_table; -- '",
-            @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '),
+            $this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '),
         );
     }
 

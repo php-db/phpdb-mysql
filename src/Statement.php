@@ -131,7 +131,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
             throw new Exception\RuntimeException('This statement has already been prepared');
         }
 
-        $sql = $sql ?: $this->sql;
+        $sql = null === $sql || '' === $sql ? $this->sql : $sql;
 
         $this->resource = $this->mysqli->prepare($sql);
         if (! $this->resource instanceof mysqli_stmt) {

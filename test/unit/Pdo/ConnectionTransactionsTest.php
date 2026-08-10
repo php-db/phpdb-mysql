@@ -67,47 +67,43 @@ final class ConnectionTransactionsTest extends TestCase
     #[Test]
     public function nestedTransactionsCommit(): void
     {
-        $nested = 0;
-
         static::assertFalse($this->wrapper->inTransaction());
 
         // 1st transaction
         $this->wrapper->beginTransaction();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(++$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(1, $this->wrapper->getNestedTransactionsCount());
 
         // 2nd transaction
         $this->wrapper->beginTransaction();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(++$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(2, $this->wrapper->getNestedTransactionsCount());
 
         // 1st commit
         $this->wrapper->commit();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(--$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(1, $this->wrapper->getNestedTransactionsCount());
 
         // 2nd commit
         $this->wrapper->commit();
         static::assertFalse($this->wrapper->inTransaction());
-        static::assertSame(--$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(0, $this->wrapper->getNestedTransactionsCount());
     }
 
     #[Test]
     public function nestedTransactionsRollback(): void
     {
-        $nested = 0;
-
         static::assertFalse($this->wrapper->inTransaction());
 
         // 1st transaction
         $this->wrapper->beginTransaction();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(++$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(1, $this->wrapper->getNestedTransactionsCount());
 
         // 2nd transaction
         $this->wrapper->beginTransaction();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(++$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(2, $this->wrapper->getNestedTransactionsCount());
 
         // Rollback
         $this->wrapper->rollback();

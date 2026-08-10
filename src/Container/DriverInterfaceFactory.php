@@ -16,6 +16,8 @@ use PhpDb\Mysql\Result;
 use PhpDb\Mysql\Statement;
 use Psr\Container\ContainerInterface;
 
+use function array_key_exists;
+
 final class DriverInterfaceFactory
 {
     public function __invoke(

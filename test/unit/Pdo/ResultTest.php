@@ -148,7 +148,7 @@ final class ResultTest extends TestCase
         $position = 0;
 
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        assert($mock instanceof PDOStatement); // to suppress IDE type warnings
+        assert($mock instanceof PDOStatement, description: 'to suppress IDE type warnings');
         $mock->expects($this->any())
             ->method('fetch')
             ->willReturnCallback(static function () use ($data, &$position) {

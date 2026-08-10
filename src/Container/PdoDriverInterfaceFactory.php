@@ -16,6 +16,8 @@ use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use Psr\Container\ContainerInterface;
 
+use function array_key_exists;
+
 final class PdoDriverInterfaceFactory
 {
     public function __invoke(
