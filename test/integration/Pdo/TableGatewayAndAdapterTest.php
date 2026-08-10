@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpDbIntegrationTest\Mysql\Pdo;
 
 use Exception;
-use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\ResultSet\AbstractResultSet;
 use PhpDb\TableGateway\TableGateway;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
@@ -21,7 +21,7 @@ use function array_fill;
  * On tear down disconnected from the database and set the driver adapter on null
  * Running many tests ended up in consuming all mysql connections and not releasing them
  */
-#[CoversMethod(ConnectionInterface::class, 'disconnect')]
+#[CoversMethod(Connection::class, 'disconnect')]
 final class TableGatewayAndAdapterTest extends TestCase
 {
     use SetupTrait;

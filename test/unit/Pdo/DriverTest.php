@@ -16,7 +16,6 @@ use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Driver::class, 'getDatabasePlatformName')]
 #[CoversMethod(Driver::class, 'getResultPrototype')]
 #[CoversMethod(Driver::class, 'createResult')]
 final class DriverTest extends TestCase

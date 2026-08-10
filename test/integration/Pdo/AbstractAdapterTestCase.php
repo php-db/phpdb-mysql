@@ -8,17 +8,17 @@ use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\SchemaAwareInterface;
+use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Adapter::class, 'getCurrentSchema')]
-#[CoversMethod(AdapterInterface::class, '__construct')]
-#[CoversMethod(SchemaAwareInterface::class, 'getCurrentSchema')]
-#[CoversMethod(ConnectionInterface::class, 'connect')]
-#[CoversMethod(ConnectionInterface::class, 'disconnect')]
-#[CoversMethod(ConnectionInterface::class, 'isConnected')]
+#[CoversMethod(Adapter::class, '__construct')]
+#[CoversMethod(Connection::class, 'connect')]
+#[CoversMethod(Connection::class, 'disconnect')]
+#[CoversMethod(Connection::class, 'isConnected')]
 abstract class AbstractAdapterTestCase extends TestCase
 {
     use SetupTrait;

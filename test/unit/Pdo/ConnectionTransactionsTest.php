@@ -18,10 +18,10 @@ use PHPUnit\Framework\TestCase;
  */
 #[CoversClass(Connection::class)]
 #[CoversClass(AbstractConnection::class)]
-#[CoversMethod(Connection::class, 'beginTransaction()')]
-#[CoversMethod(Connection::class, 'inTransaction()')]
-#[CoversMethod(Connection::class, 'commit()')]
-#[CoversMethod(Connection::class, 'rollback()')]
+#[CoversMethod(Connection::class, 'beginTransaction')]
+#[CoversMethod(Connection::class, 'inTransaction')]
+#[CoversMethod(Connection::class, 'commit')]
+#[CoversMethod(Connection::class, 'rollback')]
 final class ConnectionTransactionsTest extends TestCase
 {
     protected ConnectionWrapper $wrapper;
