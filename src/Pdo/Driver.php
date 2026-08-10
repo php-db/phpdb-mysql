@@ -15,9 +15,12 @@ use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverAwareInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
 
 final class Driver extends AbstractPdo
 {
+    protected ?ProfilerInterface $profiler = null;
+
     /**
      * @param array<string, mixed> $features
      */

@@ -25,7 +25,7 @@ use function uksort;
 // @mago-expect lint:kan-defect
 final class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterface
 {
-    protected SqlInterface|PreparableSqlInterface|null $subject;
+    protected SqlInterface|PreparableSqlInterface|null $subject = null;
 
     /** @var array{
      *  unsigned: int,

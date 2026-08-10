@@ -15,7 +15,7 @@ use PhpDb\Sql\SqlInterface;
 
 final class SelectDecorator extends Select implements PlatformDecoratorInterface
 {
-    protected SqlInterface|PreparableSqlInterface|null $subject;
+    protected SqlInterface|PreparableSqlInterface|null $subject = null;
 
     #[Override]
     public function setSubject(

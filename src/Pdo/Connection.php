@@ -22,6 +22,10 @@ use function strtolower;
 // @mago-expect lint:cyclomatic-complexity
 final class Connection extends AbstractPdoConnection
 {
+    protected ?string $dsn = null;
+
+    protected ?string $driverName = null;
+
     /**
      * Constructor
      *

@@ -24,7 +24,7 @@ use function uksort;
 // @mago-expect lint:kan-defect
 final class CreateTableDecorator extends CreateTable implements PlatformDecoratorInterface
 {
-    protected SqlInterface|PreparableSqlInterface|null $subject;
+    protected SqlInterface|PreparableSqlInterface|null $subject = null;
 
     /** @var int[] */
     protected $columnOptionSortOrder = [

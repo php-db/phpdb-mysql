@@ -30,7 +30,9 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 // @mago-expect analysis:class-must-be-final
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    protected Driver $driver;
+    protected ?Driver $driver = null;
+
+    protected ?string $driverName = null;
 
     /** @var mysqli */
     protected $resource;
@@ -236,6 +238,10 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         // if the returnValue is something other than a mysqli_result, bypass wrapping it
         if (false === $resultResource) {
             throw new Exception\InvalidQueryException($this->resource->error);
+        }
+
+        if (null === $this->driver) {
+            throw new Exception\RuntimeException('Cannot execute without a driver; call setDriver() first.');
         }
 
         return $this->driver->createResult(true === $resultResource ? $this->resource : $resultResource);
