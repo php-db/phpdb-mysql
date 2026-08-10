@@ -27,6 +27,12 @@ jobs:
       db-port: "3306"
       db-env-json: '{"MYSQL_ROOT_HOST":"%","MYSQL_DATABASE":"phpdb_test","MYSQL_ALLOW_EMPTY_PASSWORD":"true"}'
       db-health-cmd: "mysqladmin ping -h127.0.0.1 --silent"
+      # The test/mutation-test jobs run directly on the runner VM (no
+      # container:), so the DB is only reachable via 127.0.0.1 + the mapped
+      # port, not the container name. phpunit.xml.dist defaults this to
+      # "mysql" for local Docker Compose dev (container-to-container); this
+      # overrides it for CI without touching that file.
+      test-env-json: '{"TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME":"127.0.0.1"}'
       enable-codecov: true
       enable-infection: true
       # Canonical leg for coverage + mutation testing (highest supported PHP).
