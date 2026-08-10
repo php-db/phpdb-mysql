@@ -239,6 +239,10 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             throw new Exception\RuntimeException('Cannot execute without a driver; call setDriver() first.');
         }
 
+        // @mago-expect analysis:invalid-argument - DriverInterface::createResult() is documented with a
+        // generic `resource` type to stay valid across every RDBMS platform (see php-db/phpdb#170 for a
+        // proposed @template-based fix); this class always passes real mysqli|mysqli_result objects, which
+        // is correct for this concrete implementation.
         return $this->driver->createResult(true === $resultResource ? $this->resource : $resultResource);
     }
 
