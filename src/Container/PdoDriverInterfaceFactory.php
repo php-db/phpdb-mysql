@@ -19,6 +19,8 @@ use function array_key_exists;
 final class PdoDriverInterfaceFactory
 {
     /**
+     * @param array<string, mixed>|null $options
+     *
      * @throws \Laminas\ServiceManager\Exception\ExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface

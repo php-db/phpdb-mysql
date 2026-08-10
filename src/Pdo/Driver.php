@@ -18,6 +18,9 @@ use PhpDb\Adapter\Driver\StatementInterface;
 
 final class Driver extends AbstractPdo
 {
+    /**
+     * @param array<string, mixed> $features
+     */
     public function __construct(
         (PdoConnectionInterface&PdoDriverAwareInterface)|PDO $connection,
         StatementInterface&PdoDriverAwareInterface $statementPrototype = new Statement(),

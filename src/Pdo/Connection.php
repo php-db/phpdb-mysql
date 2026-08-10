@@ -25,6 +25,8 @@ final class Connection extends AbstractPdoConnection
     /**
      * Constructor
      *
+     * @param array<string, mixed>|PDO $connectionParameters
+     *
      * @throws Exception\InvalidArgumentException
      */
     public function __construct(

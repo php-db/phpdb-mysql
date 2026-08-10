@@ -56,6 +56,7 @@ final class SelectDecorator extends Select implements PlatformDecoratorInterface
         return [$this->limit];
     }
 
+    /** @return string[]|null */
     #[Override]
     protected function processOffset(
         PlatformInterface $platform,

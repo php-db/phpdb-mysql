@@ -41,6 +41,7 @@ final class Result implements Iterator, ResultInterface
     /** @var mixed */
     protected $currentData;
 
+    /** @var array{keys: string[]|null, values: array<int, mixed>} */
     protected array $statementBindValues = ['keys' => null, 'values' => []];
 
     protected mixed $generatedValue;

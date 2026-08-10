@@ -66,6 +66,9 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return $this;
     }
 
+    /**
+     * @return array<int, int>
+     */
     protected function getSqlInsertOffsets(string $sql): array
     {
         $sqlLength   = strlen($sql);
@@ -99,6 +102,9 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return $insertStart;
     }
 
+    /**
+     * @return array<int, array<int|string, string>>
+     */
     #[Override]
     protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
     {
@@ -173,6 +179,9 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return [$sqls];
     }
 
+    /**
+     * @return array<int, array<int|string, string>>
+     */
     #[Override]
     protected function processChangeColumns(?PlatformInterface $adapterPlatform = null): array
     {

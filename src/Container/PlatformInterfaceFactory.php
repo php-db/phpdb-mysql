@@ -14,6 +14,8 @@ use Psr\Container\ContainerInterface;
 final class PlatformInterfaceFactory
 {
     /**
+     * @param array<string, mixed>|null $options
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function __invoke(

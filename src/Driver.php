@@ -29,6 +29,8 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     ];
 
     /**
+     * @param array<string, mixed> $options
+     *
      * @throws \PhpDb\Exception\ExceptionInterface
      */
     public function __construct(

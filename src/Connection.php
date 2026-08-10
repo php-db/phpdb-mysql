@@ -38,6 +38,8 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * Constructor
      *
+     * @param array<string, mixed>|mysqli|null $connectionInfo
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(

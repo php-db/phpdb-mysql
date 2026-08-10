@@ -14,6 +14,8 @@ use function is_array;
 final class ConnectionInterfaceFactory
 {
     /**
+     * @param array<string, mixed>|null $options
+     *
      * @throws \PhpDb\Adapter\Exception\ExceptionInterface
      */
     public function __invoke(

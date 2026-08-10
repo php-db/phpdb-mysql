@@ -43,6 +43,8 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
     /**
      * Execute
      *
+     * @param array<array-key, mixed>|ParameterContainer|null $parameters
+     *
      * @throws Exception\ExceptionInterface
      */
     #[Override]
