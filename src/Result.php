@@ -157,7 +157,7 @@ final class Result implements Iterator, ResultInterface
         }
 
         /**
-         * todo: examine this closely to see if this is the correct behavior
+         * todo(@tyrsson): examine this closely to see if this is the correct behavior
          */
         $this->isBuffered = match (true) {
             null !== $isBuffered => $isBuffered,

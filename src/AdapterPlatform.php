@@ -88,7 +88,7 @@ class AdapterPlatform extends AbstractPlatform
 
     protected function quoteViaDriver(string $value): ?string
     {
-        // todo: verify this can not return a PDOStatement instance
+        // todo(@tyrsson): verify this can not return a PDOStatement instance
         $resource = $this->driver instanceof DriverInterface
             ? $this->driver->getConnection()->getResource()
             : $this->driver;

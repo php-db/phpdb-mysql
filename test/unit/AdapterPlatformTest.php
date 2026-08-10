@@ -213,9 +213,9 @@ final class AdapterPlatformTest extends TestCase
     public function quoteValueRaisesNoticeWithoutPlatformSupport(): void
     {
         /**
-         * todo: Determine if vulnerability warning is required during unit testing
+         * todo(@tyrsson): Determine if vulnerability warning is required during unit testing
          *
-         * todo: This testing needs expanded to cover all possible driver types
+         * todo(@tyrsson): This testing needs expanded to cover all possible driver types
          * since using \PDO currently causes a TypeError to be raised due to the
          * underlying quoteViaDriver method returning false instead of ?string
          */

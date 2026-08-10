@@ -292,7 +292,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * Create a new mysqli resource
      *
-     * todo: why do we have this random method here?
+     * todo(@tyrsson): why do we have this random method here?
      *
      * @return mysqli
      */

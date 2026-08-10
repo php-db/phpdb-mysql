@@ -73,7 +73,7 @@ class Connection extends AbstractPdoConnection
                 'dbname', 'database', 'db', 'schema' => $database = (string) $value,
                 'unix_socket'                        => $unixSocket = (string) $value,
                 'version'                            => $version = (string) $value,
-                // todo: should we suppport sslmode for pdo pgsql?
+                // todo(@tyrsson): should we suppport sslmode for pdo pgsql?
                 'driver_options' => (static function (&$options, $value): void {
                     $value   = (array) $value;
                     $options = array_diff_key($options, $value) + $value;
