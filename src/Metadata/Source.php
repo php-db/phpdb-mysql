@@ -20,8 +20,11 @@ use function str_replace;
 use const CASE_LOWER;
 use const PREG_PATTERN_ORDER;
 
+// @mago-expect lint:cyclomatic-complexity
+// @mago-expect lint:kan-defect
 final class Source extends AbstractSource
 {
+    // @mago-expect lint:halstead
     protected function loadColumnData(string $table, string $schema): void
     {
         if (null !== ($this->data['columns'][$schema][$table] ?? null)) {
@@ -110,6 +113,7 @@ final class Source extends AbstractSource
         $this->data['columns'][$schema][$table] = $columns;
     }
 
+    // @mago-expect lint:halstead
     protected function loadConstraintData(string $table, string $schema): void
     {
         // phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps

@@ -19,6 +19,7 @@ use function is_int;
 use function is_string;
 use function strtolower;
 
+// @mago-expect lint:cyclomatic-complexity
 class Connection extends AbstractPdoConnection
 {
     /**
@@ -44,6 +45,7 @@ class Connection extends AbstractPdoConnection
      * @throws Exception\InvalidConnectionParametersException
      * @throws Exception\RuntimeException
      */
+    // @mago-expect lint:halstead
     #[Override]
     public function connect(): ConnectionInterface
     {

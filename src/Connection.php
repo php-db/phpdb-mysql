@@ -24,6 +24,9 @@ use function strtoupper;
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
+// @mago-expect lint:cyclomatic-complexity
+// @mago-expect lint:kan-defect
+// @mago-expect lint:too-many-methods
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
     protected Driver $driver;
@@ -88,6 +91,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     }
 
     /** @inheritDoc */
+    // @mago-expect lint:halstead
     #[Override]
     public function connect(): ConnectionInterface
     {

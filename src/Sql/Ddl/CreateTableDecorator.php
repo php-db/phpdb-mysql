@@ -20,6 +20,7 @@ use function strtoupper;
 use function substr_replace;
 use function uksort;
 
+// @mago-expect lint:kan-defect
 final class CreateTableDecorator extends CreateTable implements PlatformDecoratorInterface
 {
     protected SqlInterface|PreparableSqlInterface|null $subject;

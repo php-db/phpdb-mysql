@@ -20,6 +20,8 @@ use function strtoupper;
 use function substr_replace;
 use function uksort;
 
+// @mago-expect lint:cyclomatic-complexity
+// @mago-expect lint:kan-defect
 final class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterface
 {
     protected SqlInterface|PreparableSqlInterface|null $subject;

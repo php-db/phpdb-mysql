@@ -18,6 +18,9 @@ use function array_fill;
 use function call_user_func_array;
 use function count;
 
+// @mago-expect lint:cyclomatic-complexity
+// @mago-expect lint:kan-defect
+// @mago-expect lint:too-many-methods
 final class Result implements Iterator, ResultInterface
 {
     protected mysqli|mysqli_result|mysqli_stmt $resource;
