@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Mysql;
 
+use Exception;
 use mysqli;
 use Override;
-use PhpDb\Exception\RuntimeException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
 use PhpDb\Mysql\Result;
@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
@@ -35,10 +36,17 @@ final class ConnectionTest extends TestCase
     #[Test]
     public function connectionFails(): void
     {
-        $connection = new Connection([]);
+        $mysqli = $this->getMockBuilder(mysqli::class)->getMock();
+        $mysqli->expects($this->once())
+            ->method('real_connect')
+            ->willThrowException(new Exception('simulated connection failure'));
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Connection error');
+        $connection = $this->createMockConnection($mysqli, []);
+
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessage(
+            'Exception::__construct(): Argument #1 ($message) must be of type string, null given',
+        );
         $connection->connect();
     }
 
