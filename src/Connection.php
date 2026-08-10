@@ -6,6 +6,7 @@ namespace PhpDb\Mysql;
 
 use Exception as GenericException;
 use mysqli;
+use mysqli_result;
 use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Driver\ConnectionInterface;
@@ -30,7 +31,7 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 // @mago-expect analysis:class-must-be-final
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    protected ?Driver $driver = null;
+    protected ?DriverInterface $driver = null;
 
     protected ?string $driverName = null;
 
@@ -57,12 +58,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             $this->setResource($connectionInfo);
 
             return;
-        }
-
-        if (null !== $connectionInfo) {
-            throw new Exception\InvalidArgumentException(
-                '$connection must be an array of parameters, a mysqli object or null',
-            );
         }
     }
 
@@ -260,7 +255,19 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         }
 
         $result = $this->resource->query('SELECT DATABASE()');
-        $r      = $result->fetch_row();
+        if (! $result instanceof mysqli_result) {
+            throw new Exception\RuntimeException('Failed to query current schema');
+        }
+
+        $r = $result->fetch_row();
+        if (false === $r) {
+            throw new Exception\RuntimeException($this->resource->error);
+        }
+
+        /** @var array{0: string|null}|null $r */
+        if (null === $r || null === $r[0]) {
+            return false;
+        }
 
         return $r[0];
     }
@@ -329,7 +336,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      *
      * @return mysqli
      */
-    protected function createResource()
+    protected function createResource(): mysqli
     {
         return new mysqli();
     }
