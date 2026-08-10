@@ -7,6 +7,7 @@ namespace PhpDb\Mysql\Sql\Ddl;
 use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\AlterTable;
+use PhpDb\Sql\Exception;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\PreparableSqlInterface;
 use PhpDb\Sql\SqlInterface;
@@ -25,6 +26,8 @@ use function uksort;
 // @mago-expect lint:kan-defect
 final class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterface
 {
+    // @mago-expect analysis:write-only-property - read by the inherited AbstractSql::$subject handling
+    // (get_object_vars($this->subject)), since AlterTable extends AbstractSql
     protected SqlInterface|PreparableSqlInterface|null $subject = null;
 
     /** @var array{
@@ -67,7 +70,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
     }
 
     /**
-     * @return array<int, int>
+     * @return array{0: int, 1: int, 2: int, 3: int}
      */
     protected function getSqlInsertOffsets(string $sql): array
     {
@@ -99,15 +102,22 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
             $insertStart[$i] ??= $sqlLength;
         }
 
+        /** @var array{0: int, 1: int, 2: int, 3: int} $insertStart */
         return $insertStart;
     }
 
     /**
      * @return array<int, array<int|string, string>>
+     *
+     * @throws Exception\RuntimeException
      */
     #[Override]
     protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
     {
+        if (null === $adapterPlatform) {
+            throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
+        }
+
         $sqls = [];
 
         foreach ($this->addColumns as $i => $column) {
@@ -166,7 +176,6 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
                 }
 
                 if ($insert) {
-                    $j                ??= 0;
                     $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
                     $insertStartCount = count($insertStart);
                     for (; $j < $insertStartCount; ++$j) {
@@ -181,10 +190,16 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
 
     /**
      * @return array<int, array<int|string, string>>
+     *
+     * @throws Exception\RuntimeException
      */
     #[Override]
     protected function processChangeColumns(?PlatformInterface $adapterPlatform = null): array
     {
+        if (null === $adapterPlatform) {
+            throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
+        }
+
         $sqls = [];
         foreach ($this->changeColumns as $name => $column) {
             $sql           = $this->processExpression($column, $adapterPlatform);
@@ -239,7 +254,6 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
                 }
 
                 if ($insert) {
-                    $j                ??= 0;
                     $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
                     $insertStartCount = count($insertStart);
                     for (; $j < $insertStartCount; ++$j) {
@@ -256,13 +270,8 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return [$sqls];
     }
 
-    /**
-     * @param string $columnA
-     * @param string $columnB
-     * @return int
-     */
     // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod
-    private function compareColumnOptions($columnA, $columnB)
+    private function compareColumnOptions(string $columnA, string $columnB): int
     {
         $columnA = $this->normalizeColumnOption($columnA);
         $columnA = $this->columnOptionSortOrder[$columnA] ?? count($this->columnOptionSortOrder);
@@ -273,11 +282,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return $columnA - $columnB;
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    private function normalizeColumnOption($name)
+    private function normalizeColumnOption(string $name): string
     {
         return strtolower(str_replace(['-', '_', ' '], replace: '', subject: $name));
     }
