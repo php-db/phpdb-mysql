@@ -19,8 +19,8 @@ final class ConnectionInterfaceFactory
      * @throws \PhpDb\Adapter\Exception\ExceptionInterface
      */
     public function __invoke(
-        ContainerInterface $container,
-        string $requestedName,
+        ContainerInterface $_container,
+        string $_requestedName,
         ?array $options = null,
     ): ConnectionInterface&Connection {
         $conn = $options['connection'] ?? [];

@@ -19,8 +19,8 @@ final class PlatformInterfaceFactory
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function __invoke(
-        ContainerInterface $container,
-        string $requestedName,
+        ContainerInterface $_container,
+        string $_requestedName,
         ?array $options = null,
     ): PlatformInterface&AdapterPlatform {
         $driverInstance = $options['driver'] ?? null;

@@ -21,7 +21,7 @@ final class MetadataInterfaceFactory
      */
     public function __invoke(
         ContainerInterface $container,
-        string $requestedName,
+        string $_requestedName,
         ?array $options = null,
     ): MetadataInterface&Metadata\Source {
         $adapterServiceName = $options[self::ADAPTER_SERVICE_NAME] ?? AdapterInterface::class;

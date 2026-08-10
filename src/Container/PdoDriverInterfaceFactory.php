@@ -27,7 +27,7 @@ final class PdoDriverInterfaceFactory
      */
     public function __invoke(
         ContainerInterface&ServiceManager $container,
-        string $requestedName,
+        string $_requestedName,
         ?array $options = null,
     ): PdoDriverInterface&Driver {
         if (null === $options || ! array_key_exists('connection', $options)) {

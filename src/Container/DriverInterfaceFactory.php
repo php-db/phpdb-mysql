@@ -28,7 +28,7 @@ final class DriverInterfaceFactory
      */
     public function __invoke(
         ContainerInterface&ServiceManager $container,
-        string $requestedName,
+        string $_requestedName,
         ?array $options = null,
     ): DriverInterface&Driver {
         if (null === $options || ! array_key_exists('connection', $options)) {

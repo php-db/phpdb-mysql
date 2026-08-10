@@ -14,8 +14,8 @@ final class StatementInterfaceFactory
      * @param array<string, mixed>|null $options
      */
     public function __invoke(
-        ContainerInterface $container,
-        string $requestedName,
+        ContainerInterface $_container,
+        string $_requestedName,
         ?array $options = null,
     ): StatementInterface&Statement {
         return new Statement(bufferResults: $options['buffer_results'] ?? false);
