@@ -53,7 +53,7 @@ final class Result implements Iterator, ResultInterface
     #[Override]
     public function buffer(): void
     {
-        if ($this->resource instanceof mysqli_stmt && true !== $this->isBuffered) {
+        if ($this->resource instanceof mysqli_stmt && ! $this->isBuffered) {
             if ($this->position > 0) {
                 throw new Exception\RuntimeException('Cannot buffer a result set that has started iteration.');
             }
@@ -72,7 +72,7 @@ final class Result implements Iterator, ResultInterface
     #[Override]
     public function count()
     {
-        if (false === $this->isBuffered) {
+        if (! $this->isBuffered) {
             throw new Exception\RuntimeException('Row count is not available in unbuffered result sets.');
         }
         return $this->resource->num_rows;
@@ -80,6 +80,8 @@ final class Result implements Iterator, ResultInterface
 
     /**
      * Current
+     *
+     * @throws Exception\ExceptionInterface
      *
      * @return mixed
      */
@@ -217,7 +219,7 @@ final class Result implements Iterator, ResultInterface
     {
         $this->currentComplete = false;
 
-        if (false === $this->nextComplete) {
+        if (! $this->nextComplete) {
             $this->position++;
         }
 
@@ -234,7 +236,7 @@ final class Result implements Iterator, ResultInterface
     #[Override]
     public function rewind()
     {
-        if (0 !== $this->position && false === $this->isBuffered) {
+        if (0 !== $this->position && ! $this->isBuffered) {
             throw new Exception\RuntimeException('Unbuffered results cannot be rewound for multiple iterations');
         }
 
@@ -245,6 +247,8 @@ final class Result implements Iterator, ResultInterface
 
     /**
      * Valid
+     *
+     * @throws Exception\ExceptionInterface
      *
      * @return bool
      */

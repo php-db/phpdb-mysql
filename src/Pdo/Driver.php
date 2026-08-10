@@ -16,7 +16,7 @@ use PhpDb\Adapter\Driver\PdoDriverAwareInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 
-class Driver extends AbstractPdo
+final class Driver extends AbstractPdo
 {
     public function __construct(
         (PdoConnectionInterface&PdoDriverAwareInterface)|PDO $connection,

@@ -27,6 +27,7 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 // @mago-expect lint:cyclomatic-complexity
 // @mago-expect lint:kan-defect
 // @mago-expect lint:too-many-methods
+// @mago-expect analysis:class-must-be-final
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
     protected Driver $driver;
@@ -61,7 +62,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         }
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function beginTransaction(): ConnectionInterface
     {
@@ -75,7 +80,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function commit(): ConnectionInterface
     {
@@ -90,7 +99,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     // @mago-expect lint:halstead
     #[Override]
     public function connect(): ConnectionInterface
@@ -99,7 +112,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             return $this;
         }
 
-        /** @var array $p */
         $p = $this->connectionParameters;
 
         // given a list of key names, test for existence in $p
@@ -119,8 +131,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         $username = $findParameterValue(['username', 'user']);
         $password = $findParameterValue(['password', 'passwd', 'pw']);
         $database = $findParameterValue(['database', 'dbname', 'db', 'schema']);
-        /** @var int|null $port */
-        $port = null === ($p['port'] ?? null) ? null : (int) $p['port'];
+        $port     = null === ($p['port'] ?? null) ? null : (int) $p['port'];
         /** @var string|null $socket */
         $socket = $p['socket'] ?? null;
 
@@ -205,10 +216,10 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * {@inheritDoc}
      *
-     * @throws Exception\InvalidQueryException
+     * @throws Exception\ExceptionInterface
      */
     #[Override]
-    public function execute($sql): ?ResultInterface
+    public function execute(string $sql): ?ResultInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -218,7 +229,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
         $resultResource = $this->resource->query($sql);
 
-        $this->profiler?->profilerFinish($sql);
+        $this->profiler?->profilerFinish();
 
         // if the returnValue is something other than a mysqli_result, bypass wrapping it
         if (false === $resultResource) {
@@ -228,7 +239,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this->driver->createResult(true === $resultResource ? $this->resource : $resultResource);
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function getCurrentSchema(): string|false
     {
@@ -256,7 +271,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this->resource instanceof mysqli;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function rollback(): ConnectionInterface
     {

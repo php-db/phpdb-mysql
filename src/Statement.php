@@ -43,7 +43,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
     /**
      * Execute
      *
-     * @throws Exception\RuntimeException
+     * @throws Exception\ExceptionInterface
      */
     #[Override]
     public function execute(ParameterContainer|array|null $parameters = null): ?ResultInterface
@@ -72,12 +72,12 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
         $this->profiler?->profilerFinish();
 
-        if (false === $return) {
+        if (! $return) {
             throw new Exception\RuntimeException($this->resource->error);
         }
 
         $buffered = false;
-        if (true === $this->bufferResults) {
+        if ($this->bufferResults) {
             $this->resource->store_result();
             $this->isPrepared = false;
             $buffered         = true;
@@ -124,6 +124,9 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         return $this->isPrepared;
     }
 
+    /**
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function prepare(?string $sql = null): StatementInterface
     {

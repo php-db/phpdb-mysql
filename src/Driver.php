@@ -8,7 +8,6 @@ use mysqli;
 use mysqli_stmt;
 use Override;
 use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
@@ -29,6 +28,9 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         'buffer_results' => false,
     ];
 
+    /**
+     * @throws \PhpDb\Exception\ExceptionInterface
+     */
     public function __construct(
         protected readonly ConnectionInterface&Connection $connection,
         protected readonly StatementInterface&Statement $statementPrototype = new Statement(),
@@ -39,13 +41,8 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
 
         $options = array_intersect_key([...$this->options, ...$options], $this->options);
 
-        if ($this->connection instanceof DriverAwareInterface) {
-            $this->connection->setDriver($this);
-        }
-
-        if ($this->statementPrototype instanceof DriverAwareInterface) {
-            $this->statementPrototype->setDriver($this);
-        }
+        $this->connection->setDriver($this);
+        $this->statementPrototype->setDriver($this);
     }
 
     #[Override]
@@ -67,7 +64,6 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     #[Override]
     public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
     {
-        /** @var Result $result */
         $result = clone $this->resultPrototype;
         $result->initialize($resource, $this->connection->getLastGeneratedValue(), $isBuffered);
         return $result;
@@ -77,6 +73,8 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
      * Create statement
      *
      * @param mysqli|mysqli_stmt|string $sqlOrResource
+     *
+     * @throws Exception\ExceptionInterface
      */
     #[Override]
     public function createStatement($sqlOrResource = null): StatementInterface&Statement
@@ -162,12 +160,8 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;
-        if ($this->connection instanceof ProfilerAwareInterface) {
-            $this->connection->setProfiler($profiler);
-        }
-        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
-            $this->statementPrototype->setProfiler($profiler);
-        }
+        $this->connection->setProfiler($profiler);
+        $this->statementPrototype->setProfiler($profiler);
         return $this;
     }
 }

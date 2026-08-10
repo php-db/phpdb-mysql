@@ -13,6 +13,9 @@ use Psr\Container\ContainerInterface;
 
 final class PlatformInterfaceFactory
 {
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     */
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,

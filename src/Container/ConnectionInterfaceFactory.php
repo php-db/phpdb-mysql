@@ -13,6 +13,9 @@ use function is_array;
 
 final class ConnectionInterfaceFactory
 {
+    /**
+     * @throws \PhpDb\Adapter\Exception\ExceptionInterface
+     */
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,

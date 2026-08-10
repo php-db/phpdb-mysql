@@ -20,7 +20,7 @@ use function is_string;
 use function strtolower;
 
 // @mago-expect lint:cyclomatic-complexity
-class Connection extends AbstractPdoConnection
+final class Connection extends AbstractPdoConnection
 {
     /**
      * Constructor
@@ -141,6 +141,9 @@ class Connection extends AbstractPdoConnection
 
     /**
      * {@inheritDoc}
+     *
+     * @throws Exception\ExceptionInterface
+     * @throws PDOException
      */
     #[Override]
     public function getCurrentSchema(): string|false

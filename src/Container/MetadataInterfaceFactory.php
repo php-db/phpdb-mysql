@@ -13,6 +13,10 @@ final class MetadataInterfaceFactory
 {
     public const ADAPTER_SERVICE_NAME = 'adapter_service_name';
 
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,
