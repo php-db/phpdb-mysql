@@ -26,9 +26,10 @@ final class DriverInterfaceFactory
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \PhpDb\Exception\ExceptionInterface
      */
+    // @mago-expect analysis:unused-parameter
     public function __invoke(
         ContainerInterface&ServiceManager $container,
-        string $_requestedName,
+        string $requestedName,
         ?array $options = null,
     ): DriverInterface&Driver {
         if (null === $options || ! array_key_exists('connection', $options)) {

@@ -18,9 +18,10 @@ final class PdoConnectionInterfaceFactory
      *
      * @throws \PhpDb\Adapter\Exception\ExceptionInterface
      */
+    // @mago-expect analysis:unused-parameter
     public function __invoke(
-        ContainerInterface $_container,
-        string $_requestedName,
+        ContainerInterface $container,
+        string $requestedName,
         ?array $options = null,
     ): PdoConnectionInterface&Connection {
         $conn = $options['connection'] ?? [];

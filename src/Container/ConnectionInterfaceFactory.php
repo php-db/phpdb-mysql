@@ -18,9 +18,10 @@ final class ConnectionInterfaceFactory
      *
      * @throws \PhpDb\Adapter\Exception\ExceptionInterface
      */
+    // @mago-expect analysis:unused-parameter
     public function __invoke(
-        ContainerInterface $_container,
-        string $_requestedName,
+        ContainerInterface $container,
+        string $requestedName,
         ?array $options = null,
     ): ConnectionInterface&Connection {
         $conn = $options['connection'] ?? [];

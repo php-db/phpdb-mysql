@@ -18,9 +18,10 @@ final class PlatformInterfaceFactory
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
+    // @mago-expect analysis:unused-parameter
     public function __invoke(
-        ContainerInterface $_container,
-        string $_requestedName,
+        ContainerInterface $container,
+        string $requestedName,
         ?array $options = null,
     ): PlatformInterface&AdapterPlatform {
         $driverInstance = $options['driver'] ?? null;

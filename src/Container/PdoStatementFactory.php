@@ -13,9 +13,10 @@ final class PdoStatementFactory
     /**
      * @param array<string, mixed>|null $options
      */
+    // @mago-expect analysis:unused-parameter
     public function __invoke(
-        ContainerInterface $_container,
-        string $_requestedName,
+        ContainerInterface $container,
+        string $requestedName,
         ?array $options = null,
     ): StatementInterface&Statement {
         return new Statement(options: $options);

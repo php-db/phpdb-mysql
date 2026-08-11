@@ -25,9 +25,10 @@ final class PdoDriverInterfaceFactory
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
+    // @mago-expect analysis:unused-parameter
     public function __invoke(
         ContainerInterface&ServiceManager $container,
-        string $_requestedName,
+        string $requestedName,
         ?array $options = null,
     ): PdoDriverInterface&Driver {
         if (null === $options || ! array_key_exists('connection', $options)) {

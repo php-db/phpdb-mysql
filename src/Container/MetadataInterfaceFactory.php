@@ -19,9 +19,10 @@ final class MetadataInterfaceFactory
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
+    // @mago-expect analysis:unused-parameter
     public function __invoke(
         ContainerInterface $container,
-        string $_requestedName,
+        string $requestedName,
         ?array $options = null,
     ): MetadataInterface&Metadata\Source {
         $adapterServiceName = $options[self::ADAPTER_SERVICE_NAME] ?? AdapterInterface::class;
