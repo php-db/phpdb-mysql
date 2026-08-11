@@ -24,8 +24,9 @@ final class PdoDriverInterfaceFactory
      * @throws \Laminas\ServiceManager\Exception\ExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @mago-expect analysis:unused-parameter
      */
-    // @mago-expect analysis:unused-parameter
     public function __invoke(
         ContainerInterface&ServiceManager $container,
         string $requestedName,

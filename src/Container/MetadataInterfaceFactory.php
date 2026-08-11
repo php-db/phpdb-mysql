@@ -18,8 +18,9 @@ final class MetadataInterfaceFactory
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @mago-expect analysis:unused-parameter
      */
-    // @mago-expect analysis:unused-parameter
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,

@@ -25,8 +25,9 @@ final class DriverInterfaceFactory
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \PhpDb\Exception\ExceptionInterface
+     *
+     * @mago-expect analysis:unused-parameter
      */
-    // @mago-expect analysis:unused-parameter
     public function __invoke(
         ContainerInterface&ServiceManager $container,
         string $requestedName,
