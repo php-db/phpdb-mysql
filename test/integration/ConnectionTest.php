@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDbIntegrationTest\Mysql;
 
+use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Mysql\Connection;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -24,7 +25,7 @@ final class ConnectionTest extends TestCase
     public function connectionOk(): void
     {
         /** @var array $config */
-        $config = ['db' => ['driver' => 'Mysqli']];
+        $config = [AdapterInterface::class => ['driver' => 'Mysqli']];
         /** @var Connection $connection */
         $connection = $this->getAdapter($config)->getDriver()->getConnection();
         $connection->connect();

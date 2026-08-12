@@ -25,7 +25,7 @@ final class StatementInterfaceFactoryTest extends TestCase
     public function invokeReturnsMysqliStatement(): void
     {
         $this->getAdapter([
-            'db' => [
+            AdapterInterface::class => [
                 'driver'  => 'Mysqli',
                 'options' => [
                     'buffer_results' => false,

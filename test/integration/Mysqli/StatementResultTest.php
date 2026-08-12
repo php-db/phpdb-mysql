@@ -89,17 +89,17 @@ final class StatementResultTest extends TestCase
         $connection = new Connection($mysqli);
         new Driver($connection, new Statement(), new Result());
 
-        $result = $connection->execute('SELECT * FROM test');
+        $result = $connection->execute('SELECT * FROM test WHERE id = 1');
         static::assertNotNull($result);
 
         static::assertTrue($result->isBuffered());
         static::assertTrue($result->isQueryResult());
         static::assertInstanceOf(mysqli_result::class, $result->getResource());
         static::assertSame(3, $result->getFieldCount());
-        static::assertSame(4, $result->count());
-        static::assertSame(4, $result->getAffectedRows());
+        static::assertSame(1, $result->count());
+        static::assertSame(1, $result->getAffectedRows());
 
-        static::assertCount(4, iterator_to_array($result));
+        static::assertCount(1, iterator_to_array($result));
 
         $result->rewind();
         static::assertSame(['id' => '1', 'name' => 'foo', 'value' => 'bar'], $result->current());
@@ -142,6 +142,10 @@ final class StatementResultTest extends TestCase
         static::assertSame(1, $result->getAffectedRows());
         static::assertSame($driver->getLastGeneratedValue(), $result->getGeneratedValue());
         static::assertIsInt($driver->getLastGeneratedValue());
+
+        $this->createDriver(false)
+            ->createStatement('DELETE FROM test WHERE name = ?')
+            ->execute($this->createParameterContainer(['new']));
     }
 
     #[Test]
@@ -189,12 +193,15 @@ final class StatementResultTest extends TestCase
     #[Test]
     public function updateReturnsAffectedRows(): void
     {
-        $result = $this->createDriver(false)
-            ->createStatement('UPDATE test SET value = ? WHERE id = ?')
+        $driver = $this->createDriver(false);
+        $result = $driver->createStatement('UPDATE test SET value = ? WHERE id = ?')
             ->execute($this->createParameterContainer(['updated', 1]));
 
         static::assertNotNull($result);
         static::assertSame(1, $result->getAffectedRows());
+
+        $driver->createStatement('UPDATE test SET value = ? WHERE id = ?')
+            ->execute($this->createParameterContainer(['bar', 1]));
     }
 
     private function createDriver(bool $bufferResults = false): Driver

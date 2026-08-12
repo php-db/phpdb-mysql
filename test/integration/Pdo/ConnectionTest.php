@@ -21,6 +21,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+use function getenv;
+
 #[Group('integration')]
 #[Group('integration-pdo')]
 #[CoversClass(Connection::class)]
@@ -138,6 +140,21 @@ final class ConnectionTest extends TestCase
         $result = $connection->execute('SELECT \'foo\'');
         static::assertInstanceOf(ResultInterface::class, $result);
         static::assertInstanceOf(Result::class, $result);
+    }
+
+    #[Test]
+    public function getCurrentSchema(): void
+    {
+        /** @var Connection $connection */
+        $connection = $this->getAdapter()->getDriver()->getConnection();
+        $connection->connect();
+
+        static::assertSame(
+            (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
+            $connection->getCurrentSchema(),
+        );
+
+        $connection->disconnect();
     }
 
     #[Test]

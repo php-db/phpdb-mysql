@@ -43,7 +43,7 @@ final class TableGatewayTest extends TestCase
     public function constructor(): void
     {
         /** @var AdapterInterface&Adapter $adapter */
-        $adapter      = $this->getAdapter(['db' => ['driver' => Driver::class]]);
+        $adapter      = $this->getAdapter([AdapterInterface::class => ['driver' => Driver::class]]);
         $tableGateway = new TableGateway('test', $adapter);
         static::assertInstanceOf(TableGateway::class, $tableGateway);
     }
@@ -51,7 +51,9 @@ final class TableGatewayTest extends TestCase
     #[Test]
     public function insert(): void
     {
-        $tableGateway = new TableGateway('test', $this->getAdapter(['db' => ['driver' => Driver::class]]));
+        $tableGateway = new TableGateway('test', $this->getAdapter([
+            AdapterInterface::class => ['driver' => Driver::class],
+        ]));
 
         $tableGateway->select();
         $data = [
@@ -77,7 +79,9 @@ final class TableGatewayTest extends TestCase
     #[Test]
     public function insertWithExtendedCharsetFieldName(): int|string
     {
-        $tableGateway = new TableGateway('test_charset', $this->getAdapter(['db' => ['driver' => Driver::class]]));
+        $tableGateway = new TableGateway('test_charset', $this->getAdapter([
+            AdapterInterface::class => ['driver' => Driver::class],
+        ]));
 
         $affectedRows = $tableGateway->insert([
             'field$' => 'test_value1',
@@ -91,7 +95,9 @@ final class TableGatewayTest extends TestCase
     #[Test]
     public function select(): void
     {
-        $tableGateway = new TableGateway('test', $this->getAdapter(['db' => ['driver' => Driver::class]]));
+        $tableGateway = new TableGateway('test', $this->getAdapter([
+            AdapterInterface::class => ['driver' => Driver::class],
+        ]));
         /** @var ResultSet $rowset */
         $rowset = $tableGateway->select();
         static::assertTrue(count($rowset) > 0);
@@ -108,7 +114,7 @@ final class TableGatewayTest extends TestCase
     public function tableGatewayWithMetadataFeature(array|string|TableIdentifier $table): void
     {
         /** @var AdapterInterface&SchemaAwareInterface&Adapter $adapter */
-        $adapter      = $this->getAdapter(['db' => ['driver' => Driver::class]]);
+        $adapter      = $this->getAdapter([AdapterInterface::class => ['driver' => Driver::class]]);
         $tableGateway = new TableGateway(
             $table,
             $adapter,
@@ -125,7 +131,9 @@ final class TableGatewayTest extends TestCase
     #[Depends('insertWithExtendedCharsetFieldName')]
     public function updateWithExtendedCharsetFieldName(mixed $id): void
     {
-        $tableGateway = new TableGateway('test_charset', $this->getAdapter(['db' => ['driver' => Driver::class]]));
+        $tableGateway = new TableGateway('test_charset', $this->getAdapter([
+            AdapterInterface::class => ['driver' => Driver::class],
+        ]));
 
         $data = [
             'field$' => 'test_value3',

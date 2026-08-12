@@ -27,7 +27,7 @@ final class TableGatewayTest extends TestCase
     {
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
-            'db' => [
+            AdapterInterface::class => [
                 'driver'  => Driver::class,
                 'options' => [
                     'buffer_results' => true,
@@ -52,7 +52,7 @@ final class TableGatewayTest extends TestCase
     {
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
-            'db' => [
+            AdapterInterface::class => [
                 'driver'  => Driver::class,
                 'options' => [
                     'buffer_results' => false,

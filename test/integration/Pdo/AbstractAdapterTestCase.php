@@ -39,7 +39,7 @@ abstract class AbstractAdapterTestCase extends TestCase
 
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
-            'db' => [
+            AdapterInterface::class => [
                 'driver' => Driver::class,
             ],
         ]);

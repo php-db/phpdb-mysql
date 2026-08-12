@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Pdo;
 
 use Override;
+use PDO;
 use PDOStatement;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
@@ -17,6 +18,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[CoversMethod(Driver::class, '__construct')]
 #[CoversMethod(Driver::class, 'createResult')]
 final class DriverTest extends TestCase
 {
@@ -49,6 +51,18 @@ final class DriverTest extends TestCase
             ['1',       DriverInterface::PARAMETERIZATION_NAMED, ':1'],
             [':foo',    null,                                    ':foo'],
         ];
+    }
+
+    #[Test]
+    public function constructorWithPdoConnection(): void
+    {
+        $driver = new Driver(
+            $this->createStub(PDO::class),
+            new Statement(),
+            new Result(),
+        );
+
+        static::assertInstanceOf(Driver::class, $driver);
     }
 
     #[Test]
