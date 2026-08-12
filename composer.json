@@ -40,7 +40,7 @@
         "ext-pdo_mysql": "*",
         "infection/infection": "^0.34.1",
         "php-db/phpdb-qa-tools": "0.1.x-dev",
-        "phpunit/phpunit": "^11.5.42"
+        "phpunit/phpunit": "^12.5.33"
     },
     "suggest": {
         "ext-mysqli": "Required for MySQLi support",
@@ -59,7 +59,7 @@
         }
     },
     "scripts": {
-        "check": [
+        "check-all": [
             "@cs-check",
             "@static-analysis",
             "@test",

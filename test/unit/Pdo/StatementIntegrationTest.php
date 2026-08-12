@@ -86,8 +86,8 @@ final class StatementIntegrationTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $driver = $this->createMock(PdoDriverInterface::class);
-        $driver->method('createResult')->willReturn($this->createMock(ResultInterface::class));
+        $driver = $this->createStub(PdoDriverInterface::class);
+        $driver->method('createResult')->willReturn($this->createStub(ResultInterface::class));
 
         $this->pdoStatementMock = $this->getMockBuilder(PDOStatement::class)
             ->onlyMethods(['execute', 'bindParam'])

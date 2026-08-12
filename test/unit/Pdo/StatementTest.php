@@ -34,7 +34,7 @@ final class StatementTest extends TestCase
     #[Test]
     public function execute(): void
     {
-        $mockPdoStatement = $this->createMock(PDOStatement::class);
+        $mockPdoStatement = $this->createStub(PDOStatement::class);
         $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
         $this->statement->initialize($pdo);
         $this->statement->prepare('SELECT 1');
@@ -57,7 +57,7 @@ final class StatementTest extends TestCase
     #[Test]
     public function getResource(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
+        $stmt = $this->createStub(PDOStatement::class);
         $this->statement->setResource($stmt);
 
         static::assertSame($stmt, $this->statement->getResource());
@@ -75,7 +75,7 @@ final class StatementTest extends TestCase
     {
         static::assertFalse($this->statement->isPrepared());
 
-        $mockPdoStatement = $this->createMock(PDOStatement::class);
+        $mockPdoStatement = $this->createStub(PDOStatement::class);
         $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
         $this->statement->initialize($pdo);
         $this->statement->prepare('SELECT 1');
@@ -86,7 +86,7 @@ final class StatementTest extends TestCase
     #[Test]
     public function prepare(): void
     {
-        $mockPdoStatement = $this->createMock(PDOStatement::class);
+        $mockPdoStatement = $this->createStub(PDOStatement::class);
         $pdo              = new TestAsset\CtorlessPdo($mockPdoStatement);
         $this->statement->initialize($pdo);
 
@@ -123,7 +123,7 @@ final class StatementTest extends TestCase
     {
         $this->statement = new Statement();
         $this->pdo       = new Driver(
-            $this->createMock(AbstractPdoConnection::class),
+            $this->createStub(AbstractPdoConnection::class),
             $this->statement,
             new Result(),
         );

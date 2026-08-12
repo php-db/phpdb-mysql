@@ -81,10 +81,8 @@ final class ResultTest extends TestCase
     #[Test]
     public function current(): void
     {
-        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $mock->expects($this->any())
-            ->method('fetch')
-            // @mago-expect lint:prefer-first-class-callable
+        $mock = $this->createStub(PDOStatement::class);
+        $mock->method('fetch')
             ->willReturnCallback(static fn() => uniqid());
 
         $result = new Result();
@@ -99,9 +97,8 @@ final class ResultTest extends TestCase
     #[Test]
     public function fetchModeAnonymousObject(): void
     {
-        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $mock->expects($this->any())
-            ->method('fetch')
+        $mock = $this->createStub(PDOStatement::class);
+        $mock->method('fetch')
             ->willReturnCallback(static fn() => new stdClass());
 
         $result = new Result();
@@ -127,9 +124,8 @@ final class ResultTest extends TestCase
     #[Test]
     public function fetchModeRange(): void
     {
-        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        $mock->expects($this->any())
-            ->method('fetch')
+        $mock = $this->createStub(PDOStatement::class);
+        $mock->method('fetch')
             ->willReturnCallback(static fn() => new stdClass());
         $result = new Result();
         $result->initialize($mock, null);
@@ -147,10 +143,9 @@ final class ResultTest extends TestCase
         ];
         $position = 0;
 
-        $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
+        $mock = $this->createStub(PDOStatement::class);
         assert($mock instanceof PDOStatement, description: 'to suppress IDE type warnings');
-        $mock->expects($this->any())
-            ->method('fetch')
+        $mock->method('fetch')
             ->willReturnCallback(static function () use ($data, &$position) {
                 return $data[$position++];
             });

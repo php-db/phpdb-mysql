@@ -60,8 +60,8 @@ final class DriverTest extends TestCase
             ->method('rowCount')
             ->willReturn(4);
 
-        $connection = $this->createMock(AbstractPdoConnection::class);
-        $statement  = $this->createMock(Statement::class);
+        $connection = $this->createStub(AbstractPdoConnection::class);
+        $statement  = $this->createStub(Statement::class);
         $driver     = new Driver($connection, $statement, new Result());
 
         $result = $driver->createResult($pdoStatement);
@@ -101,9 +101,9 @@ final class DriverTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $connection = $this->createMock(AbstractPdoConnection::class);
-        $statement  = $this->createMock(Statement::class);
-        $result     = $this->createMock(Result::class);
+        $connection = $this->createStub(AbstractPdoConnection::class);
+        $statement  = $this->createStub(Statement::class);
+        $result     = $this->createStub(Result::class);
         $this->pdo  = new Driver(
             $connection,
             $statement,

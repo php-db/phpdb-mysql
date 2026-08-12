@@ -151,9 +151,9 @@ final class CreateTableDecoratorTest extends TestCase
     protected function setUp(): void
     {
         $driver = new Driver(
-            $this->createMock(AbstractPdoConnection::class),
-            $this->createMock(Statement::class),
-            $this->createMock(Result::class),
+            $this->createStub(AbstractPdoConnection::class),
+            $this->createStub(Statement::class),
+            $this->createStub(Result::class),
         );
         $this->platform = new AdapterPlatform($driver);
     }
