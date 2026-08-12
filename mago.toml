@@ -8,3 +8,6 @@ includes = ["vendor"]
 
 [analyzer]
 baseline = "analysis-baseline.toml"
+
+[formatter]
+parentheses-around-new-in-member-access = true
