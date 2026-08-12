@@ -4,20 +4,26 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Mysql\Platform;
 
+use mysqli;
 use Override;
+use PDO;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
+use PhpDb\Mysql\Sql\Platform;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[CoversMethod(AdapterPlatform::class, '__construct')]
 #[CoversMethod(AdapterPlatform::class, 'getName')]
+#[CoversMethod(AdapterPlatform::class, 'getSqlPlatformDecorator')]
 #[CoversMethod(AdapterPlatform::class, 'quoteIdentifierChain')]
 #[CoversMethod(AdapterPlatform::class, 'quoteValue')]
 #[CoversMethod(AdapterPlatform::class, 'quoteTrustedValue')]
+#[CoversMethod(AdapterPlatform::class, 'quoteViaDriver')]
 final class AdapterPlatformTest extends TestCase
 {
     protected AdapterPlatform $platform;
@@ -44,6 +50,12 @@ final class AdapterPlatformTest extends TestCase
     public function getQuoteValueSymbol(): void
     {
         static::assertSame("'", $this->platform->getQuoteValueSymbol());
+    }
+
+    #[Test]
+    public function getSqlPlatformDecorator(): void
+    {
+        static::assertInstanceOf(Platform::class, $this->platform->getSqlPlatformDecorator());
     }
 
     #[Test]
@@ -220,6 +232,34 @@ final class AdapterPlatformTest extends TestCase
         //);
         $this->expectNotToPerformAssertions();
         $this->platform->quoteValue('value');
+    }
+
+    #[Test]
+    public function quoteViaDriverWithMysqli(): void
+    {
+        $mysqli = $this->createMock(mysqli::class);
+        $mysqli->expects($this->once())
+            ->method('real_escape_string')
+            ->with("a'b")
+            ->willReturn("a\\'b");
+
+        $platform = new AdapterPlatform($mysqli);
+
+        static::assertSame("'a\\'b'", $platform->quoteValue("a'b"));
+    }
+
+    #[Test]
+    public function quoteViaDriverWithPdo(): void
+    {
+        $pdo = $this->createMock(PDO::class);
+        $pdo->expects($this->once())
+            ->method('quote')
+            ->with("a'b")
+            ->willReturn("'a''b'");
+
+        $platform = new AdapterPlatform($pdo);
+
+        static::assertSame("'a''b'", $platform->quoteValue("a'b"));
     }
 
     /**
