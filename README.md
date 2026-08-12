@@ -1,4 +1,4 @@
-# PhpDb Adapter Mysql
+# PhpDb Mysql
 
 [![PHP Version](https://img.shields.io/packagist/php-v/php-db/phpdb-mysql)](https://packagist.org/packages/php-db/phpdb-mysql)
 [![Continuous Integration](https://github.com/php-db/phpdb-mysql/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/php-db/phpdb-mysql/actions/workflows/continuous-integration.yml)
