@@ -7,4 +7,4 @@ paths = ["src", "test"]
 includes = ["vendor"]
 
 [analyzer]
-baseline = "mago-baseline.toml"
+baseline = "analysis-baseline.toml"
