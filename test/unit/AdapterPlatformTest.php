@@ -15,15 +15,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(AdapterPlatform::class, 'getName')]
-#[CoversMethod(AdapterPlatform::class, 'getQuoteIdentifierSymbol')]
-#[CoversMethod(AdapterPlatform::class, 'quoteIdentifier')]
 #[CoversMethod(AdapterPlatform::class, 'quoteIdentifierChain')]
-#[CoversMethod(AdapterPlatform::class, 'getQuoteValueSymbol')]
 #[CoversMethod(AdapterPlatform::class, 'quoteValue')]
 #[CoversMethod(AdapterPlatform::class, 'quoteTrustedValue')]
-#[CoversMethod(AdapterPlatform::class, 'quoteValueList')]
-#[CoversMethod(AdapterPlatform::class, 'getIdentifierSeparator')]
-#[CoversMethod(AdapterPlatform::class, 'quoteIdentifierInFragment')]
 final class AdapterPlatformTest extends TestCase
 {
     protected AdapterPlatform $platform;

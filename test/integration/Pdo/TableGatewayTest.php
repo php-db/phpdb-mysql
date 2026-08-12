@@ -15,7 +15,7 @@ use PhpDb\Sql\TableIdentifier;
 use PhpDb\TableGateway\Feature\MetadataFeature;
 use PhpDb\TableGateway\TableGateway;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\Test;
@@ -23,9 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 use function count;
 
-#[CoversMethod(TableGateway::class, '__construct')]
-#[CoversMethod(TableGateway::class, 'select')]
-#[CoversMethod(TableGateway::class, 'insert')]
+#[CoversNothing]
 final class TableGatewayTest extends TestCase
 {
     use SetupTrait;

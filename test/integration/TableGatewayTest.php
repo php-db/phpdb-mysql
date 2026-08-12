@@ -10,13 +10,11 @@ use PhpDb\Mysql\Driver;
 use PhpDb\ResultSet\AbstractResultSet;
 use PhpDb\TableGateway\TableGateway;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(AbstractResultSet::class, 'current')]
-#[CoversMethod(AbstractResultSet::class, 'isBuffered')]
-#[CoversMethod(TableGateway::class, 'select')]
+#[CoversNothing]
 final class TableGatewayTest extends TestCase
 {
     use SetupTrait;

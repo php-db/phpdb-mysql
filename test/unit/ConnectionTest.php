@@ -23,8 +23,7 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
 #[RequiresPhpExtension('mysqli')]
 #[CoversMethod(Connection::class, 'setDriver')]
-#[CoversMethod(Connection::class, 'setConnectionParameters')]
-#[CoversMethod(Connection::class, 'getConnectionParameters')]
+#[CoversMethod(Connection::class, 'connect')]
 final class ConnectionTest extends TestCase
 {
     // fake test-only credential, not a real secret

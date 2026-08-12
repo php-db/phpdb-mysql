@@ -10,12 +10,12 @@ use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Statement::class, 'execute')]
+#[CoversNothing]
 final class StatementIntegrationTest extends TestCase
 {
     protected Statement $statement;

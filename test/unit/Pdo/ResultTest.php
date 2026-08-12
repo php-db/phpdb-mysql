@@ -8,7 +8,7 @@ use PDO;
 use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Exception\InvalidArgumentException;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -17,8 +17,7 @@ use stdClass;
 use function assert;
 use function uniqid;
 
-#[CoversMethod(Result::class, 'current')]
-#[CoversMethod(Result::class, 'count')]
+#[CoversNothing]
 #[Group('result-pdo')]
 final class ResultTest extends TestCase
 {
@@ -83,6 +82,7 @@ final class ResultTest extends TestCase
     {
         $mock = $this->createStub(PDOStatement::class);
         $mock->method('fetch')
+            // @mago-expect lint:prefer-first-class-callable
             ->willReturnCallback(static fn() => uniqid());
 
         $result = new Result();

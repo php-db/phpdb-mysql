@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Pdo;
 
 use Override;
-use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Pdo\Connection;
 use PhpDbTest\Mysql\Pdo\TestAsset\PdoStubDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
@@ -19,11 +17,6 @@ use ReflectionProperty;
  * Tests for {@see \PhpDb\Adapter\Mysql\Driver\Pdo\Connection} transaction support
  */
 #[CoversClass(Connection::class)]
-#[CoversClass(AbstractConnection::class)]
-#[CoversMethod(Connection::class, 'beginTransaction')]
-#[CoversMethod(Connection::class, 'inTransaction')]
-#[CoversMethod(Connection::class, 'commit')]
-#[CoversMethod(Connection::class, 'rollback')]
 final class ConnectionTransactionsTest extends TestCase
 {
     protected Connection $wrapper;

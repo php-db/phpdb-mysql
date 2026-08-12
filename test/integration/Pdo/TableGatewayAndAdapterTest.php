@@ -9,7 +9,7 @@ use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\ResultSet\AbstractResultSet;
 use PhpDb\TableGateway\TableGateway;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +22,7 @@ use function array_fill;
  * On tear down disconnected from the database and set the driver adapter on null
  * Running many tests ended up in consuming all mysql connections and not releasing them
  */
-#[CoversMethod(Connection::class, 'disconnect')]
+#[CoversClass(Connection::class)]
 final class TableGatewayAndAdapterTest extends TestCase
 {
     use SetupTrait;

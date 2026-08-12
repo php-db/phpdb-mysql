@@ -13,8 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Connection::class, 'getResource')]
-#[CoversMethod(Connection::class, 'getDsn')]
+#[CoversMethod(Connection::class, 'connect')]
 final class ConnectionTest extends TestCase
 {
     protected Connection $connection;

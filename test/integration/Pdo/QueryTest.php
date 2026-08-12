@@ -5,20 +5,18 @@ declare(strict_types=1);
 namespace PhpDbIntegrationTest\Mysql\Pdo;
 
 use Exception;
-use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\Driver\Pdo\Result as PdoResult;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\ResultSet\ResultSet;
 use PhpDb\Sql\Sql;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Adapter::class, 'query')]
-#[CoversMethod(ResultSet::class, 'current')]
+#[CoversNothing]
 final class QueryTest extends TestCase
 {
     use SetupTrait;

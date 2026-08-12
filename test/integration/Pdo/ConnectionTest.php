@@ -24,9 +24,6 @@ use PHPUnit\Framework\TestCase;
 #[Group('integration')]
 #[Group('integration-pdo')]
 #[CoversClass(Connection::class)]
-#[CoversMethod(Connection::class, 'prepare')]
-#[CoversMethod(Connection::class, 'execute')]
-#[CoversMethod(Connection::class, 'getResource')]
 #[CoversMethod(Connection::class, 'getLastGeneratedValue')]
 final class ConnectionTest extends TestCase
 {

@@ -13,19 +13,11 @@ use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Mysql\Pdo\Driver;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Statement::class, 'setDriver')]
-#[CoversMethod(Statement::class, 'setParameterContainer')]
-#[CoversMethod(Statement::class, 'getParameterContainer')]
-#[CoversMethod(Statement::class, 'getResource')]
-#[CoversMethod(Statement::class, 'setSql')]
-#[CoversMethod(Statement::class, 'getSql')]
-#[CoversMethod(Statement::class, 'prepare')]
-#[CoversMethod(Statement::class, 'isPrepared')]
-#[CoversMethod(Statement::class, 'execute')]
+#[CoversNothing]
 final class StatementTest extends TestCase
 {
     protected ?Driver $pdo;
