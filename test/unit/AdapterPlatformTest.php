@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Platform;
 
 use Override;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
-use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(AdapterPlatform::class, 'getName')]
@@ -27,100 +28,107 @@ final class AdapterPlatformTest extends TestCase
 {
     protected AdapterPlatform $platform;
 
-    public function testGetIdentifierSeparator(): void
+    #[Test]
+    public function getIdentifierSeparator(): void
     {
-        self::assertEquals('.', $this->platform->getIdentifierSeparator());
+        static::assertSame('.', $this->platform->getIdentifierSeparator());
     }
 
-    public function testGetName(): void
+    #[Test]
+    public function getName(): void
     {
-        self::assertEquals('MySQL', $this->platform->getName());
+        static::assertSame('MySQL', $this->platform->getName());
     }
 
-    public function testGetQuoteIdentifierSymbol(): void
+    #[Test]
+    public function getQuoteIdentifierSymbol(): void
     {
-        self::assertEquals('`', $this->platform->getQuoteIdentifierSymbol());
+        static::assertSame('`', $this->platform->getQuoteIdentifierSymbol());
     }
 
-    public function testGetQuoteValueSymbol(): void
+    #[Test]
+    public function getQuoteValueSymbol(): void
     {
-        self::assertEquals("'", $this->platform->getQuoteValueSymbol());
+        static::assertSame("'", $this->platform->getQuoteValueSymbol());
     }
 
-    public function testQuoteIdentifier(): void
+    #[Test]
+    public function quoteIdentifier(): void
     {
-        self::assertEquals('`identifier`', $this->platform->quoteIdentifier('identifier'));
-        self::assertEquals('`ident``ifier`', $this->platform->quoteIdentifier('ident`ifier'));
-        self::assertEquals('`namespace:$identifier`', $this->platform->quoteIdentifier('namespace:$identifier'));
+        static::assertSame('`identifier`', $this->platform->quoteIdentifier('identifier'));
+        static::assertSame('`ident``ifier`', $this->platform->quoteIdentifier('ident`ifier'));
+        static::assertSame('`namespace:$identifier`', $this->platform->quoteIdentifier('namespace:$identifier'));
     }
 
-    public function testQuoteIdentifierChain(): void
+    #[Test]
+    public function quoteIdentifierChain(): void
     {
-        self::assertEquals('`identifier`', $this->platform->quoteIdentifierChain('identifier'));
-        self::assertEquals('`identifier`', $this->platform->quoteIdentifierChain(['identifier']));
-        self::assertEquals('`schema`.`identifier`', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
+        static::assertSame('`identifier`', $this->platform->quoteIdentifierChain('identifier'));
+        static::assertSame('`identifier`', $this->platform->quoteIdentifierChain(['identifier']));
+        static::assertSame('`schema`.`identifier`', $this->platform->quoteIdentifierChain(['schema', 'identifier']));
 
-        self::assertEquals('`ident``ifier`', $this->platform->quoteIdentifierChain('ident`ifier'));
-        self::assertEquals('`ident``ifier`', $this->platform->quoteIdentifierChain(['ident`ifier']));
-        self::assertEquals(
+        static::assertSame('`ident``ifier`', $this->platform->quoteIdentifierChain('ident`ifier'));
+        static::assertSame('`ident``ifier`', $this->platform->quoteIdentifierChain(['ident`ifier']));
+        static::assertSame(
             '`schema`.`ident``ifier`',
             $this->platform->quoteIdentifierChain(['schema', 'ident`ifier']),
         );
     }
 
-    public function testQuoteIdentifierInFragment(): void
+    #[Test]
+    public function quoteIdentifierInFragment(): void
     {
-        self::assertEquals('`foo`.`bar`', $this->platform->quoteIdentifierInFragment('foo.bar'));
-        self::assertEquals('`foo` as `bar`', $this->platform->quoteIdentifierInFragment('foo as bar'));
-        self::assertEquals('`$TableName`.`bar`', $this->platform->quoteIdentifierInFragment('$TableName.bar'));
-        self::assertEquals(
+        static::assertSame('`foo`.`bar`', $this->platform->quoteIdentifierInFragment('foo.bar'));
+        static::assertSame('`foo` as `bar`', $this->platform->quoteIdentifierInFragment('foo as bar'));
+        static::assertSame('`$TableName`.`bar`', $this->platform->quoteIdentifierInFragment('$TableName.bar'));
+        static::assertSame(
             '`cmis:$TableName` as `cmis:TableAlias`',
             $this->platform->quoteIdentifierInFragment('cmis:$TableName as cmis:TableAlias'),
         );
 
-        $this->assertEquals(
+        static::assertSame(
             '`foo-bar`.`bar-foo`',
             $this->platform->quoteIdentifierInFragment('foo-bar.bar-foo'),
         );
-        $this->assertEquals(
+        static::assertSame(
             '`foo-bar` as `bar-foo`',
             $this->platform->quoteIdentifierInFragment('foo-bar as bar-foo'),
         );
-        $this->assertEquals(
+        static::assertSame(
             '`$TableName-$ColumnName`.`bar-foo`',
             $this->platform->quoteIdentifierInFragment('$TableName-$ColumnName.bar-foo'),
         );
-        $this->assertEquals(
+        static::assertSame(
             '`cmis:$TableName-$ColumnName` as `cmis:TableAlias-ColumnAlias`',
             $this->platform->quoteIdentifierInFragment('cmis:$TableName-$ColumnName as cmis:TableAlias-ColumnAlias'),
         );
 
         // single char words
-        self::assertEquals(
+        static::assertSame(
             '(`foo`.`bar` = `boo`.`baz`)',
             $this->platform->quoteIdentifierInFragment('(foo.bar = boo.baz)', ['(', ')', '=']),
         );
-        self::assertEquals(
+        static::assertSame(
             '(`foo`.`bar`=`boo`.`baz`)',
             $this->platform->quoteIdentifierInFragment('(foo.bar=boo.baz)', ['(', ')', '=']),
         );
-        self::assertEquals('`foo`=`bar`', $this->platform->quoteIdentifierInFragment('foo=bar', ['=']));
+        static::assertSame('`foo`=`bar`', $this->platform->quoteIdentifierInFragment('foo=bar', ['=']));
 
-        $this->assertEquals(
+        static::assertSame(
             '(`foo-bar`.`bar-foo` = `boo-baz`.`baz-boo`)',
             $this->platform->quoteIdentifierInFragment('(foo-bar.bar-foo = boo-baz.baz-boo)', ['(', ')', '=']),
         );
-        $this->assertEquals(
+        static::assertSame(
             '(`foo-bar`.`bar-foo`=`boo-baz`.`baz-boo`)',
             $this->platform->quoteIdentifierInFragment('(foo-bar.bar-foo=boo-baz.baz-boo)', ['(', ')', '=']),
         );
-        $this->assertEquals(
+        static::assertSame(
             '`foo-bar`=`bar-foo`',
             $this->platform->quoteIdentifierInFragment('foo-bar=bar-foo', ['=']),
         );
 
         // case insensitive safe words
-        self::assertEquals(
+        static::assertSame(
             '(`foo`.`bar` = `boo`.`baz`) AND (`foo`.`baz` = `boo`.`baz`)',
             $this->platform->quoteIdentifierInFragment(
                 '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
@@ -128,7 +136,7 @@ final class AdapterPlatformTest extends TestCase
             ),
         );
 
-        $this->assertEquals(
+        static::assertSame(
             '(`foo-bar`.`bar-foo` = `boo-baz`.`baz-boo`) AND (`foo-baz`.`baz-foo` = `boo-baz`.`baz-boo`)',
             $this->platform->quoteIdentifierInFragment(
                 '(foo-bar.bar-foo = boo-baz.baz-boo) AND (foo-baz.baz-foo = boo-baz.baz-boo)',
@@ -137,7 +145,7 @@ final class AdapterPlatformTest extends TestCase
         );
 
         // case insensitive safe words in field
-        self::assertEquals(
+        static::assertSame(
             '(`foo`.`bar` = `boo`.baz) AND (`foo`.baz = `boo`.baz)',
             $this->platform->quoteIdentifierInFragment(
                 '(foo.bar = boo.baz) AND (foo.baz = boo.baz)',
@@ -146,7 +154,7 @@ final class AdapterPlatformTest extends TestCase
         );
 
         // case insensitive safe words in field
-        $this->assertEquals(
+        static::assertSame(
             '(`foo-bar`.`bar-foo` = `boo-baz`.baz-boo) AND (`foo-baz`.`baz-foo` = `boo-baz`.baz-boo)',
             $this->platform->quoteIdentifierInFragment(
                 '(foo-bar.bar-foo = boo-baz.baz-boo) AND (foo-baz.baz-foo = boo-baz.baz-boo)',
@@ -155,37 +163,40 @@ final class AdapterPlatformTest extends TestCase
         );
     }
 
-    public function testQuoteTrustedValue(): void
+    #[Test]
+    public function quoteTrustedValue(): void
     {
-        self::assertEquals("'value'", $this->platform->quoteTrustedValue('value'));
-        self::assertEquals("'Foo O\\'Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
-        self::assertEquals(
+        static::assertSame("'value'", $this->platform->quoteTrustedValue('value'));
+        static::assertSame("'Foo O\\'Bar'", $this->platform->quoteTrustedValue("Foo O'Bar"));
+        static::assertSame(
             '\'\\\'; DELETE FROM some_table; -- \'',
             $this->platform->quoteTrustedValue('\'; DELETE FROM some_table; -- '),
         );
 
         //                   '\\\'; DELETE FROM some_table; -- '  <- actual below
-        self::assertEquals(
+        static::assertSame(
             "'\\\\\\'; DELETE FROM some_table; -- '",
             $this->platform->quoteTrustedValue('\\\'; DELETE FROM some_table; -- '),
         );
     }
 
-    public function testQuoteValue(): void
+    #[Test]
+    public function quoteValue(): void
     {
-        self::assertEquals("'value'", @$this->platform->quoteValue('value'));
-        self::assertEquals("'Foo O\\'Bar'", @$this->platform->quoteValue("Foo O'Bar"));
-        self::assertEquals(
+        static::assertSame("'value'", $this->platform->quoteValue('value'));
+        static::assertSame("'Foo O\\'Bar'", $this->platform->quoteValue("Foo O'Bar"));
+        static::assertSame(
             '\'\\\'; DELETE FROM some_table; -- \'',
-            @$this->platform->quoteValue('\'; DELETE FROM some_table; -- '),
+            $this->platform->quoteValue('\'; DELETE FROM some_table; -- '),
         );
-        self::assertEquals(
+        static::assertSame(
             "'\\\\\\'; DELETE FROM some_table; -- '",
-            @$this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '),
+            $this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '),
         );
     }
 
-    public function testQuoteValueList(): void
+    #[Test]
+    public function quoteValueList(): void
     {
         /**
          * @todo Determine if vulnerability warning is required during unit testing
@@ -195,15 +206,16 @@ final class AdapterPlatformTest extends TestCase
         //    'Attempting to quote a value in PhpDb\Adapter\Platform\Mysql without extension/driver support can '
         //    . 'introduce security vulnerabilities in a production environment'
         //);
-        self::assertEquals("'Foo O\\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
+        static::assertSame("'Foo O\\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
     }
 
-    public function testQuoteValueRaisesNoticeWithoutPlatformSupport(): void
+    #[Test]
+    public function quoteValueRaisesNoticeWithoutPlatformSupport(): void
     {
         /**
-         * todo: Determine if vulnerability warning is required during unit testing
+         * todo(@tyrsson): Determine if vulnerability warning is required during unit testing
          *
-         * todo: This testing needs expanded to cover all possible driver types
+         * todo(@tyrsson): This testing needs expanded to cover all possible driver types
          * since using \PDO currently causes a TypeError to be raised due to the
          * underlying quoteViaDriver method returning false instead of ?string
          */
@@ -224,7 +236,7 @@ final class AdapterPlatformTest extends TestCase
     protected function setUp(): void
     {
         $pdo = new Driver(
-            $this->createMock(Connection::class),
+            $this->createMock(AbstractPdoConnection::class),
             $this->createMock(Statement::class),
             $this->createMock(Result::class),
         );

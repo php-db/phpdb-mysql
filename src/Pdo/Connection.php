@@ -19,10 +19,20 @@ use function is_int;
 use function is_string;
 use function strtolower;
 
-class Connection extends AbstractPdoConnection
+// @mago-expect lint:cyclomatic-complexity
+// @mago-expect lint:kan-defect
+final class Connection extends AbstractPdoConnection
 {
+    // @mago-expect analysis:write-only-property - read by the parent's final AbstractPdoConnection::getDsn()
+    protected ?string $dsn = null;
+
+    // @mago-expect analysis:write-only-property - read by AbstractConnection::getDriverName()
+    protected ?string $driverName = null;
+
     /**
      * Constructor
+     *
+     * @param array<string, mixed>|PDO $connectionParameters
      *
      * @throws Exception\InvalidArgumentException
      */
@@ -31,9 +41,11 @@ class Connection extends AbstractPdoConnection
     ) {
         if (is_array($connectionParameters)) {
             $this->setConnectionParameters($connectionParameters);
-        } elseif ($connectionParameters instanceof PDO) {
-            $this->setResource($connectionParameters);
+
+            return;
         }
+
+        $this->setResource($connectionParameters);
     }
 
     /**
@@ -42,6 +54,7 @@ class Connection extends AbstractPdoConnection
      * @throws Exception\InvalidConnectionParametersException
      * @throws Exception\RuntimeException
      */
+    // @mago-expect lint:halstead
     #[Override]
     public function connect(): ConnectionInterface
     {
@@ -49,8 +62,16 @@ class Connection extends AbstractPdoConnection
             return $this;
         }
 
-        $dsn     = $username = $password = $hostname = $port = $charset = $database = $unixSocket = $version = null;
-        $options = [];
+        $dsn        = null;
+        $username   = null;
+        $password   = null;
+        $hostname   = null;
+        $port       = null;
+        $charset    = null;
+        $database   = null;
+        $unixSocket = null;
+        $version    = null;
+        $options    = [];
 
         foreach ($this->connectionParameters as $key => $value) {
             $result = match (strtolower($key)) {
@@ -63,8 +84,8 @@ class Connection extends AbstractPdoConnection
                 'dbname', 'database', 'db', 'schema' => $database = (string) $value,
                 'unix_socket'                        => $unixSocket = (string) $value,
                 'version'                            => $version = (string) $value,
-                // todo: should we suppport sslmode for pdo pgsql?
-                'driver_options' => (function (&$options, $value): void {
+                // todo(@tyrsson): should we suppport sslmode for pdo pgsql?
+                'driver_options' => (static function (&$options, $value): void {
                     $value   = (array) $value;
                     $options = array_diff_key($options, $value) + $value;
                 })($options, $value),
@@ -73,41 +94,34 @@ class Connection extends AbstractPdoConnection
         }
         unset($result);
 
-        if (isset($hostname) && isset($unixSocket)) {
+        if (null !== $hostname && null !== $unixSocket) {
             throw new Exception\InvalidConnectionParametersException(
                 'Ambiguous connection parameters, both hostname and unix_socket parameters were set',
                 $this->connectionParameters,
             );
         }
 
-        if (! isset($dsn)) {
+        if (null === $dsn) {
             $dsn = [];
-            if (isset($database)) {
+            if (null !== $database) {
                 $dsn[] = "dbname={$database}";
             }
-            if (isset($hostname)) {
+            if (null !== $hostname) {
                 $dsn[] = "host={$hostname}";
             }
-            if (isset($port)) {
+            if (null !== $port) {
                 $dsn[] = "port={$port}";
             }
-            if (isset($charset)) {
+            if (null !== $charset) {
                 $dsn[] = "charset={$charset}";
             }
-            if (isset($unixSocket)) {
+            if (null !== $unixSocket) {
                 $dsn[] = "unix_socket={$unixSocket}";
             }
-            if (isset($version)) {
+            if (null !== $version) {
                 $dsn[] = "version={$version}";
             }
             $dsn = 'mysql:' . implode(';', $dsn);
-        }
-
-        if (! is_string($dsn)) {
-            throw new Exception\InvalidConnectionParametersException(
-                'A dsn was not provided or could not be constructed from your parameters',
-                $this->connectionParameters,
-            );
         }
 
         $this->dsn = $dsn;
@@ -115,13 +129,13 @@ class Connection extends AbstractPdoConnection
         try {
             $this->resource = new PDO($dsn, $username, $password, $options);
             $this->resource->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->driverName = strtolower($this->resource->getAttribute(PDO::ATTR_DRIVER_NAME));
+            $this->driverName = strtolower((string) $this->resource->getAttribute(PDO::ATTR_DRIVER_NAME));
         } catch (PDOException $e) {
             $code = $e->getCode();
             if (! is_int($code)) {
                 $code = 0;
             }
-            throw new Exception\RuntimeException('Connect Error: ' . $e->getMessage(), $code, $e);
+            throw new Exception\RuntimeException("Connect Error: {$e->getMessage()}", $code, $e);
         }
 
         return $this;
@@ -129,6 +143,9 @@ class Connection extends AbstractPdoConnection
 
     /**
      * {@inheritDoc}
+     *
+     * @throws Exception\ExceptionInterface
+     * @throws PDOException
      */
     #[Override]
     public function getCurrentSchema(): string|false
@@ -137,22 +154,34 @@ class Connection extends AbstractPdoConnection
             $this->connect();
         }
 
-        /** @var PDOStatement $result */
-        $result = $this->resource->query('SELECT DATABASE()');
-        if ($result instanceof PDOStatement) {
-            return $result->fetchColumn();
+        if (null === $this->resource) {
+            throw new Exception\RuntimeException(
+                'Cannot query current schema without a connected resource; call connect() first.',
+            );
         }
 
-        return false;
+        $result = $this->resource->query('SELECT DATABASE()');
+        if (! $result instanceof PDOStatement) {
+            return false;
+        }
+
+        /** @var string|false|null $value */
+        $value = $result->fetchColumn();
+        return is_string($value) ? $value : false;
     }
 
     #[Override]
     public function getLastGeneratedValue(?string $name = null): string|int|false|null
     {
+        if (null === $this->resource) {
+            return false;
+        }
+
         try {
             return $this->resource->lastInsertId($name);
-        } catch (\Exception) {
-            // do nothing
+        } catch (PDOException) {
+            // not all pdo drivers support lastInsertId; fall through to false
+            // @mago-expect lint:no-empty-catch-clause
         }
 
         return false;

@@ -1,0 +1,685 @@
+variant = "loose"
+
+[[issues]]
+file = "src/AdapterPlatform.php"
+code = "falsable-return-statement"
+message = '''Function `PhpDb\Mysql\AdapterPlatform::quoteViaDriver` is declared to return `null|string` but possibly returns 'false' (inferred as `false|string`).'''
+count = 1
+
+[[issues]]
+file = "src/AdapterPlatform.php"
+code = "impossible-condition"
+message = "This condition (type `false`) will always evaluate to false."
+count = 1
+
+[[issues]]
+file = "src/AdapterPlatform.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `PhpDb\Mysql\AdapterPlatform::quoteViaDriver`: expected `null|string`, but found `false|string`.'
+count = 1
+
+[[issues]]
+file = "src/AdapterPlatform.php"
+code = "missing-constant-type"
+message = "Class constant `PLATFORM_NAME` is missing a type hint."
+count = 1
+
+[[issues]]
+file = "src/AdapterPlatform.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `PhpDb\Mysql\AdapterPlatform::quoteViaDriver`: expected `string`, but possibly received `bool|float|int|string`.'
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "incompatible-property-type"
+message = 'Property `PhpDb\Mysql\Connection::$resource` has an incompatible type declaration from docblock.'
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "invalid-iterator"
+message = "The expression provided to `foreach` is not iterable. It resolved to type `mixed`, which is not iterable."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$resource`: expected `mysqli`, but got `null`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `mysqli::options`: expected `int`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `mysqli::set_charset`: expected `string`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `mysqli::ssl_set`: expected `null|string`, but found `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #2 of `mysqli::options`: expected `int|string`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #2 of `mysqli::real_connect`: expected `null|string`, but found `mixed`."
+count = 2
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #2 of `mysqli::ssl_set`: expected `null|string`, but found `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #3 of `mysqli::real_connect`: expected `null|string`, but found `mixed`."
+count = 2
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #3 of `mysqli::ssl_set`: expected `null|string`, but found `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #4 of `mysqli::real_connect`: expected `null|string`, but found `mixed`."
+count = 2
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #4 of `mysqli::ssl_set`: expected `null|string`, but found `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #5 of `mysqli::ssl_set`: expected `null|string`, but found `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 7
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 6
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-operand"
+message = "Left operand in `&&` operation has `mixed` type."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-return-statement"
+message = "Could not infer a precise return type for function `{closure:src/Connection.php:118:31}`. Saw type `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "possibly-null-argument"
+message = "Argument #1 of method `Exception::__construct` is possibly `null`, but parameter type `string` does not accept it."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "possibly-undefined-string-array-index"
+message = "Possibly undefined array key `string('charset')` accessed on `array<array-key, mixed>`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "possibly-undefined-string-array-index"
+message = "Possibly undefined array key `string('driver_options')` accessed on `array<array-key, mixed>`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "redundant-condition"
+message = "This condition (type `true`) will always evaluate to true."
+count = 2
+
+[[issues]]
+file = "src/Container/ConnectionInterfaceFactory.php"
+code = "less-specific-argument"
+message = 'Argument type mismatch for argument #1 of `PhpDb\Mysql\Connection::__construct`: expected `array<string, mixed>|mysqli|null`, but provided type `non-empty-array<array-key, mixed>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Container/ConnectionInterfaceFactory.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `PhpDb\Adapter\Exception\InvalidConnectionParametersException::__construct`: expected `array<array-key, mixed>`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Container/ConnectionInterfaceFactory.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Container/DriverInterfaceFactory.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Laminas\ServiceManager\ServiceManager::build`: expected `array<array-key, mixed>|null`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Container/MetadataInterfaceFactory.php"
+code = "missing-constant-type"
+message = "Class constant `ADAPTER_SERVICE_NAME` is missing a type hint."
+count = 1
+
+[[issues]]
+file = "src/Container/MetadataInterfaceFactory.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `PhpDb\Metadata\Source\AbstractSource::__construct`: expected `PhpDb\Adapter\AdapterInterface&PhpDb\Adapter\SchemaAwareInterface`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Container/MetadataInterfaceFactory.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `Psr\Container\ContainerInterface::get`: expected `string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Container/MetadataInterfaceFactory.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Container/PdoConnectionInterfaceFactory.php"
+code = "less-specific-argument"
+message = 'Argument type mismatch for argument #1 of `PhpDb\Mysql\Pdo\Connection::__construct`: expected `PDO|array<string, mixed>`, but provided type `non-empty-array<array-key, mixed>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Container/PdoConnectionInterfaceFactory.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `PhpDb\Adapter\Exception\InvalidConnectionParametersException::__construct`: expected `array<array-key, mixed>`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Container/PdoConnectionInterfaceFactory.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Container/PdoDriverInterfaceFactory.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Laminas\ServiceManager\ServiceManager::build`: expected `array<array-key, mixed>|null`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Container/PdoDriverInterfaceFactory.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `PhpDb\Mysql\Pdo\Driver::__construct`: expected `array<string, mixed>`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Container/PdoStatementFactory.php"
+code = "possibly-null-argument"
+message = 'Argument #1 of method `PhpDb\Adapter\Driver\Pdo\Statement::__construct` is possibly `null`, but parameter type `array<array-key, mixed>` does not accept it.'
+count = 1
+
+[[issues]]
+file = "src/Container/PlatformInterfaceFactory.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Container/StatementInterfaceFactory.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `PhpDb\Mysql\Statement::__construct`: expected `bool`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Driver.php"
+code = "docblock-type-mismatch"
+message = "Docblock type mismatch for variable `$resource`."
+count = 1
+
+[[issues]]
+file = "src/Driver.php"
+code = "incompatible-parameter-type"
+message = 'Parameter `$resource` of `PhpDb\Mysql\Driver::createresult()` expects type `mysqli|mysqli_stmt|unknown-ref(PhpDb\Mysql\mysqli_result)` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `resource`'
+count = 1
+
+[[issues]]
+file = "src/Driver.php"
+code = "incompatible-parameter-type"
+message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli|mysqli_stmt|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `resource|string`'
+count = 1
+
+[[issues]]
+file = "src/Driver.php"
+code = "missing-property-type"
+message = "Property `$options` is missing a type hint."
+count = 1
+
+[[issues]]
+file = "src/Driver.php"
+code = "non-existent-class-like"
+message = 'Cannot find class, interface, enum, or type alias `PhpDb\Mysql\mysqli_result`.'
+count = 1
+
+[[issues]]
+file = "src/Driver.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `PhpDb\Mysql\Result::initialize`: expected `mysqli|mysqli_result|mysqli_stmt`, but possibly received `mysqli|mysqli_stmt|unknown-ref(PhpDb\Mysql\mysqli_result)`.'
+count = 1
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "mixed-array-assignment"
+message = "Unsafe array assignment on type `mixed`."
+count = 9
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-invalid-argument"
+message = "Possible argument type mismatch for argument #2 of `implode`: expected `array<array-key, Stringable|null|scalar>|null`, but possibly received `non-empty-list<void>`."
+count = 7
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-null-argument"
+message = "Argument #2 of function `preg_match_all` is possibly `null`, but parameter type `string` does not accept it."
+count = 1
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-null-argument"
+message = "Argument #3 of function `str_replace` is possibly `null`, but parameter type `array<array-key, string>|string` does not accept it."
+count = 1
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-null-operand"
+message = "Possibly null middle operand used in string concatenation (type `null|string`)."
+count = 1
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-null-operand"
+message = "Possibly null right operand used in string concatenation (type `null|string`)."
+count = 1
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array index accessed on `list<array<array-key, string>>`."
+count = 1
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `int(1)` accessed on `array<array-key, string>`."
+count = 1
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-undefined-variable"
+message = "Variable `$isFK` might not have been defined on all execution paths leading to this point."
+count = 1
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "possibly-undefined-variable"
+message = "Variable `$name` might not have been defined on all execution paths leading to this point."
+count = 2
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "reference-constraint-violation"
+message = "Invalid assignment to by-reference parameter `$c`."
+count = 7
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "too-many-arguments"
+message = 'Too many arguments provided for method `PhpDb\Metadata\Source\AbstractSource::prepareDataHierarchy`.'
+count = 6
+
+[[issues]]
+file = "src/Metadata/Source.php"
+code = "unused-method"
+message = "Method `loadconstraintdatanames()` is never used."
+count = 1
+
+[[issues]]
+file = "src/Pdo/Connection.php"
+code = "invalid-type-cast"
+message = "Casting `mixed` to `array`."
+count = 1
+
+[[issues]]
+file = "src/Pdo/Connection.php"
+code = "less-specific-argument"
+message = "Argument type mismatch for argument #1 of `strtolower`: expected `string`, but provided type `array-key` is less specific."
+count = 1
+
+[[issues]]
+file = "src/Pdo/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `array_diff_key`: expected `array<('K.array_diff_key() extends array-key), ('V.array_diff_key() extends mixed)>`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Pdo/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #4 of `PDO::__construct`: expected `array<array-key, mixed>|null`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Pdo/Connection.php"
+code = "mixed-array-assignment"
+message = "Unsafe array assignment on type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Pdo/Connection.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 3
+
+[[issues]]
+file = "src/Pdo/Driver.php"
+code = "incompatible-parameter-type"
+message = 'Parameter `$resource` of `PhpDb\Mysql\Pdo\Driver::createresult()` expects type `PDOStatement` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `resource`'
+count = 1
+
+[[issues]]
+file = "src/Pdo/Driver.php"
+code = "invalid-property-assignment-value"
+message = 'Invalid type for property `$connection`: expected `(PhpDb\Adapter\Driver\PdoConnectionInterface&PhpDb\Adapter\Driver\AbstractConnection&PhpDb\Adapter\Driver\PdoDriverAwareInterface)|PDO`, but got `(PhpDb\Adapter\Driver\PdoConnectionInterface&PhpDb\Adapter\Driver\PdoDriverAwareInterface)|PDO`.'
+count = 1
+
+[[issues]]
+file = "src/Result.php"
+code = "missing-constructor"
+message = 'Class `PhpDb\Mysql\Result` has typed properties without default values but no constructor to initialize them.'
+count = 1
+
+[[issues]]
+file = "src/Result.php"
+code = "possibly-null-array-index"
+message = "Possibly using `null` as an array index to access element."
+count = 1
+
+[[issues]]
+file = "src/Result.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array index accessed on `list<null>`."
+count = 1
+
+[[issues]]
+file = "src/Result.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array index accessed on `list<string>`."
+count = 1
+
+[[issues]]
+file = "src/Result.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `non-negative-int` accessed on `array<int, mixed>`."
+count = 1
+
+[[issues]]
+file = "src/Result.php"
+code = "unused-property"
+message = "Property `$numberOfRows` is never used."
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `PhpDb\Mysql\Sql\Ddl\AlterTableDecorator::processChangeColumns`: expected `array<int, array<int|string, string>>`, but found `list{array{}|non-empty-list<list{string, string}>}`.'
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "less-specific-argument"
+message = 'Argument type mismatch for argument #1 of `PhpDb\Adapter\Platform\PlatformInterface::quoteIdentifier`: expected `string`, but provided type `array-key` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `PhpDb\Adapter\Platform\PlatformInterface::quoteIdentifier`: expected `string`, but found `truthy-mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `PhpDb\Adapter\Platform\PlatformInterface::quoteValue`: expected `string`, but found `truthy-mixed`.'
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `PhpDb\Sql\AbstractSql::processExpression`: expected `PhpDb\Sql\ExpressionInterface`, but found `mixed`.'
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `strtoupper`: expected `string`, but found `truthy-mixed`."
+count = 4
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `uksort`: expected `array<string, ('V.uksort() extends mixed)>`, but found `mixed`."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 6
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "mixed-method-access"
+message = "Attempting to access a method on a non-object type (`mixed`)."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "possibly-null-argument"
+message = "Argument #3 of function `substr_replace` is possibly `null`, but parameter type `array<array-key, int>|int` does not accept it."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "possibly-null-operand"
+message = "Left operand in arithmetic operation might be `null` (type `int|null`)."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `int(0)|int(1)|int(2)` accessed on `array{0: int, 1: int, 2: int, 3: int, ...<non-negative-int, int>}`."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `int(0)|int(1)|int(2)` accessed on `array{0: int, 1: int, 2: int, 3: int}`."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `non-negative-int` accessed on `array{0: int, 1: int, 2: int, 3: int, ...<non-negative-int, int>}`."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/AlterTableDecorator.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `non-negative-int` accessed on `array{0: int, 1: int, 2: int, 3: int}`."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `PhpDb\Adapter\Platform\PlatformInterface::quoteValue`: expected `string`, but found `truthy-mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `PhpDb\Sql\AbstractSql::processExpression`: expected `PhpDb\Sql\ExpressionInterface`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `strtoupper`: expected `string`, but found `truthy-mixed`."
+count = 2
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `uksort`: expected `array<string, ('V.uksort() extends mixed)>`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 3
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "mixed-method-access"
+message = "Attempting to access a method on a non-object type (`mixed`)."
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "possibly-null-argument"
+message = "Argument #3 of function `substr_replace` is possibly `null`, but parameter type `array<array-key, int>|int` does not accept it."
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "possibly-null-operand"
+message = "Left operand in arithmetic operation might be `null` (type `int|null`)."
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `int(0)|int(1)|int(2)` accessed on `array{0: int, 1: int, 2: int, 3: int, ...<non-negative-int, int>}`."
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `int(0)|int(1)|int(2)` accessed on `array{0: int, 1: int, 2: int, 3: int}`."
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `non-negative-int` accessed on `array{0: int, 1: int, 2: int, 3: int, ...<non-negative-int, int>}`."
+count = 1
+
+[[issues]]
+file = "src/Sql/Ddl/CreateTableDecorator.php"
+code = "possibly-undefined-int-array-index"
+message = "Possibly undefined array key `non-negative-int` accessed on `array{0: int, 1: int, 2: int, 3: int}`."
+count = 1
+
+[[issues]]
+file = "src/Sql/SelectDecorator.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$specifications`: expected `array<array-key, array<array-key, mixed>>|array<array-key, string>`, but got `array{'limit': string('LIMIT 18446744073709551615'), ...<array-key, array<array-key, mixed>|string>}`."
+count = 1
+
+[[issues]]
+file = "src/Sql/SelectDecorator.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `PhpDb\Mysql\Sql\SelectDecorator::processLimit`: expected `array<array-key, string>|null`, but found `list{int|string}`.'
+count = 1
+
+[[issues]]
+file = "src/Sql/SelectDecorator.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `PhpDb\Mysql\Sql\SelectDecorator::processOffset`: expected `array<array-key, string>|null`, but found `list{int|string}`.'
+count = 1
+
+[[issues]]
+file = "src/Sql/SelectDecorator.php"
+code = "less-specific-nested-return-statement"
+message = '''Returned type `list{mixed}` is less specific than the declared return type `array<array-key, string>|null` for function `PhpDb\Mysql\Sql\SelectDecorator::processLimit` due to nested 'mixed'.'''
+count = 1
+
+[[issues]]
+file = "src/Sql/SelectDecorator.php"
+code = "less-specific-nested-return-statement"
+message = '''Returned type `list{mixed}` is less specific than the declared return type `array<array-key, string>|null` for function `PhpDb\Mysql\Sql\SelectDecorator::processOffset` due to nested 'mixed'.'''
+count = 1
+
+[[issues]]
+file = "src/Sql/SelectDecorator.php"
+code = "possible-method-access-on-null"
+message = "Attempting to call a method on `null`."
+count = 2
+
+[[issues]]
+file = "src/Sql/SelectDecorator.php"
+code = "write-only-property"
+message = "Property `$subject` is written to but never read."
+count = 1
+
+[[issues]]
+file = "src/Statement.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Statement.php"
+code = "uninitialized-property"
+message = 'Property `$driver` is not initialized in the constructor of class `PhpDb\Mysql\Statement`.'
+count = 1
+
+[[issues]]
+file = "src/Statement.php"
+code = "uninitialized-property"
+message = 'Property `$mysqli` is not initialized in the constructor of class `PhpDb\Mysql\Statement`.'
+count = 1
+
+[[issues]]
+file = "src/Statement.php"
+code = "uninitialized-property"
+message = 'Property `$resource` is not initialized in the constructor of class `PhpDb\Mysql\Statement`.'
+count = 1

@@ -11,6 +11,7 @@ use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Container\DriverInterfaceFactory;
 use PhpDb\Mysql\Driver;
 use PHPUnit\Framework\Attributes;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Attributes\CoversClass(DriverInterfaceFactory::class)]
@@ -22,7 +23,8 @@ final class DriverInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
-    public function testFactoryReturnsMysqliDriver(): void
+    #[Test]
+    public function factoryReturnsMysqliDriver(): void
     {
         $factory = new DriverInterfaceFactory();
         $driver  = $factory(
@@ -30,11 +32,12 @@ final class DriverInterfaceFactoryTest extends TestCase
             DriverInterface::class,
             $this->config[AdapterInterface::class],
         );
-        self::assertInstanceOf(DriverInterface::class, $driver);
-        $this->assertInstanceOf(Driver::class, $driver);
+        static::assertInstanceOf(DriverInterface::class, $driver);
+        static::assertInstanceOf(Driver::class, $driver);
     }
 
-    public function testInvokeThrowsExceptionWithoutConnectionConfig(): void
+    #[Test]
+    public function invokeThrowsExceptionWithoutConnectionConfig(): void
     {
         $this->expectException(ContainerException::class);
 

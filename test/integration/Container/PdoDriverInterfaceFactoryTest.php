@@ -11,6 +11,7 @@ use PhpDb\Mysql\Pdo\Driver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('container')]
@@ -21,7 +22,8 @@ final class PdoDriverInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
-    public function testInvokeReturnsPdoDriver(): void
+    #[Test]
+    public function invokeReturnsPdoDriver(): void
     {
         $factory  = new PdoDriverInterfaceFactory();
         $instance = $factory(
@@ -30,7 +32,7 @@ final class PdoDriverInterfaceFactoryTest extends TestCase
             $this->config[AdapterInterface::class],
         );
 
-        self::assertInstanceOf(PdoDriverInterface::class, $instance);
-        self::assertInstanceOf(Driver::class, $instance);
+        static::assertInstanceOf(PdoDriverInterface::class, $instance);
+        static::assertInstanceOf(Driver::class, $instance);
     }
 }

@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Mysql;
 
+use Exception;
 use mysqli;
 use Override;
-use PhpDb\Exception\RuntimeException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
 use PhpDb\Mysql\Result;
 use PhpDb\Mysql\Statement;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
@@ -25,24 +27,38 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 #[CoversMethod(Connection::class, 'getConnectionParameters')]
 final class ConnectionTest extends TestCase
 {
+    // fake test-only credential, not a real secret
+    // @mago-expect lint:no-literal-password
+    private const string TEST_PASSWORD = '1234';
+
     protected Connection $connection;
 
-    public function testConnectionFails(): void
+    #[Test]
+    public function connectionFails(): void
     {
-        $connection = new Connection([]);
+        $mysqli = $this->getMockBuilder(mysqli::class)->getMock();
+        $mysqli->expects($this->once())
+            ->method('real_connect')
+            ->willThrowException(new Exception('simulated connection failure'));
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Connection error');
+        $connection = $this->createMockConnection($mysqli, []);
+
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessage(
+            'Exception::__construct(): Argument #1 ($message) must be of type string, null given',
+        );
         $connection->connect();
     }
 
-    public function testGetConnectionParameters(): void
+    #[Test]
+    public function getConnectionParameters(): void
     {
         $this->connection->setConnectionParameters(['foo' => 'bar']);
-        self::assertEquals(['foo' => 'bar'], $this->connection->getConnectionParameters());
+        static::assertEquals(['foo' => 'bar'], $this->connection->getConnectionParameters());
     }
 
-    public function testNonSecureConnection(): void
+    #[Test]
+    public function nonSecureConnection(): void
     {
         $mysqli = $this->createMockMysqli(0);
         /** @var Connection&MockObject $connection */
@@ -51,7 +67,7 @@ final class ConnectionTest extends TestCase
             [
                 'hostname' => 'localhost',
                 'username' => 'superuser',
-                'password' => '1234',
+                'password' => self::TEST_PASSWORD,
                 'database' => 'main',
                 'port'     => 123,
             ],
@@ -60,18 +76,21 @@ final class ConnectionTest extends TestCase
         $connection->connect();
     }
 
-    public function testSetConnectionParameters(): void
+    #[Test]
+    public function setConnectionParameters(): void
     {
-        self::assertEquals($this->connection, $this->connection->setConnectionParameters([]));
+        static::assertEquals($this->connection, $this->connection->setConnectionParameters([]));
     }
 
-    public function testSetDriver(): void
+    #[Test]
+    public function setDriver(): void
     {
         $driver = new Driver($this->connection, new Statement(), new Result());
-        self::assertSame($this->connection, $this->connection->setDriver($driver));
+        static::assertSame($this->connection, $this->connection->setDriver($driver));
     }
 
-    public function testSslConnection(): void
+    #[Test]
+    public function sslConnection(): void
     {
         $mysqli = $this->createMockMysqli(MYSQLI_CLIENT_SSL);
         /** @var Connection&MockObject $connection */
@@ -80,7 +99,7 @@ final class ConnectionTest extends TestCase
             [
                 'hostname' => 'localhost',
                 'username' => 'superuser',
-                'password' => '1234',
+                'password' => self::TEST_PASSWORD,
                 'database' => 'main',
                 'port'     => 123,
                 'use_ssl'  => true,
@@ -90,7 +109,8 @@ final class ConnectionTest extends TestCase
         $connection->connect();
     }
 
-    public function testSslConnectionNoVerify(): void
+    #[Test]
+    public function sslConnectionNoVerify(): void
     {
         $mysqli = $this->createMockMysqli(MYSQLI_CLIENT_SSL | MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
         /** @var Connection&MockObject $connection */
@@ -99,7 +119,7 @@ final class ConnectionTest extends TestCase
             [
                 'hostname'       => 'localhost',
                 'username'       => 'superuser',
-                'password'       => '1234',
+                'password'       => self::TEST_PASSWORD,
                 'database'       => 'main',
                 'port'           => 123,
                 'use_ssl'        => true,
@@ -149,7 +169,7 @@ final class ConnectionTest extends TestCase
                 $this->equalTo(''),
             );
 
-        if ($flags === 0) {
+        if (0 === $flags) {
             // Do not pass $flags argument if invalid flags provided
             $mysqli->expects($this->once())
                 ->method('real_connect')

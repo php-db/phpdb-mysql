@@ -13,13 +13,20 @@ use function is_array;
 
 final class ConnectionInterfaceFactory
 {
+    /**
+     * @param array<string, mixed>|null $options
+     *
+     * @throws \PhpDb\Adapter\Exception\ExceptionInterface
+     *
+     * @mago-expect analysis:unused-parameter
+     */
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,
         ?array $options = null,
     ): ConnectionInterface&Connection {
         $conn = $options['connection'] ?? [];
-        if (! is_array($conn) || $conn === []) {
+        if (! is_array($conn) || [] === $conn) {
             throw new InvalidConnectionParametersException(
                 'Connection configuration must be an array of parameters passed via $options["connection"]',
                 $conn,

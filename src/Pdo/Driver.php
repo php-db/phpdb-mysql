@@ -15,9 +15,15 @@ use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverAwareInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
 
-class Driver extends AbstractPdo
+final class Driver extends AbstractPdo
 {
+    protected ?ProfilerInterface $profiler = null;
+
+    /**
+     * @param array<string, mixed> $features
+     */
     public function __construct(
         (PdoConnectionInterface&PdoDriverAwareInterface)|PDO $connection,
         StatementInterface&PdoDriverAwareInterface $statementPrototype = new Statement(),
@@ -35,7 +41,7 @@ class Driver extends AbstractPdo
         $this->statementPrototype->setDriver($this);
 
         // $features is not constructor promoted because $this->features is defined in the trait
-        if ($features !== [] && $this instanceof DriverFeatureProviderInterface) {
+        if ([] !== $features && $this instanceof DriverFeatureProviderInterface) {
             $this->addFeatures($features);
         }
     }

@@ -18,6 +18,7 @@ use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function count;
@@ -40,15 +41,17 @@ final class TableGatewayTest extends TestCase
         ];
     }
 
-    public function testConstructor(): void
+    #[Test]
+    public function constructor(): void
     {
         /** @var AdapterInterface&Adapter $adapter */
         $adapter      = $this->getAdapter(['db' => ['driver' => Driver::class]]);
         $tableGateway = new TableGateway('test', $adapter);
-        $this->assertInstanceOf(TableGateway::class, $tableGateway);
+        static::assertInstanceOf(TableGateway::class, $tableGateway);
     }
 
-    public function testInsert(): void
+    #[Test]
+    public function insert(): void
     {
         $tableGateway = new TableGateway('test', $this->getAdapter(['db' => ['driver' => Driver::class]]));
 
@@ -58,14 +61,14 @@ final class TableGatewayTest extends TestCase
             'value' => 'test_value',
         ];
         $affectedRows = $tableGateway->insert($data);
-        $this->assertEquals(1, $affectedRows);
+        static::assertSame(1, $affectedRows);
         /** @var ResultSet $rowSet */
         $rowSet = $tableGateway->select(['id' => $tableGateway->getLastInsertValue()]);
         /** @var ArrayObject $row */
         $row = $rowSet->current();
 
         foreach ($data as $key => $value) {
-            $this->assertEquals($row->$key, $value);
+            static::assertEquals($row->$key, $value);
         }
     }
 
@@ -73,7 +76,8 @@ final class TableGatewayTest extends TestCase
      * @see https://github.com/zendframework/zend-db/issues/35
      * @see https://github.com/zendframework/zend-db/pull/178
      */
-    public function testInsertWithExtendedCharsetFieldName(): int|string
+    #[Test]
+    public function insertWithExtendedCharsetFieldName(): int|string
     {
         $tableGateway = new TableGateway('test_charset', $this->getAdapter(['db' => ['driver' => Driver::class]]));
 
@@ -81,27 +85,29 @@ final class TableGatewayTest extends TestCase
             'field$' => 'test_value1',
             'field_' => 'test_value2',
         ]);
-        $this->assertEquals(1, $affectedRows);
+        static::assertSame(1, $affectedRows);
 
         return $tableGateway->getLastInsertValue();
     }
 
-    public function testSelect(): void
+    #[Test]
+    public function select(): void
     {
         $tableGateway = new TableGateway('test', $this->getAdapter(['db' => ['driver' => Driver::class]]));
         /** @var ResultSet $rowset */
         $rowset = $tableGateway->select();
-        $this->assertTrue(count($rowset) > 0);
+        static::assertTrue(count($rowset) > 0);
         /** @var ArrayObject $row */
         foreach ($rowset as $row) {
-            $this->assertTrue(isset($row->id));
-            $this->assertNotEmpty(isset($row->name));
-            $this->assertNotEmpty(isset($row->value));
+            static::assertTrue(null !== ($row->id ?? null));
+            static::assertNotEmpty(null !== ($row->name ?? null));
+            static::assertNotEmpty(null !== ($row->value ?? null));
         }
     }
 
+    #[Test]
     #[DataProvider('tableProvider')]
-    public function testTableGatewayWithMetadataFeature(array|string|TableIdentifier $table): void
+    public function tableGatewayWithMetadataFeature(array|string|TableIdentifier $table): void
     {
         /** @var AdapterInterface&SchemaAwareInterface&Adapter $adapter */
         $adapter      = $this->getAdapter(['db' => ['driver' => Driver::class]]);
@@ -113,12 +119,13 @@ final class TableGatewayTest extends TestCase
             ),
         );
 
-        self::assertInstanceOf(TableGateway::class, $tableGateway);
-        self::assertSame($table, $tableGateway->getTable());
+        static::assertInstanceOf(TableGateway::class, $tableGateway);
+        static::assertSame($table, $tableGateway->getTable());
     }
 
-    #[Depends('testInsertWithExtendedCharsetFieldName')]
-    public function testUpdateWithExtendedCharsetFieldName(mixed $id): void
+    #[Test]
+    #[Depends('insertWithExtendedCharsetFieldName')]
+    public function updateWithExtendedCharsetFieldName(mixed $id): void
     {
         $tableGateway = new TableGateway('test_charset', $this->getAdapter(['db' => ['driver' => Driver::class]]));
 
@@ -127,14 +134,14 @@ final class TableGatewayTest extends TestCase
             'field_' => 'test_value4',
         ];
         $affectedRows = $tableGateway->update($data, ['id' => $id]);
-        $this->assertEquals(1, $affectedRows);
+        static::assertSame(1, $affectedRows);
         /** @var ResultSet $rowSet */
         $rowSet = $tableGateway->select(['id' => $id]);
         /** @var ArrayObject $row */
         $row = $rowSet->current();
 
         foreach ($data as $key => $value) {
-            $this->assertEquals($row->$key, $value);
+            static::assertEquals($row->$key, $value);
         }
     }
 }

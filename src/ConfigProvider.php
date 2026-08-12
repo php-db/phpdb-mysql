@@ -12,6 +12,12 @@ use PhpDb\Metadata\MetadataInterface;
 
 final class ConfigProvider
 {
+    /**
+     * @return array{
+     *     aliases: array<string, class-string>,
+     *     factories: array<class-string, class-string>,
+     * }
+     */
     public function getDependencies(): array
     {
         return [
@@ -44,6 +50,14 @@ final class ConfigProvider
         ];
     }
 
+    /**
+     * @return array{
+     *     dependencies: array{
+     *         aliases: array<string, class-string>,
+     *         factories: array<class-string, class-string>,
+     *     },
+     * }
+     */
     public function __invoke(): array
     {
         return [

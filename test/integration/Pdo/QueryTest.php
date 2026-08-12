@@ -14,6 +14,7 @@ use PhpDb\Sql\Sql;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Adapter::class, 'query')]
@@ -48,9 +49,10 @@ final class QueryTest extends TestCase
     /**
      * @see https://github.com/laminas/laminas-db/issues/47
      */
-    public function testNamedParameters(): void
+    #[Test]
+    public function namedParameters(): void
     {
-        $this->assertNotNull($this->adapter);
+        static::assertNotNull($this->adapter);
         $sql = new Sql($this->adapter);
 
         $insert = $sql->update('test');
@@ -60,7 +62,7 @@ final class QueryTest extends TestCase
         ])->where(['id' => ':id']);
         /** @var StatementInterface $stmt */
         $stmt = $sql->prepareStatementForSqlObject($insert);
-        $this->assertInstanceOf(StatementInterface::class, $stmt);
+        static::assertInstanceOf(StatementInterface::class, $stmt);
 
         //positional parameters
         $stmt->execute([
@@ -87,47 +89,52 @@ final class QueryTest extends TestCase
     /**
      * @throws Exception
      */
+    #[Test]
     #[DataProvider('getQueriesWithRowResult')]
-    public function testQuery(string $query, array $params, array $expected): void
+    public function query(string $query, array $params, array $expected): void
     {
         /** @todo Have AdapterInterface implement query */
         $result = $this->getAdapter()->query($query, $params);
-        $this->assertInstanceOf(ResultSet::class, $result);
+        static::assertInstanceOf(ResultSet::class, $result);
         $current = $result->current();
         // test as array value
-        $this->assertEquals($expected, (array) $current);
+        static::assertEquals($expected, (array) $current);
         // test as object value
         /** @var string $value */
         foreach ($expected as $key => $value) {
-            $this->assertEquals($value, $current->$key);
+            static::assertEquals($value, $current->$key);
         }
     }
 
-    public function testSelectResultCountReturnsActualRowCount(): void
+    #[Test]
+    public function selectResultCountReturnsActualRowCount(): void
     {
         $result = $this->getAdapter()->query('SELECT * FROM test WHERE value = ?', ['bar']);
-        $this->assertInstanceOf(ResultSet::class, $result);
-        self::assertSame(3, $result->count());
+        static::assertInstanceOf(ResultSet::class, $result);
+        static::assertSame(3, $result->count());
     }
 
-    public function testSelectResultCountReturnsZeroForNoResults(): void
+    #[Test]
+    public function selectResultCountReturnsZeroForNoResults(): void
     {
         $result = $this->getAdapter()->query('SELECT * FROM test WHERE name = ?', ['nonexistent']);
-        $this->assertInstanceOf(ResultSet::class, $result);
-        self::assertSame(0, $result->count());
+        static::assertInstanceOf(ResultSet::class, $result);
+        static::assertSame(0, $result->count());
     }
 
-    public function testSelectResultCountWithWhereClause(): void
+    #[Test]
+    public function selectResultCountWithWhereClause(): void
     {
         $result = $this->getAdapter()->query('SELECT * FROM test WHERE name = ?', ['foo']);
-        $this->assertInstanceOf(ResultSet::class, $result);
-        self::assertSame(1, $result->count());
+        static::assertInstanceOf(ResultSet::class, $result);
+        static::assertSame(1, $result->count());
     }
 
     /**
      * @throws Exception
      */
-    public function testSelectWithNotPermittedBindParamName(): void
+    #[Test]
+    public function selectWithNotPermittedBindParamName(): void
     {
         $this->expectException(RuntimeException::class);
         $this->getAdapter()->query('SET @@session.time_zone = :tz$', [':tz$' => 'SYSTEM']);
@@ -138,9 +145,10 @@ final class QueryTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetSessionTimeZone(): void
+    #[Test]
+    public function setSessionTimeZone(): void
     {
         $result = $this->getAdapter()->query('SET @@session.time_zone = :tz', [':tz' => 'SYSTEM']);
-        $this->assertInstanceOf(PdoResult::class, $result);
+        static::assertInstanceOf(PdoResult::class, $result);
     }
 }

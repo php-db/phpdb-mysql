@@ -14,7 +14,7 @@ use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use function implode;
 use function str_replace;
 
-class AdapterPlatform extends AbstractPlatform
+final class AdapterPlatform extends AbstractPlatform
 {
     final public const PLATFORM_NAME = 'MySQL';
 
@@ -61,7 +61,7 @@ class AdapterPlatform extends AbstractPlatform
     #[Override]
     public function quoteIdentifierChain(array|string $identifierChain): string
     {
-        return '`' . implode('`.`', (array) str_replace('`', '``', $identifierChain)) . '`';
+        return '`' . implode('`.`', (array) str_replace('`', replace: '``', subject: $identifierChain)) . '`';
     }
 
     /**
@@ -88,14 +88,13 @@ class AdapterPlatform extends AbstractPlatform
 
     protected function quoteViaDriver(string $value): ?string
     {
-        if ($this->driver instanceof DriverInterface) {
-            // todo: verify this can not return a PDOStatement instance
-            $resource = $this->driver->getConnection()->getResource();
-        } else {
-            $resource = $this->driver;
-        }
+        // todo(@tyrsson): verify this can not return a PDOStatement instance
+        $resource = $this->driver instanceof DriverInterface
+            ? $this->driver->getConnection()->getResource()
+            : $this->driver;
 
         if ($resource instanceof mysqli) {
+            // @mago-expect lint:string-style
             return '\'' . $resource->real_escape_string($value) . '\'';
         }
 

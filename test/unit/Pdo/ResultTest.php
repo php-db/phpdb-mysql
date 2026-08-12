@@ -10,6 +10,7 @@ use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Exception\InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -21,19 +22,21 @@ use function uniqid;
 #[Group('result-pdo')]
 final class ResultTest extends TestCase
 {
-    public function testCountWithClosureRowCountInvokesClosure(): void
+    #[Test]
+    public function countWithClosureRowCountInvokesClosure(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $mock->expects($this->never())
             ->method('rowCount');
 
         $result = new Result();
-        $result->initialize($mock, null, fn() => 3);
+        $result->initialize($mock, null, static fn() => 3);
 
-        self::assertSame(3, $result->count());
+        static::assertSame(3, $result->count());
     }
 
-    public function testCountWithIntRowCountReturnsValueWithoutQueryingPdo(): void
+    #[Test]
+    public function countWithIntRowCountReturnsValueWithoutQueryingPdo(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $mock->expects($this->never())
@@ -42,10 +45,11 @@ final class ResultTest extends TestCase
         $result = new Result();
         $result->initialize($mock, null, 7);
 
-        self::assertSame(7, $result->count());
+        static::assertSame(7, $result->count());
     }
 
-    public function testCountWithNullRowCountDelegatesToPdoStatement(): void
+    #[Test]
+    public function countWithNullRowCountDelegatesToPdoStatement(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $mock->expects($this->once())
@@ -55,10 +59,11 @@ final class ResultTest extends TestCase
         $result = new Result();
         $result->initialize($mock, null, null);
 
-        self::assertSame(4, $result->count());
+        static::assertSame(4, $result->count());
     }
 
-    public function testCountWithZeroRowCountReturnsZeroWithoutQueryingPdo(): void
+    #[Test]
+    public function countWithZeroRowCountReturnsZeroWithoutQueryingPdo(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $mock->expects($this->never())
@@ -67,44 +72,48 @@ final class ResultTest extends TestCase
         $result = new Result();
         $result->initialize($mock, null, 0);
 
-        self::assertSame(0, $result->count());
+        static::assertSame(0, $result->count());
     }
 
     /**
      * Tests current method returns same data on consecutive calls.
      */
-    public function testCurrent(): void
+    #[Test]
+    public function current(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $mock->expects($this->any())
             ->method('fetch')
-            ->willReturnCallback(fn() => uniqid());
+            // @mago-expect lint:prefer-first-class-callable
+            ->willReturnCallback(static fn() => uniqid());
 
         $result = new Result();
         $result->initialize($mock, null);
 
-        self::assertEquals($result->current(), $result->current());
+        static::assertEquals($result->current(), $result->current());
     }
 
     /**
      * Tests whether the fetch mode was set properly and
      */
-    public function testFetchModeAnonymousObject(): void
+    #[Test]
+    public function fetchModeAnonymousObject(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $mock->expects($this->any())
             ->method('fetch')
-            ->willReturnCallback(fn() => new stdClass());
+            ->willReturnCallback(static fn() => new stdClass());
 
         $result = new Result();
         $result->initialize($mock, null);
         $result->setFetchMode(PDO::FETCH_OBJ);
 
-        self::assertEquals(5, $result->getFetchMode());
-        self::assertInstanceOf('stdClass', $result->current());
+        static::assertSame(5, $result->getFetchMode());
+        static::assertInstanceOf('stdClass', $result->current());
     }
 
-    public function testFetchModeException(): void
+    #[Test]
+    public function fetchModeException(): void
     {
         $result = new Result();
 
@@ -115,20 +124,22 @@ final class ResultTest extends TestCase
     /**
      * Tests whether the fetch mode has a broader range
      */
-    public function testFetchModeRange(): void
+    #[Test]
+    public function fetchModeRange(): void
     {
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
         $mock->expects($this->any())
             ->method('fetch')
-            ->willReturnCallback(fn() => new stdClass());
+            ->willReturnCallback(static fn() => new stdClass());
         $result = new Result();
         $result->initialize($mock, null);
         $result->setFetchMode(PDO::FETCH_NAMED);
-        self::assertEquals(11, $result->getFetchMode());
-        self::assertInstanceOf('stdClass', $result->current());
+        static::assertSame(11, $result->getFetchMode());
+        static::assertInstanceOf('stdClass', $result->current());
     }
 
-    public function testMultipleRewind(): void
+    #[Test]
+    public function multipleRewind(): void
     {
         $data = [
             ['test' => 1],
@@ -137,10 +148,10 @@ final class ResultTest extends TestCase
         $position = 0;
 
         $mock = $this->getMockBuilder(PDOStatement::class)->getMock();
-        assert($mock instanceof PDOStatement); // to suppress IDE type warnings
+        assert($mock instanceof PDOStatement, description: 'to suppress IDE type warnings');
         $mock->expects($this->any())
             ->method('fetch')
-            ->willReturnCallback(function () use ($data, &$position) {
+            ->willReturnCallback(static function () use ($data, &$position) {
                 return $data[$position++];
             });
         $result = new Result();
@@ -149,13 +160,13 @@ final class ResultTest extends TestCase
         $result->rewind();
         $result->rewind();
 
-        $this->assertEquals(0, $result->key());
-        $this->assertEquals(1, $position);
-        $this->assertEquals($data[0], $result->current());
+        static::assertSame(0, $result->key());
+        static::assertSame(1, $position);
+        static::assertEquals($data[0], $result->current());
 
         $result->next();
-        $this->assertEquals(1, $result->key());
-        $this->assertEquals(2, $position);
-        $this->assertEquals($data[1], $result->current());
+        static::assertSame(1, $result->key());
+        static::assertSame(2, $position);
+        static::assertEquals($data[1], $result->current());
     }
 }

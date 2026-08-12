@@ -6,6 +6,7 @@ namespace PhpDb\Mysql;
 
 use Exception as GenericException;
 use mysqli;
+use mysqli_result;
 use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Driver\ConnectionInterface;
@@ -24,15 +25,23 @@ use function strtoupper;
 use const MYSQLI_CLIENT_SSL;
 use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 
+// @mago-expect lint:cyclomatic-complexity
+// @mago-expect lint:kan-defect
+// @mago-expect lint:too-many-methods
+// @mago-expect analysis:class-must-be-final
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    protected Driver $driver;
+    protected ?DriverInterface $driver = null;
+
+    protected ?string $driverName = null;
 
     /** @var mysqli */
     protected $resource;
 
     /**
      * Constructor
+     *
+     * @param array<string, mixed>|mysqli|null $connectionInfo
      *
      * @throws InvalidArgumentException
      */
@@ -41,16 +50,22 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     ) {
         if (is_array($connectionInfo)) {
             $this->setConnectionParameters($connectionInfo);
-        } elseif ($connectionInfo instanceof mysqli) {
+
+            return;
+        }
+
+        if ($connectionInfo instanceof mysqli) {
             $this->setResource($connectionInfo);
-        } elseif (null !== $connectionInfo) {
-            throw new Exception\InvalidArgumentException(
-                '$connection must be an array of parameters, a mysqli object or null',
-            );
+
+            return;
         }
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function beginTransaction(): ConnectionInterface
     {
@@ -64,7 +79,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function commit(): ConnectionInterface
     {
@@ -79,7 +98,12 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
+    // @mago-expect lint:halstead
     #[Override]
     public function connect(): ConnectionInterface
     {
@@ -87,14 +111,13 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             return $this;
         }
 
-        /** @var array $p */
         $p = $this->connectionParameters;
 
         // given a list of key names, test for existence in $p
         /** @var string[] $names */
-        $findParameterValue = function (array $names) use ($p): ?string {
+        $findParameterValue = static function (array $names) use ($p): ?string {
             foreach ($names as $name) {
-                if (isset($p[$name])) {
+                if (null !== ($p[$name] ?? null)) {
                     return $p[$name];
                 }
             }
@@ -107,8 +130,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         $username = $findParameterValue(['username', 'user']);
         $password = $findParameterValue(['password', 'passwd', 'pw']);
         $database = $findParameterValue(['database', 'dbname', 'db', 'schema']);
-        /** @var int|null $port */
-        $port = isset($p['port']) ? (int) $p['port'] : null;
+        $port     = null === ($p['port'] ?? null) ? null : (int) $p['port'];
         /** @var string|null $socket */
         $socket = $p['socket'] ?? null;
 
@@ -122,7 +144,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
         $this->resource = $this->createResource();
 
-        if (! empty($p['driver_options'])) {
+        if ([] !== ($p['driver_options'] ?? [])) {
             foreach ($p['driver_options'] as $option => $value) {
                 if (is_string($option)) {
                     $option = strtoupper($option);
@@ -146,14 +168,14 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             $this->resource->ssl_set($clientKey, $clientCert, $caCert, $caPath, $cipher);
             //MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT is not valid option, needs to be set as flag
             if (
-                isset($p['driver_options'][MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT])
+                null !== ($p['driver_options'][MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT] ?? null)
             ) {
                 $flags |= MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
             }
         }
 
         try {
-            $flags === null
+            null === $flags
                 ? $this->resource->real_connect($hostname, $username, $password, $database, $port, $socket)
                 : $this->resource->real_connect($hostname, $username, $password, $database, $port, $socket, $flags);
         } catch (GenericException) {
@@ -172,7 +194,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             );
         }
 
-        if (! empty($p['charset'])) {
+        if ('' !== ($p['charset'] ?? '')) {
             $this->resource->set_charset($p['charset']);
         }
 
@@ -193,10 +215,10 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * {@inheritDoc}
      *
-     * @throws Exception\InvalidQueryException
+     * @throws Exception\ExceptionInterface
      */
     #[Override]
-    public function execute($sql): ?ResultInterface
+    public function execute(string $sql): ?ResultInterface
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -206,17 +228,29 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
         $resultResource = $this->resource->query($sql);
 
-        $this->profiler?->profilerFinish($sql);
+        $this->profiler?->profilerFinish();
 
         // if the returnValue is something other than a mysqli_result, bypass wrapping it
-        if ($resultResource === false) {
+        if (false === $resultResource) {
             throw new Exception\InvalidQueryException($this->resource->error);
         }
 
-        return $this->driver->createResult($resultResource === true ? $this->resource : $resultResource);
+        if (null === $this->driver) {
+            throw new Exception\RuntimeException('Cannot execute without a driver; call setDriver() first.');
+        }
+
+        // @mago-expect analysis:invalid-argument - DriverInterface::createResult() is documented with a
+        // generic `resource` type to stay valid across every RDBMS platform (see php-db/phpdb#170 for a
+        // proposed @template-based fix); this class always passes real mysqli|mysqli_result objects, which
+        // is correct for this concrete implementation.
+        return $this->driver->createResult(true === $resultResource ? $this->resource : $resultResource);
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function getCurrentSchema(): string|false
     {
@@ -225,7 +259,19 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         }
 
         $result = $this->resource->query('SELECT DATABASE()');
-        $r      = $result->fetch_row();
+        if (! $result instanceof mysqli_result) {
+            throw new Exception\RuntimeException('Failed to query current schema');
+        }
+
+        $r = $result->fetch_row();
+        if (false === $r) {
+            throw new Exception\RuntimeException($this->resource->error);
+        }
+
+        /** @var array{0: string|null}|null $r */
+        if (null === $r || null === $r[0]) {
+            return false;
+        }
 
         return $r[0];
     }
@@ -238,12 +284,17 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     }
 
     /** @inheritDoc */
+    #[Override]
     public function isConnected(): bool
     {
         return $this->resource instanceof mysqli;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     *
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function rollback(): ConnectionInterface
     {
@@ -262,6 +313,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
+    #[Override]
     public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
         $this->driver = $driver;
@@ -284,11 +336,11 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * Create a new mysqli resource
      *
-     * todo: why do we have this random method here?
+     * todo(@tyrsson): why do we have this random method here?
      *
      * @return mysqli
      */
-    protected function createResource()
+    protected function createResource(): mysqli
     {
         return new mysqli();
     }

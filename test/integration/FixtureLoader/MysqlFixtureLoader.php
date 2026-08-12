@@ -34,7 +34,7 @@ final class MysqlFixtureLoader implements FixtureLoaderInterface
             throw new Exception(sprintf(
                 'I cannot create the MySQL %s test database: %s',
                 getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
-                print_r($this->pdo->errorInfo(), true),
+                print_r($this->pdo->errorInfo(), return: true),
             ));
         }
 
@@ -45,7 +45,7 @@ final class MysqlFixtureLoader implements FixtureLoaderInterface
                 'I cannot create the table for %s database. Check the %s file. %s ',
                 getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
                 $this->fixtureFile,
-                print_r($this->pdo->errorInfo(), true),
+                print_r($this->pdo->errorInfo(), return: true),
             ));
         }
 

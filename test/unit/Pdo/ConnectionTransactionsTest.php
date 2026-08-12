@@ -8,10 +8,12 @@ use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Pdo\Connection;
-use PhpDbTest\Mysql\Pdo\TestAsset\ConnectionWrapper;
+use PhpDbTest\Mysql\Pdo\TestAsset\PdoStubDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 /**
  * Tests for {@see \PhpDb\Adapter\Mysql\Driver\Pdo\Connection} transaction support
@@ -24,90 +26,94 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(Connection::class, 'rollback')]
 final class ConnectionTransactionsTest extends TestCase
 {
-    protected ConnectionWrapper $wrapper;
+    protected Connection $wrapper;
 
-    public function testBeginTransactionReturnsInstanceOfConnection(): void
+    #[Test]
+    public function beginTransactionReturnsInstanceOfConnection(): void
     {
-        self::assertInstanceOf(Connection::class, $this->wrapper->beginTransaction());
+        static::assertInstanceOf(Connection::class, $this->wrapper->beginTransaction());
     }
 
-    public function testBeginTransactionSetsInTransactionAtTrue(): void
-    {
-        $this->wrapper->beginTransaction();
-        self::assertTrue($this->wrapper->inTransaction());
-    }
-
-    public function testCommitReturnsInstanceOfConnection(): void
+    #[Test]
+    public function beginTransactionSetsInTransactionAtTrue(): void
     {
         $this->wrapper->beginTransaction();
-        self::assertInstanceOf(Connection::class, $this->wrapper->commit());
+        static::assertTrue($this->wrapper->inTransaction());
     }
 
-    public function testCommitSetsInTransactionAtFalse(): void
+    #[Test]
+    public function commitReturnsInstanceOfConnection(): void
+    {
+        $this->wrapper->beginTransaction();
+        static::assertInstanceOf(Connection::class, $this->wrapper->commit());
+    }
+
+    #[Test]
+    public function commitSetsInTransactionAtFalse(): void
     {
         $this->wrapper->beginTransaction();
         $this->wrapper->commit();
-        self::assertFalse($this->wrapper->inTransaction());
+        static::assertFalse($this->wrapper->inTransaction());
     }
 
     /**
      * Standalone commit after a SET autocommit=0;
      */
-    public function testCommitWithoutBeginReturnsInstanceOfConnection(): void
+    #[Test]
+    public function commitWithoutBeginReturnsInstanceOfConnection(): void
     {
-        self::assertInstanceOf(Connection::class, $this->wrapper->commit());
+        static::assertInstanceOf(Connection::class, $this->wrapper->commit());
     }
 
-    public function testNestedTransactionsCommit(): void
+    #[Test]
+    public function nestedTransactionsCommit(): void
     {
-        $nested = 0;
-
-        self::assertFalse($this->wrapper->inTransaction());
+        static::assertFalse($this->wrapper->inTransaction());
 
         // 1st transaction
         $this->wrapper->beginTransaction();
-        self::assertTrue($this->wrapper->inTransaction());
-        self::assertSame(++$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertTrue($this->wrapper->inTransaction());
+        static::assertSame(1, $this->getNestedTransactionsCount($this->wrapper));
 
         // 2nd transaction
         $this->wrapper->beginTransaction();
-        self::assertTrue($this->wrapper->inTransaction());
-        self::assertSame(++$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertTrue($this->wrapper->inTransaction());
+        static::assertSame(2, $this->getNestedTransactionsCount($this->wrapper));
 
         // 1st commit
         $this->wrapper->commit();
-        self::assertTrue($this->wrapper->inTransaction());
-        self::assertSame(--$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertTrue($this->wrapper->inTransaction());
+        static::assertSame(1, $this->getNestedTransactionsCount($this->wrapper));
 
         // 2nd commit
         $this->wrapper->commit();
-        self::assertFalse($this->wrapper->inTransaction());
-        self::assertSame(--$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertFalse($this->wrapper->inTransaction());
+        static::assertSame(0, $this->getNestedTransactionsCount($this->wrapper));
     }
 
-    public function testNestedTransactionsRollback(): void
+    #[Test]
+    public function nestedTransactionsRollback(): void
     {
-        $nested = 0;
-
-        self::assertFalse($this->wrapper->inTransaction());
+        static::assertFalse($this->wrapper->inTransaction());
 
         // 1st transaction
         $this->wrapper->beginTransaction();
-        self::assertTrue($this->wrapper->inTransaction());
-        self::assertSame(++$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertTrue($this->wrapper->inTransaction());
+        static::assertSame(1, $this->getNestedTransactionsCount($this->wrapper));
 
         // 2nd transaction
         $this->wrapper->beginTransaction();
-        self::assertTrue($this->wrapper->inTransaction());
-        self::assertSame(++$nested, $this->wrapper->getNestedTransactionsCount());
+        static::assertTrue($this->wrapper->inTransaction());
+        static::assertSame(2, $this->getNestedTransactionsCount($this->wrapper));
 
         // Rollback
         $this->wrapper->rollback();
-        self::assertFalse($this->wrapper->inTransaction());
-        self::assertSame(0, $this->wrapper->getNestedTransactionsCount());
+        static::assertFalse($this->wrapper->inTransaction());
+        static::assertSame(0, $this->getNestedTransactionsCount($this->wrapper));
     }
 
-    public function testRollbackDisconnectedThrowsException(): void
+    #[Test]
+    public function rollbackDisconnectedThrowsException(): void
     {
         $this->wrapper->disconnect();
 
@@ -116,20 +122,23 @@ final class ConnectionTransactionsTest extends TestCase
         $this->wrapper->rollback();
     }
 
-    public function testRollbackReturnsInstanceOfConnection(): void
+    #[Test]
+    public function rollbackReturnsInstanceOfConnection(): void
     {
         $this->wrapper->beginTransaction();
-        self::assertInstanceOf(Connection::class, $this->wrapper->rollback());
+        static::assertInstanceOf(Connection::class, $this->wrapper->rollback());
     }
 
-    public function testRollbackSetsInTransactionAtFalse(): void
+    #[Test]
+    public function rollbackSetsInTransactionAtFalse(): void
     {
         $this->wrapper->beginTransaction();
         $this->wrapper->rollback();
-        self::assertFalse($this->wrapper->inTransaction());
+        static::assertFalse($this->wrapper->inTransaction());
     }
 
-    public function testRollbackWithoutBeginThrowsException(): void
+    #[Test]
+    public function rollbackWithoutBeginThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Must call beginTransaction() before you can rollback');
@@ -139,15 +148,16 @@ final class ConnectionTransactionsTest extends TestCase
     /**
      * Standalone commit after a SET autocommit=0;
      */
-    public function testStandaloneCommit(): void
+    #[Test]
+    public function standaloneCommit(): void
     {
-        self::assertFalse($this->wrapper->inTransaction());
-        self::assertSame(0, $this->wrapper->getNestedTransactionsCount());
+        static::assertFalse($this->wrapper->inTransaction());
+        static::assertSame(0, $this->getNestedTransactionsCount($this->wrapper));
 
         $this->wrapper->commit();
 
-        self::assertFalse($this->wrapper->inTransaction());
-        self::assertSame(0, $this->wrapper->getNestedTransactionsCount());
+        static::assertFalse($this->wrapper->inTransaction());
+        static::assertSame(0, $this->getNestedTransactionsCount($this->wrapper));
     }
 
     /**
@@ -156,6 +166,17 @@ final class ConnectionTransactionsTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $this->wrapper = new ConnectionWrapper();
+        $this->wrapper = new Connection([]);
+        // bypass setResource(), which calls PDO::getAttribute() and would fail
+        // against the stub's uninitialized internal PDO state
+        (new ReflectionProperty($this->wrapper, 'resource'))->setValue(
+            $this->wrapper,
+            new PdoStubDriver('foo', 'bar', 'baz'),
+        );
+    }
+
+    private function getNestedTransactionsCount(Connection $connection): int
+    {
+        return (new ReflectionProperty($connection, 'nestedTransactionsCount'))->getValue($connection);
     }
 }

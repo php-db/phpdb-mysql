@@ -12,6 +12,7 @@ use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(Adapter::class, 'getCurrentSchema')]
@@ -23,14 +24,16 @@ abstract class AbstractAdapterTestCase extends TestCase
 {
     use SetupTrait;
 
-    public function testConnection(): void
+    #[Test]
+    public function connection(): void
     {
         /** @var ConnectionInterface $connection */
         $connection = $this->getAdapter()->getDriver()->getConnection();
-        $this->assertInstanceOf(ConnectionInterface::class, $connection);
+        static::assertInstanceOf(ConnectionInterface::class, $connection);
     }
 
-    public function testDriverDisconnectAfterQuoteWithPlatform(): void
+    #[Test]
+    public function driverDisconnectAfterQuoteWithPlatform(): void
     {
         $isTcpConnection = $this->isTcpConnection();
 
@@ -41,45 +44,46 @@ abstract class AbstractAdapterTestCase extends TestCase
             ],
         ]);
         $adapter->getDriver()->getConnection()->connect();
-        self::assertTrue($adapter->getDriver()->getConnection()->isConnected());
+        static::assertTrue($adapter->getDriver()->getConnection()->isConnected());
         if ($isTcpConnection) {
-            self::assertTrue($adapter->getDriver()->getConnection()->isConnected());
+            static::assertTrue($adapter->getDriver()->getConnection()->isConnected());
         }
 
         $adapter->getDriver()->getConnection()->disconnect();
-        self::assertFalse($adapter->getDriver()->getConnection()->isConnected());
+        static::assertFalse($adapter->getDriver()->getConnection()->isConnected());
         if ($isTcpConnection) {
-            self::assertFalse($adapter->getDriver()->getConnection()->isConnected());
+            static::assertFalse($adapter->getDriver()->getConnection()->isConnected());
         }
 
         $adapter->getDriver()->getConnection()->connect();
-        self::assertTrue($adapter->getDriver()->getConnection()->isConnected());
+        static::assertTrue($adapter->getDriver()->getConnection()->isConnected());
         if ($isTcpConnection) {
-            self::assertTrue($adapter->getDriver()->getConnection()->isConnected());
+            static::assertTrue($adapter->getDriver()->getConnection()->isConnected());
         }
 
         $adapter->getPlatform()->quoteValue('test');
 
         $adapter->getDriver()->getConnection()->disconnect();
 
-        self::assertFalse($adapter->getDriver()->getConnection()->isConnected());
+        static::assertFalse($adapter->getDriver()->getConnection()->isConnected());
         if ($isTcpConnection) {
-            self::assertFalse($adapter->getDriver()->getConnection()->isConnected());
+            static::assertFalse($adapter->getDriver()->getConnection()->isConnected());
         }
     }
 
-    public function testGetCurrentSchema(): void
+    #[Test]
+    public function getCurrentSchema(): void
     {
         /** @var AdapterInterface&SchemaAwareInterface&Adapter $adapter */
         $adapter = $this->getAdapter();
         $schema  = $adapter->getCurrentSchema();
-        self::assertIsString($schema);
-        self::assertNotEmpty($schema);
+        static::assertIsString($schema);
+        static::assertNotEmpty($schema);
     }
 
     protected function isTcpConnection(): bool
     {
         $hostName = $this->getHostname();
-        return $hostName !== 'localhost' && $hostName !== '127.0.0.1';
+        return 'localhost' !== $hostName && '127.0.0.1' !== $hostName;
     }
 }

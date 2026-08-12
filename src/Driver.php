@@ -6,8 +6,8 @@ namespace PhpDb\Mysql;
 
 use mysqli;
 use mysqli_stmt;
+use Override;
 use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
@@ -16,7 +16,6 @@ use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 
 use function array_intersect_key;
-use function array_merge;
 use function extension_loaded;
 use function is_string;
 
@@ -29,6 +28,11 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         'buffer_results' => false,
     ];
 
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @throws \PhpDb\Exception\ExceptionInterface
+     */
     public function __construct(
         protected readonly ConnectionInterface&Connection $connection,
         protected readonly StatementInterface&Statement $statementPrototype = new Statement(),
@@ -37,17 +41,13 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     ) {
         $this->checkEnvironment();
 
-        $options = array_intersect_key(array_merge($this->options, $options), $this->options);
+        $options = array_intersect_key([...$this->options, ...$options], $this->options);
 
-        if ($this->connection instanceof DriverAwareInterface) {
-            $this->connection->setDriver($this);
-        }
-
-        if ($this->statementPrototype instanceof DriverAwareInterface) {
-            $this->statementPrototype->setDriver($this);
-        }
+        $this->connection->setDriver($this);
+        $this->statementPrototype->setDriver($this);
     }
 
+    #[Override]
     public function checkEnvironment(): bool
     {
         if (! extension_loaded('mysqli')) {
@@ -63,9 +63,9 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
      *
      * @param mysqli|mysqli_result|mysqli_stmt $resource
      */
+    #[Override]
     public function createResult($resource, ?bool $isBuffered = null): ResultInterface&Result
     {
-        /** @var Result $result */
         $result = clone $this->resultPrototype;
         $result->initialize($resource, $this->connection->getLastGeneratedValue(), $isBuffered);
         return $result;
@@ -75,7 +75,10 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
      * Create statement
      *
      * @param mysqli|mysqli_stmt|string $sqlOrResource
+     *
+     * @throws Exception\ExceptionInterface
      */
+    #[Override]
     public function createStatement($sqlOrResource = null): StatementInterface&Statement
     {
         /**
@@ -88,28 +91,32 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         $statement = clone $this->statementPrototype;
         if ($sqlOrResource instanceof mysqli_stmt) {
             $statement->setResource($sqlOrResource);
-        } else {
-            if (is_string($sqlOrResource)) {
-                $statement->setSql($sqlOrResource);
-            }
-            if (! $this->connection->isConnected()) {
-                $this->connection->connect();
-            }
-            /** @var mysqli $resource */
-            $resource = $this->connection->getResource();
-            $statement->initialize($resource);
+
+            return $statement;
         }
+
+        if (is_string($sqlOrResource)) {
+            $statement->setSql($sqlOrResource);
+        }
+        if (! $this->connection->isConnected()) {
+            $this->connection->connect();
+        }
+        /** @var mysqli $resource */
+        $resource = $this->connection->getResource();
+        $statement->initialize($resource);
         return $statement;
     }
 
     /**
      * Format parameter name
      */
+    #[Override]
     public function formatParameterName(string $name, ?string $type = null): string
     {
         return '?';
     }
 
+    #[Override]
     public function getConnection(): ConnectionInterface&Connection
     {
         return $this->connection;
@@ -118,6 +125,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Get last generated value
      */
+    #[Override]
     public function getLastGeneratedValue(): int|string|false|null
     {
         return $this->getConnection()->getLastGeneratedValue();
@@ -126,6 +134,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Get prepare type
      */
+    #[Override]
     public function getPrepareType(): string
     {
         return self::PARAMETERIZATION_POSITIONAL;
@@ -149,15 +158,12 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
         return $this->statementPrototype;
     }
 
+    #[Override]
     public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;
-        if ($this->connection instanceof ProfilerAwareInterface) {
-            $this->connection->setProfiler($profiler);
-        }
-        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
-            $this->statementPrototype->setProfiler($profiler);
-        }
+        $this->connection->setProfiler($profiler);
+        $this->statementPrototype->setProfiler($profiler);
         return $this;
     }
 }

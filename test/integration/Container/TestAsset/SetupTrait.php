@@ -35,15 +35,18 @@ trait SetupTrait
 
     protected function getAdapter(array $config = []): AdapterInterface
     {
+        $hostname = (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME');
+        $port     = (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PORT');
+
         $connectionConfig = [
             AdapterInterface::class => [
                 'driver'     => $this->driver ?? Driver::class,
                 'connection' => [
-                    'hostname'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME') ?: 'localhost',
+                    'hostname'       => '' === $hostname ? 'localhost' : $hostname,
                     'username'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
                     'password'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
                     'database'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
-                    'port'           => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PORT') ?: '3306',
+                    'port'           => '' === $port ? '3306' : $port,
                     'charset'        => 'utf8',
                     'driver_options' => [],
                 ],
@@ -65,7 +68,7 @@ trait SetupTrait
         );
 
         // prefer passed config over environment variables
-        if ($config !== []) {
+        if ([] !== $config) {
             $serviceManagerConfig = ArrayUtils::merge($serviceManagerConfig, $config);
         }
 
