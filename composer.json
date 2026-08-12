@@ -38,7 +38,7 @@
     "require-dev": {
         "ext-mysqli": "*",
         "ext-pdo_mysql": "*",
-        "infection/infection": "^0.34.1",
+        "infection/infection": "^0.34.2",
         "php-db/phpdb-qa-tools": "0.1.x-dev",
         "phpunit/phpunit": "^12.5.33"
     },
