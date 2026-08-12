@@ -6,6 +6,7 @@ namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Exception\ContainerException;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Container\PlatformInterfaceFactory;
 use PhpDb\Mysql\Pdo\Driver as PdoDriver;
@@ -39,5 +40,14 @@ final class PlatformInterfaceFactoryTest extends TestCase
 
         static::assertInstanceOf(PlatformInterface::class, $instance);
         static::assertInstanceOf(AdapterPlatform::class, $instance);
+    }
+
+    #[Test]
+    public function invokeThrowsForInvalidDriver(): void
+    {
+        $factory = new PlatformInterfaceFactory();
+
+        $this->expectException(ContainerException::class);
+        $factory($this->container, PlatformInterface::class, ['driver' => 'not-a-driver']);
     }
 }

@@ -17,8 +17,11 @@ use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[CoversMethod(CreateTableDecorator::class, 'setSubject')]
 #[CoversMethod(CreateTableDecorator::class, 'processColumns')]
 #[CoversMethod(CreateTableDecorator::class, 'getSqlInsertOffsets')]
+#[CoversMethod(CreateTableDecorator::class, 'compareColumnOptions')]
+#[CoversMethod(CreateTableDecorator::class, 'normalizeColumnOption')]
 final class CreateTableDecoratorTest extends TestCase
 {
     protected AdapterPlatform $platform;
@@ -96,6 +99,17 @@ final class CreateTableDecoratorTest extends TestCase
     }
 
     #[Test]
+    public function columnFormatOption(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption('columnformat', 'fixed');
+        $table->addColumn($col);
+
+        static::assertStringContainsString('COLUMN_FORMAT FIXED', $this->buildSql($table));
+    }
+
+    #[Test]
     public function commentOption(): void
     {
         $table = new CreateTable('test');
@@ -106,6 +120,17 @@ final class CreateTableDecoratorTest extends TestCase
         $sql = $this->buildSql($table);
 
         static::assertStringContainsString('COMMENT', $sql);
+    }
+
+    #[Test]
+    public function falsyOptionIsSkipped(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Integer('id');
+        $col->setOption('unsigned', false);
+        $table->addColumn($col);
+
+        static::assertStringNotContainsString('UNSIGNED', $this->buildSql($table));
     }
 
     #[Test]
@@ -134,6 +159,17 @@ final class CreateTableDecoratorTest extends TestCase
     }
 
     #[Test]
+    public function storageOption(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption('storage', 'disk');
+        $table->addColumn($col);
+
+        static::assertStringContainsString('STORAGE DISK', $this->buildSql($table));
+    }
+
+    #[Test]
     public function unsignedOption(): void
     {
         $table = new CreateTable('test');
@@ -146,6 +182,17 @@ final class CreateTableDecoratorTest extends TestCase
 
         static::assertStringContainsString('UNSIGNED', $sql);
         static::assertStringContainsString('AUTO_INCREMENT', $sql);
+    }
+
+    #[Test]
+    public function zerofillOption(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Integer('id');
+        $col->setOption('zerofill', true);
+        $table->addColumn($col);
+
+        static::assertStringContainsString('ZEROFILL', $this->buildSql($table));
     }
 
     protected function setUp(): void
