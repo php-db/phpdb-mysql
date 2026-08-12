@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Platform;
 
 use Override;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
-use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
@@ -236,7 +236,7 @@ final class AdapterPlatformTest extends TestCase
     protected function setUp(): void
     {
         $pdo = new Driver(
-            $this->createMock(Connection::class),
+            $this->createMock(AbstractPdoConnection::class),
             $this->createMock(Statement::class),
             $this->createMock(Result::class),
         );

@@ -13,6 +13,14 @@ final class MetadataInterfaceFactory
 {
     public const ADAPTER_SERVICE_NAME = 'adapter_service_name';
 
+    /**
+     * @param array<string, mixed>|null $options
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @mago-expect analysis:unused-parameter
+     */
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,

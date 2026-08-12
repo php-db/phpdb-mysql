@@ -13,6 +13,13 @@ use function is_array;
 
 final class ConnectionInterfaceFactory
 {
+    /**
+     * @param array<string, mixed>|null $options
+     *
+     * @throws \PhpDb\Adapter\Exception\ExceptionInterface
+     *
+     * @mago-expect analysis:unused-parameter
+     */
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,

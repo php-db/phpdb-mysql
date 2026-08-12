@@ -8,11 +8,12 @@ use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Pdo\Connection;
-use PhpDbTest\Mysql\Pdo\TestAsset\ConnectionWrapper;
+use PhpDbTest\Mysql\Pdo\TestAsset\PdoStubDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 
 /**
  * Tests for {@see \PhpDb\Adapter\Mysql\Driver\Pdo\Connection} transaction support
@@ -25,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(Connection::class, 'rollback')]
 final class ConnectionTransactionsTest extends TestCase
 {
-    protected ConnectionWrapper $wrapper;
+    protected Connection $wrapper;
 
     #[Test]
     public function beginTransactionReturnsInstanceOfConnection(): void
@@ -72,22 +73,22 @@ final class ConnectionTransactionsTest extends TestCase
         // 1st transaction
         $this->wrapper->beginTransaction();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(1, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(1, $this->getNestedTransactionsCount($this->wrapper));
 
         // 2nd transaction
         $this->wrapper->beginTransaction();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(2, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(2, $this->getNestedTransactionsCount($this->wrapper));
 
         // 1st commit
         $this->wrapper->commit();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(1, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(1, $this->getNestedTransactionsCount($this->wrapper));
 
         // 2nd commit
         $this->wrapper->commit();
         static::assertFalse($this->wrapper->inTransaction());
-        static::assertSame(0, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(0, $this->getNestedTransactionsCount($this->wrapper));
     }
 
     #[Test]
@@ -98,17 +99,17 @@ final class ConnectionTransactionsTest extends TestCase
         // 1st transaction
         $this->wrapper->beginTransaction();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(1, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(1, $this->getNestedTransactionsCount($this->wrapper));
 
         // 2nd transaction
         $this->wrapper->beginTransaction();
         static::assertTrue($this->wrapper->inTransaction());
-        static::assertSame(2, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(2, $this->getNestedTransactionsCount($this->wrapper));
 
         // Rollback
         $this->wrapper->rollback();
         static::assertFalse($this->wrapper->inTransaction());
-        static::assertSame(0, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(0, $this->getNestedTransactionsCount($this->wrapper));
     }
 
     #[Test]
@@ -151,12 +152,12 @@ final class ConnectionTransactionsTest extends TestCase
     public function standaloneCommit(): void
     {
         static::assertFalse($this->wrapper->inTransaction());
-        static::assertSame(0, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(0, $this->getNestedTransactionsCount($this->wrapper));
 
         $this->wrapper->commit();
 
         static::assertFalse($this->wrapper->inTransaction());
-        static::assertSame(0, $this->wrapper->getNestedTransactionsCount());
+        static::assertSame(0, $this->getNestedTransactionsCount($this->wrapper));
     }
 
     /**
@@ -165,6 +166,17 @@ final class ConnectionTransactionsTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $this->wrapper = new ConnectionWrapper();
+        $this->wrapper = new Connection([]);
+        // bypass setResource(), which calls PDO::getAttribute() and would fail
+        // against the stub's uninitialized internal PDO state
+        (new ReflectionProperty($this->wrapper, 'resource'))->setValue(
+            $this->wrapper,
+            new PdoStubDriver('foo', 'bar', 'baz'),
+        );
+    }
+
+    private function getNestedTransactionsCount(Connection $connection): int
+    {
+        return (new ReflectionProperty($connection, 'nestedTransactionsCount'))->getValue($connection);
     }
 }

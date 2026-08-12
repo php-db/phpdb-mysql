@@ -6,8 +6,10 @@ namespace PhpDb\Mysql\Metadata;
 
 use DateTime;
 use Exception;
+use Override;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Metadata\Source\AbstractSource;
+use PhpDb\ResultSet\ResultSetInterface;
 
 use function array_change_key_case;
 use function array_walk;
@@ -25,6 +27,7 @@ use const PREG_PATTERN_ORDER;
 final class Source extends AbstractSource
 {
     // @mago-expect lint:halstead
+    #[Override]
     protected function loadColumnData(string $table, string $schema): void
     {
         if (null !== ($this->data['columns'][$schema][$table] ?? null)) {
@@ -79,8 +82,10 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
         $columns = [];
+        /** @var array{ORDINAL_POSITION: string, COLUMN_DEFAULT: ?string, IS_NULLABLE: string, DATA_TYPE: string, CHARACTER_MAXIMUM_LENGTH: ?string, CHARACTER_OCTET_LENGTH: ?string, NUMERIC_PRECISION: ?string, NUMERIC_SCALE: ?string, COLUMN_NAME: string, COLUMN_TYPE: string} $row */
         foreach ($results->toArray() as $row) {
             $erratas = [];
             $matches = [];
@@ -114,6 +119,7 @@ final class Source extends AbstractSource
     }
 
     // @mago-expect lint:halstead
+    #[Override]
     protected function loadConstraintData(string $table, string $schema): void
     {
         // phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
@@ -205,10 +211,12 @@ final class Source extends AbstractSource
      'CONSTRAINT_NAME',
  ])}, {$p->quoteIdentifierChain(['KCU', 'ORDINAL_POSITION'])}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $realName    = null;
         $constraints = [];
+        /** @var array{TABLE_NAME: string, CONSTRAINT_NAME: string, CONSTRAINT_TYPE: string, COLUMN_NAME: ?string, MATCH_OPTION: ?string, UPDATE_RULE: ?string, DELETE_RULE: ?string, REFERENCED_TABLE_SCHEMA: ?string, REFERENCED_TABLE_NAME: ?string, REFERENCED_COLUMN_NAME: ?string} $row */
         foreach ($results->toArray() as $row) {
             if ($row['CONSTRAINT_NAME'] !== $realName) {
                 $realName           = $row['CONSTRAINT_NAME'];
@@ -240,6 +248,7 @@ final class Source extends AbstractSource
         // phpcs:enable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
     }
 
+    #[Override]
     protected function loadConstraintDataKeys(string $schema): void
     {
         if (null !== ($this->data['constraint_keys'][$schema] ?? null)) {
@@ -286,9 +295,11 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
+        /** @var array<string, mixed> $row */
         foreach ($results->toArray() as $row) {
             $data[] = array_change_key_case($row, CASE_LOWER);
         }
@@ -341,9 +352,11 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
+        /** @var array<string, mixed> $row */
         foreach ($results->toArray() as $row) {
             $data[] = array_change_key_case($row, CASE_LOWER);
         }
@@ -351,6 +364,7 @@ final class Source extends AbstractSource
         $this->data['constraint_names'][$schema] = $data;
     }
 
+    #[Override]
     protected function loadConstraintReferences(string $table, string $schema): void
     {
         parent::loadConstraintReferences($table, $schema);
@@ -411,9 +425,11 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
+        /** @var array<string, mixed> $row */
         foreach ($results->toArray() as $row) {
             $data[] = array_change_key_case($row, CASE_LOWER);
         }
@@ -424,6 +440,7 @@ final class Source extends AbstractSource
     /**
      * @throws Exception
      */
+    #[Override]
     protected function loadSchemaData(): void
     {
         if (null !== ($this->data['schemas'] ?? null)) {
@@ -439,9 +456,11 @@ final class Source extends AbstractSource
             WHERE {$p->quoteIdentifier('SCHEMA_NAME')} != 'INFORMATION_SCHEMA'
             SQL;
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $schemas = [];
+        /** @var array{SCHEMA_NAME: string} $row */
         foreach ($results->toArray() as $row) {
             $schemas[] = $row['SCHEMA_NAME'];
         }
@@ -449,6 +468,7 @@ final class Source extends AbstractSource
         $this->data['schemas'] = $schemas;
     }
 
+    #[Override]
     protected function loadTableNameData(string $schema): void
     {
         if (null !== ($this->data['table_names'][$schema] ?? null)) {
@@ -495,9 +515,11 @@ final class Source extends AbstractSource
             ? " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} != 'INFORMATION_SCHEMA'"
             : " AND {$p->quoteIdentifierChain(['T', 'TABLE_SCHEMA'])} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $tables = [];
+        /** @var array{TABLE_NAME: string, TABLE_TYPE: string, VIEW_DEFINITION: ?string, CHECK_OPTION: ?string, IS_UPDATABLE: ?string} $row */
         foreach ($results->toArray() as $row) {
             $tables[$row['TABLE_NAME']] = [
                 'table_type'      => $row['TABLE_TYPE'],
@@ -510,6 +532,7 @@ final class Source extends AbstractSource
         $this->data['table_names'][$schema] = $tables;
     }
 
+    #[Override]
     protected function loadTriggerData(string $schema): void
     {
         if (null !== ($this->data['triggers'][$schema] ?? null)) {
@@ -555,10 +578,13 @@ final class Source extends AbstractSource
             ? "{$p->quoteIdentifier('TRIGGER_SCHEMA')} != 'INFORMATION_SCHEMA'"
             : "{$p->quoteIdentifier('TRIGGER_SCHEMA')} = {$p->quoteTrustedValue($schema)}";
 
+        /** @var ResultSetInterface $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];
+        /** @var array{TRIGGER_NAME: string, EVENT_MANIPULATION: string, EVENT_OBJECT_CATALOG: string, EVENT_OBJECT_SCHEMA: string, EVENT_OBJECT_TABLE: string, ACTION_ORDER: string, ACTION_CONDITION: ?string, ACTION_STATEMENT: string, ACTION_ORIENTATION: string, ACTION_TIMING: string, ACTION_REFERENCE_OLD_TABLE: ?string, ACTION_REFERENCE_NEW_TABLE: ?string, ACTION_REFERENCE_OLD_ROW: ?string, ACTION_REFERENCE_NEW_ROW: ?string, CREATED: ?string} $row */
         foreach ($results->toArray() as $row) {
+            /** @var array{trigger_name: string, event_manipulation: string, event_object_catalog: string, event_object_schema: string, event_object_table: string, action_order: string, action_condition: ?string, action_statement: string, action_orientation: string, action_timing: string, action_reference_old_table: ?string, action_reference_new_table: ?string, action_reference_old_row: ?string, action_reference_new_row: ?string, created: ?string} $row */
             $row = array_change_key_case($row, CASE_LOWER);
             if (null !== $row['created']) {
                 $row['created'] = new DateTime($row['created']);

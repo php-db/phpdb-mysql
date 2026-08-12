@@ -8,7 +8,8 @@ use Override;
 use PDO;
 use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\Statement;
-use PhpDb\Mysql\Pdo\Driver as PdoDriver;
+use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -85,10 +86,8 @@ final class StatementIntegrationTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $driver = $this->getMockBuilder(PdoDriver::class)
-            ->onlyMethods(['createResult'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $driver = $this->createMock(PdoDriverInterface::class);
+        $driver->method('createResult')->willReturn($this->createMock(ResultInterface::class));
 
         $this->pdoStatementMock = $this->getMockBuilder(PDOStatement::class)
             ->onlyMethods(['execute', 'bindParam'])

@@ -20,10 +20,19 @@ use function is_string;
 use function strtolower;
 
 // @mago-expect lint:cyclomatic-complexity
-class Connection extends AbstractPdoConnection
+// @mago-expect lint:kan-defect
+final class Connection extends AbstractPdoConnection
 {
+    // @mago-expect analysis:write-only-property - read by the parent's final AbstractPdoConnection::getDsn()
+    protected ?string $dsn = null;
+
+    // @mago-expect analysis:write-only-property - read by AbstractConnection::getDriverName()
+    protected ?string $driverName = null;
+
     /**
      * Constructor
+     *
+     * @param array<string, mixed>|PDO $connectionParameters
      *
      * @throws Exception\InvalidArgumentException
      */
@@ -115,19 +124,12 @@ class Connection extends AbstractPdoConnection
             $dsn = 'mysql:' . implode(';', $dsn);
         }
 
-        if (! is_string($dsn)) {
-            throw new Exception\InvalidConnectionParametersException(
-                'A dsn was not provided or could not be constructed from your parameters',
-                $this->connectionParameters,
-            );
-        }
-
         $this->dsn = $dsn;
 
         try {
             $this->resource = new PDO($dsn, $username, $password, $options);
             $this->resource->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->driverName = strtolower($this->resource->getAttribute(PDO::ATTR_DRIVER_NAME));
+            $this->driverName = strtolower((string) $this->resource->getAttribute(PDO::ATTR_DRIVER_NAME));
         } catch (PDOException $e) {
             $code = $e->getCode();
             if (! is_int($code)) {
@@ -141,6 +143,9 @@ class Connection extends AbstractPdoConnection
 
     /**
      * {@inheritDoc}
+     *
+     * @throws Exception\ExceptionInterface
+     * @throws PDOException
      */
     #[Override]
     public function getCurrentSchema(): string|false
@@ -149,18 +154,29 @@ class Connection extends AbstractPdoConnection
             $this->connect();
         }
 
-        /** @var PDOStatement $result */
-        $result = $this->resource->query('SELECT DATABASE()');
-        if ($result instanceof PDOStatement) {
-            return $result->fetchColumn();
+        if (null === $this->resource) {
+            throw new Exception\RuntimeException(
+                'Cannot query current schema without a connected resource; call connect() first.',
+            );
         }
 
-        return false;
+        $result = $this->resource->query('SELECT DATABASE()');
+        if (! $result instanceof PDOStatement) {
+            return false;
+        }
+
+        /** @var string|false|null $value */
+        $value = $result->fetchColumn();
+        return is_string($value) ? $value : false;
     }
 
     #[Override]
     public function getLastGeneratedValue(?string $name = null): string|int|false|null
     {
+        if (null === $this->resource) {
+            return false;
+        }
+
         try {
             return $this->resource->lastInsertId($name);
         } catch (PDOException) {

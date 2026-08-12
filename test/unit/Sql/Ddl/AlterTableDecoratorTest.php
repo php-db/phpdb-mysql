@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Mysql\Sql\Ddl;
 
+use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
-use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\Mysql\Sql\Ddl\AlterTableDecorator;
 use PhpDb\Sql\Ddl\AlterTable;
@@ -156,7 +156,7 @@ final class AlterTableDecoratorTest extends TestCase
     protected function setUp(): void
     {
         $driver = new Driver(
-            $this->createMock(Connection::class),
+            $this->createMock(AbstractPdoConnection::class),
             $this->createMock(Statement::class),
             $this->createMock(Result::class),
         );

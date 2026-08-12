@@ -6,12 +6,12 @@ namespace PhpDbTest\Mysql\Pdo;
 
 use Override;
 use PDOStatement;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\ParameterContainer;
-use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
@@ -123,7 +123,7 @@ final class StatementTest extends TestCase
     {
         $this->statement = new Statement();
         $this->pdo       = new Driver(
-            $this->createMock(Connection::class),
+            $this->createMock(AbstractPdoConnection::class),
             $this->statement,
             new Result(),
         );

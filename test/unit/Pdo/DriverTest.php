@@ -7,10 +7,10 @@ namespace PhpDbTest\Mysql\Pdo;
 use Override;
 use PDOStatement;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Exception\RuntimeException;
-use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\Mysql\Pdo\Driver;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -60,7 +60,7 @@ final class DriverTest extends TestCase
             ->method('rowCount')
             ->willReturn(4);
 
-        $connection = $this->createMock(Connection::class);
+        $connection = $this->createMock(AbstractPdoConnection::class);
         $statement  = $this->createMock(Statement::class);
         $driver     = new Driver($connection, $statement, new Result());
 
@@ -101,7 +101,7 @@ final class DriverTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $connection = $this->createMock(Connection::class);
+        $connection = $this->createMock(AbstractPdoConnection::class);
         $statement  = $this->createMock(Statement::class);
         $result     = $this->createMock(Result::class);
         $this->pdo  = new Driver(

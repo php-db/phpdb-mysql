@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace PhpDb\Mysql\Container;
 
 use Laminas\ServiceManager\ServiceManager;
-use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
-use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Exception\ContainerException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
@@ -20,6 +18,16 @@ use function array_key_exists;
 
 final class DriverInterfaceFactory
 {
+    /**
+     * @param array<string, mixed>|null $options
+     *
+     * @throws \Laminas\ServiceManager\Exception\ExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
+     *
+     * @mago-expect analysis:unused-parameter
+     */
     public function __invoke(
         ContainerInterface&ServiceManager $container,
         string $requestedName,
@@ -33,10 +41,8 @@ final class DriverInterfaceFactory
             );
         }
 
-        /** @var ConnectionInterface&Connection $connectionInstance */
         $connectionInstance = $container->build(Connection::class, $options);
 
-        /** @var StatementInterface&Statement $statementInstance */
         $statementInstance = $container->build(
             Statement::class,
             $options['options'] ?? [],

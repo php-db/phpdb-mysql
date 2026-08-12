@@ -20,6 +20,7 @@ use PhpDb\Adapter\StatementContainerInterface;
 use function array_unshift;
 use function call_user_func_array;
 use function is_array;
+use function sprintf;
 
 final class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
 {
@@ -43,7 +44,9 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
     /**
      * Execute
      *
-     * @throws Exception\RuntimeException
+     * @param array<array-key, mixed>|ParameterContainer|null $parameters
+     *
+     * @throws Exception\ExceptionInterface
      */
     #[Override]
     public function execute(ParameterContainer|array|null $parameters = null): ?ResultInterface
@@ -72,12 +75,12 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
         $this->profiler?->profilerFinish();
 
-        if (false === $return) {
+        if (! $return) {
             throw new Exception\RuntimeException($this->resource->error);
         }
 
         $buffered = false;
-        if (true === $this->bufferResults) {
+        if ($this->bufferResults) {
             $this->resource->store_result();
             $this->isPrepared = false;
             $buffered         = true;
@@ -99,7 +102,13 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
     /**
      * @phpstan-ignore method.childReturnType
+     *
+     * @return mysqli_stmt
      */
+    // @mago-expect analysis:incompatible-return-type - StatementInterface::getResource() declares no
+    // native return type, only a legacy `resource|false|null` docblock; this class's $resource is
+    // always a genuine mysqli_stmt, so the narrower native return type here is a valid PHP covariant
+    // override, not a real incompatibility.
     #[Override]
     public function getResource(): mysqli_stmt
     {
@@ -124,6 +133,9 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         return $this->isPrepared;
     }
 
+    /**
+     * @throws Exception\ExceptionInterface
+     */
     #[Override]
     public function prepare(?string $sql = null): StatementInterface
     {
@@ -133,8 +145,8 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
         $sql = null === $sql || '' === $sql ? $this->sql : $sql;
 
-        $this->resource = $this->mysqli->prepare($sql);
-        if (! $this->resource instanceof mysqli_stmt) {
+        $resource = $this->mysqli->prepare($sql);
+        if (! $resource instanceof mysqli_stmt) {
             throw new Exception\InvalidQueryException(
                 "Statement couldn't be produced with sql: {$sql}",
                 $this->mysqli->errno,
@@ -142,6 +154,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
             );
         }
 
+        $this->resource   = $resource;
         $this->isPrepared = true;
         return $this;
     }
@@ -149,6 +162,10 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
     #[Override]
     public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
+        if (! $driver instanceof Driver) {
+            throw new Exception\InvalidArgumentException(sprintf('Driver must be an instance of %s', Driver::class));
+        }
+
         $this->driver = $driver;
         return $this;
     }
@@ -178,7 +195,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
     #[Override]
     public function setSql(?string $sql): StatementContainerInterface
     {
-        $this->sql = $sql;
+        $this->sql = $sql ?? '';
         return $this;
     }
 
