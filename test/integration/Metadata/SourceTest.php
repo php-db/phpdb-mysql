@@ -44,6 +44,16 @@ final class SourceTest extends TestCase
     }
 
     #[Test]
+    public function getColumnParsesEnumErratas(): void
+    {
+        $column = $this->source->getColumn('status', 'test_enum');
+
+        static::assertInstanceOf(ColumnObject::class, $column);
+        static::assertSame('enum', $column->getDataType());
+        static::assertSame(['active', 'inactive'], $column->getErrata('permitted_values'));
+    }
+
+    #[Test]
     public function getColumnReturnsTypedColumn(): void
     {
         $column = $this->source->getColumn('id', 'test');
@@ -55,12 +65,43 @@ final class SourceTest extends TestCase
     }
 
     #[Test]
+    public function getConstraintKeysReturnsForeignKeyColumn(): void
+    {
+        $keys = $this->source->getConstraintKeys('fk_test_audit_trail_test', 'test_audit_trail');
+
+        static::assertCount(1, $keys);
+        static::assertSame('test_id', $keys[0]->getColumnName());
+        static::assertSame('test', $keys[0]->getReferencedTableName());
+        static::assertSame('id', $keys[0]->getReferencedColumnName());
+    }
+
+    #[Test]
     public function getConstraintKeysReturnsPrimaryKeyColumn(): void
     {
         $keys = $this->source->getConstraintKeys('PRIMARY', 'test');
 
         static::assertCount(1, $keys);
         static::assertSame('id', $keys[0]->getColumnName());
+    }
+
+    #[Test]
+    public function getConstraintReturnsForeignKey(): void
+    {
+        $constraints = $this->source->getConstraints('test_audit_trail');
+
+        $foreignKey = null;
+        foreach ($constraints as $constraint) {
+            if ('FOREIGN KEY' !== $constraint->getType()) {
+                continue;
+            }
+
+            $foreignKey = $constraint;
+        }
+
+        static::assertNotNull($foreignKey);
+        static::assertSame('fk_test_audit_trail_test', $foreignKey->getName());
+        static::assertSame('test', $foreignKey->getReferencedTableName());
+        static::assertSame(['id'], $foreignKey->getReferencedColumns());
     }
 
     #[Test]

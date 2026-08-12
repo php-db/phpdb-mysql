@@ -7,6 +7,7 @@ namespace PhpDbIntegrationTest\Mysql\Mysqli;
 use mysqli;
 use mysqli_result;
 use mysqli_stmt;
+use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Mysql\Connection;
@@ -83,6 +84,21 @@ final class StatementResultTest extends TestCase
     }
 
     #[Test]
+    public function bufferUnbufferedResult(): void
+    {
+        $result = $this->createDriver(false)
+            ->createStatement('SELECT * FROM test WHERE id = ?')
+            ->execute($this->createParameterContainer([1]));
+
+        static::assertNotNull($result);
+        static::assertFalse($result->isBuffered());
+
+        $result->buffer();
+
+        static::assertTrue($result->isBuffered());
+    }
+
+    #[Test]
     public function connectionExecuteUsesMysqliResult(): void
     {
         $mysqli     = $this->createMysqli();
@@ -106,6 +122,15 @@ final class StatementResultTest extends TestCase
     }
 
     #[Test]
+    public function countOnNonQueryResultThrows(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot count rows in a result that is not a query result');
+
+        $this->executeNonQuery()->count();
+    }
+
+    #[Test]
     public function createStatementFromMysqliStmtResource(): void
     {
         $mysqli = $this->createMysqli();
@@ -118,6 +143,15 @@ final class StatementResultTest extends TestCase
 
         static::assertSame($resource, $statement->getResource());
         static::assertTrue($statement->isPrepared());
+    }
+
+    #[Test]
+    public function currentOnNonQueryResultThrows(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot fetch from a result that is not a mysqli_result');
+
+        $this->executeNonQuery()->current();
     }
 
     #[Test]
@@ -146,6 +180,30 @@ final class StatementResultTest extends TestCase
         $this->createDriver(false)
             ->createStatement('DELETE FROM test WHERE name = ?')
             ->execute($this->createParameterContainer(['new']));
+    }
+
+    #[Test]
+    public function rewindOnNonQueryResultThrows(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot rewind a result that is not a query result');
+
+        $this->executeNonQuery()->rewind();
+    }
+
+    #[Test]
+    public function rewindUnbufferedAfterIterationThrows(): void
+    {
+        $result = $this->createDriver(false)
+            ->createStatement('SELECT * FROM test WHERE id = ?')
+            ->execute($this->createParameterContainer([1]));
+
+        static::assertNotNull($result);
+        $result->current();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unbuffered results cannot be rewound for multiple iterations');
+        $result->rewind();
     }
 
     #[Test]
@@ -204,6 +262,19 @@ final class StatementResultTest extends TestCase
             ->execute($this->createParameterContainer(['bar', 1]));
     }
 
+    #[Test]
+    public function validReturnsTrueAfterCurrent(): void
+    {
+        $result = $this->createDriver(false)
+            ->createStatement('SELECT * FROM test WHERE id = ?')
+            ->execute($this->createParameterContainer([1]));
+
+        static::assertNotNull($result);
+        $result->current();
+
+        static::assertTrue($result->valid());
+    }
+
     private function createDriver(bool $bufferResults = false): Driver
     {
         return new Driver(
@@ -247,5 +318,17 @@ final class StatementResultTest extends TestCase
         }
 
         return $container;
+    }
+
+    private function executeNonQuery(): ResultInterface
+    {
+        $mysqli     = $this->createMysqli();
+        $connection = new Connection($mysqli);
+        new Driver($connection, new Statement(), new Result());
+
+        $result = $connection->execute('UPDATE test SET name = name WHERE id = 1');
+        static::assertNotNull($result);
+
+        return $result;
     }
 }

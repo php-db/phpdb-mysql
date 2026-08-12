@@ -45,6 +45,29 @@ final class ConnectionTest extends TestCase
     }
 
     #[Test]
+    public function beginTransactionAutoConnects(): void
+    {
+        $connection = new Connection($this->connectionParameters());
+        new Driver($connection, new Statement(), new Result());
+
+        $connection->beginTransaction();
+
+        static::assertTrue($connection->isConnected());
+        $connection->rollback();
+    }
+
+    #[Test]
+    public function commitAutoConnects(): void
+    {
+        $connection = new Connection($this->connectionParameters());
+        new Driver($connection, new Statement(), new Result());
+
+        $connection->commit();
+
+        static::assertTrue($connection->isConnected());
+    }
+
+    #[Test]
     public function connectAndDisconnect(): void
     {
         $connection = new Connection($this->connectionParameters());
@@ -63,6 +86,16 @@ final class ConnectionTest extends TestCase
     {
         $connection = new Connection($this->createMysqli());
 
+        static::assertTrue($connection->isConnected());
+    }
+
+    #[Test]
+    public function executeAutoConnects(): void
+    {
+        $connection = new Connection($this->connectionParameters());
+        new Driver($connection, new Statement(), new Result());
+
+        static::assertNotNull($connection->execute('SELECT 1'));
         static::assertTrue($connection->isConnected());
     }
 
@@ -101,6 +134,19 @@ final class ConnectionTest extends TestCase
             (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
             $connection->getCurrentSchema(),
         );
+    }
+
+    #[Test]
+    public function getCurrentSchemaAutoConnects(): void
+    {
+        $connection = new Connection($this->connectionParameters());
+        new Driver($connection, new Statement(), new Result());
+
+        static::assertSame(
+            (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
+            $connection->getCurrentSchema(),
+        );
+        static::assertTrue($connection->isConnected());
     }
 
     #[Test]
