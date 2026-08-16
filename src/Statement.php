@@ -233,4 +233,15 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
             call_user_func_array([$this->resource, 'bind_param'], $args);
         }
     }
+
+    public function __clone()
+    {
+        $this->isPrepared         = false;
+        $this->parameterContainer = clone $this->parameterContainer;
+
+        /**
+         * TODO: @tyrsson @simon-mundy
+         * Track down when this was dropped and why.
+         */
+    }
 }
