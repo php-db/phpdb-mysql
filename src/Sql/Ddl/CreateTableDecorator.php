@@ -8,7 +8,6 @@ use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\Column\ColumnInterface;
 use PhpDb\Sql\Ddl\CreateTable;
-use PhpDb\Sql\Exception;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\PreparableSqlInterface;
 use PhpDb\Sql\SqlInterface;
@@ -32,8 +31,6 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
 
     /**
      * {@inheritDoc}
-     *
-     * @throws Exception\RuntimeException
      */
     #[Override]
     protected function processColumns(?PlatformInterface $adapterPlatform = null): ?array
@@ -42,13 +39,8 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
             return null;
         }
 
-        // AbstractSql substitutes a default platform before calling, so the guard only narrows
-        // the inherited nullable signature for static analysis.
-        // @codeCoverageIgnoreStart
-        if (null === $adapterPlatform) {
-            throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
-        }
-        // @codeCoverageIgnoreEnd
+        /** @var PlatformInterface $platform */
+        $platform = $adapterPlatform;
 
         $sqls = [];
 
@@ -60,9 +52,9 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
             $options = $column->getOptions();
 
             $sqls[$i] = $this->processColumnOptions(
-                $this->processExpression($column, $adapterPlatform),
+                $this->processExpression($column, $platform),
                 $options,
-                $adapterPlatform,
+                $platform,
             );
         }
 

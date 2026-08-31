@@ -8,7 +8,6 @@ use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Ddl\Column\ColumnInterface;
-use PhpDb\Sql\Exception;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\PreparableSqlInterface;
 use PhpDb\Sql\SqlInterface;
@@ -32,19 +31,12 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
 
     /**
      * @return array<int, array<int|string, string>>
-     *
-     * @throws Exception\RuntimeException
      */
     #[Override]
     protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
     {
-        // AbstractSql substitutes a default platform before calling, so the guard only narrows
-        // the inherited nullable signature for static analysis.
-        // @codeCoverageIgnoreStart
-        if (null === $adapterPlatform) {
-            throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
-        }
-        // @codeCoverageIgnoreEnd
+        /** @var PlatformInterface $platform */
+        $platform = $adapterPlatform;
 
         $sqls = [];
 
@@ -56,9 +48,9 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
             $options = $column->getOptions();
 
             $sqls[$i] = $this->processColumnOptions(
-                $this->processExpression($column, $adapterPlatform),
+                $this->processExpression($column, $platform),
                 $options,
-                $adapterPlatform,
+                $platform,
                 $this->resolveAfterOption(...),
             );
         }
@@ -68,19 +60,12 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
 
     /**
      * @return array{0: list<array{string, string}>}
-     *
-     * @throws Exception\RuntimeException
      */
     #[Override]
     protected function processChangeColumns(?PlatformInterface $adapterPlatform = null): array
     {
-        // AbstractSql substitutes a default platform before calling, so the guard only narrows
-        // the inherited nullable signature for static analysis.
-        // @codeCoverageIgnoreStart
-        if (null === $adapterPlatform) {
-            throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
-        }
-        // @codeCoverageIgnoreEnd
+        /** @var PlatformInterface $platform */
+        $platform = $adapterPlatform;
 
         $sqls = [];
 
@@ -92,11 +77,11 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
             $options = $column->getOptions();
 
             $sqls[] = [
-                $adapterPlatform->quoteIdentifier($name),
+                $platform->quoteIdentifier($name),
                 $this->processColumnOptions(
-                    $this->processExpression($column, $adapterPlatform),
+                    $this->processExpression($column, $platform),
                     $options,
-                    $adapterPlatform,
+                    $platform,
                 ),
             ];
         }

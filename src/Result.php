@@ -307,7 +307,7 @@ final class Result implements Iterator, ResultInterface
      */
     protected function loadDataFromMysqliStatement(): bool
     {
-        /** @var mysqli_stmt $statement Guaranteed by the instanceof dispatch in current() and valid(). */
+        /** @var mysqli_stmt $statement */
         $statement = $this->resource;
 
         // build the default reference based bind structure, if it does not already exist

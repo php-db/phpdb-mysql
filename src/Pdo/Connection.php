@@ -22,7 +22,6 @@ use function sprintf;
 use function strtolower;
 
 // @mago-expect lint:cyclomatic-complexity
-// @mago-expect lint:kan-defect
 final class Connection extends AbstractPdoConnection
 {
     // @mago-expect analysis:write-only-property - read by the parent's final AbstractPdoConnection::getDsn()
@@ -134,13 +133,7 @@ final class Connection extends AbstractPdoConnection
             $this->driverName = strtolower((string) $this->resource->getAttribute(PDO::ATTR_DRIVER_NAME));
         } catch (PDOException $e) {
             $code = $e->getCode();
-            // pdo_mysql connect failures carry int codes; the string SQLSTATE form only occurs
-            // on other PDO drivers.
-            // @codeCoverageIgnoreStart
-            if (! is_int($code)) {
-                $code = 0;
-            }
-            // @codeCoverageIgnoreEnd
+            $code = is_int($code) ? $code : 0;
             throw new Exception\RuntimeException("Connect Error: {$e->getMessage()}", $code, $e);
         }
 
@@ -160,17 +153,10 @@ final class Connection extends AbstractPdoConnection
             $this->connect();
         }
 
-        // connect() either assigns the resource or throws, so this guard exists to narrow the
-        // nullable property for static analysis.
-        // @codeCoverageIgnoreStart
-        if (null === $this->resource) {
-            throw new Exception\RuntimeException(
-                'Cannot query current schema without a connected resource; call connect() first.',
-            );
-        }
-        // @codeCoverageIgnoreEnd
+        /** @var PDO $resource */
+        $resource = $this->resource;
 
-        $result = $this->resource->query('SELECT DATABASE()');
+        $result = $resource->query('SELECT DATABASE()');
         if (! $result instanceof PDOStatement) {
             return false;
         }

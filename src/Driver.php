@@ -50,8 +50,6 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     #[Override]
     public function checkEnvironment(): bool
     {
-        // The test suite itself requires ext-mysqli, so the missing-extension branch can never
-        // execute under coverage.
         // @codeCoverageIgnoreStart
         if (! extension_loaded('mysqli')) {
             throw new Exception\RuntimeException(

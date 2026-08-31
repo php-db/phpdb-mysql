@@ -113,7 +113,7 @@ trait ColumnOptionTrait
 
         uksort($options, $this->compareColumnOptions(...));
 
-        // @mago-expect analysis:mixed-assignment - option values are heterogeneous by design
+        // @mago-expect analysis:mixed-assignment
         foreach ($options as $name => $value) {
             if (! $value) {
                 continue;
