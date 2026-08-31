@@ -35,6 +35,8 @@ use function uksort;
  *
  * @internal
  */
+// @mago-expect lint:cyclomatic-complexity
+// @mago-expect lint:kan-defect
 trait ColumnOptionTrait
 {
     private const string NAME_PATTERN = '/^[A-Za-z0-9_]+$/';
@@ -83,7 +85,10 @@ trait ColumnOptionTrait
             }
         }
 
-        foreach (range(0, 3) as $i) {
+        foreach (range(
+            start: 0,
+            end: 3,
+        ) as $i) {
             $insertStart[$i] ??= $sqlLength;
         }
 
@@ -95,39 +100,46 @@ trait ColumnOptionTrait
      * Appends each option to $sql at the offset its keyword belongs to.
      *
      * @param array<string, mixed> $options
-     * @param (callable(string, mixed, ?PlatformInterface): ?array{string, int})|null $resolveExtra
+     * @param (callable(string, mixed, PlatformInterface): ?array{string, int<0, 3>})|null $resolveExtra
      *        Resolver for options only valid in the calling statement, tried before the common ones.
      */
     protected function processColumnOptions(
         string $sql,
         array $options,
-        ?PlatformInterface $platform = null,
+        PlatformInterface $platform,
         ?callable $resolveExtra = null,
     ): string {
         $insertStart = $this->getSqlInsertOffsets($sql);
 
         uksort($options, $this->compareColumnOptions(...));
 
+        // @mago-expect analysis:mixed-assignment - option values are heterogeneous by design
         foreach ($options as $name => $value) {
             if (! $value) {
                 continue;
             }
 
             $option   = $this->normalizeColumnOption($name);
-            $resolved = $resolveExtra !== null ? $resolveExtra($option, $value, $platform) : null;
+            $resolved = null === $resolveExtra ? null : $resolveExtra($option, $value, $platform);
             $resolved ??= $this->resolveColumnOption($option, $value, $platform);
 
-            if ($resolved === null) {
+            if (null === $resolved) {
                 continue;
             }
 
             [$insert, $j] = $resolved;
+            $length = strlen($insert);
 
-            $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
-            $insertStartCount = count($insertStart);
+            foreach ($insertStart as $slot => $offset) {
+                if ($slot < $j) {
+                    continue;
+                }
 
-            for (; $j < $insertStartCount; ++$j) {
-                $insertStart[$j] += strlen($insert);
+                if ($slot === $j) {
+                    $sql = substr_replace($sql, $insert, $offset, length: 0);
+                }
+
+                $insertStart[$slot] = $offset + $length;
             }
         }
 
@@ -165,22 +177,22 @@ trait ColumnOptionTrait
 
     private function normalizeColumnOption(string $name): string
     {
-        return strtolower(str_replace(['-', '_', ' '], '', $name));
+        return strtolower(str_replace(['-', '_', ' '], replace: '', subject: $name));
     }
 
     /**
-     * @return array{string, int}|null The SQL to insert and the offset index it belongs at.
+     * @return array{string, int<0, 3>}|null The SQL to insert and the offset index it belongs at.
      * @throws InvalidArgumentException If the option value would not be safe to emit unquoted.
      */
-    private function resolveColumnOption(string $option, mixed $value, ?PlatformInterface $platform): ?array
+    private function resolveColumnOption(string $option, mixed $value, PlatformInterface $platform): ?array
     {
         return match ($option) {
             'unsigned'                            => [' UNSIGNED', 0],
             'zerofill'                            => [' ZEROFILL', 0],
-            'charset' => [' CHARACTER SET ' . $this->getColumnOptionName('charset', $value), 0],
-            'collate'                             => [' COLLATE ' . $this->getColumnOptionName('collate', $value), 0],
+            'charset' => [" CHARACTER SET {$this->getColumnOptionName('charset', $value)}", 0],
+            'collate'                             => [" COLLATE {$this->getColumnOptionName('collate', $value)}", 0],
             'identity', 'serial', 'autoincrement' => [' AUTO_INCREMENT', 1],
-            'comment'                             => [' COMMENT ' . $platform->quoteValue($value), 2],
+            'comment'                             => [" COMMENT {$platform->quoteValue((string) $value)}", 2],
             'columnformat', 'format' => [' COLUMN_FORMAT ' . ColumnFormatEnum::getOptionValue($value)->value, 2],
             'storage'                             => [' STORAGE ' . StorageEnum::getOptionValue($value)->value, 2],
             default                               => null,

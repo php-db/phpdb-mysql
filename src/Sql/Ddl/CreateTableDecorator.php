@@ -6,6 +6,7 @@ namespace PhpDb\Mysql\Sql\Ddl;
 
 use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Sql\Ddl\Column\ColumnInterface;
 use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Exception;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
@@ -47,10 +48,16 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
 
         $sqls = [];
 
-        foreach ($this->columns as $i => $column) {
+        /** @var array<array-key, ColumnInterface> $columns */
+        $columns = $this->columns;
+
+        foreach ($columns as $i => $column) {
+            /** @var array<string, mixed> $options */
+            $options = $column->getOptions();
+
             $sqls[$i] = $this->processColumnOptions(
                 $this->processExpression($column, $adapterPlatform),
-                $column->getOptions(),
+                $options,
                 $adapterPlatform,
             );
         }

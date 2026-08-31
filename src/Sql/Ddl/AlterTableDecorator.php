@@ -7,6 +7,7 @@ namespace PhpDb\Mysql\Sql\Ddl;
 use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\AlterTable;
+use PhpDb\Sql\Ddl\Column\ColumnInterface;
 use PhpDb\Sql\Exception;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\PreparableSqlInterface;
@@ -43,10 +44,16 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
 
         $sqls = [];
 
-        foreach ($this->addColumns as $i => $column) {
+        /** @var array<array-key, ColumnInterface> $addColumns */
+        $addColumns = $this->addColumns;
+
+        foreach ($addColumns as $i => $column) {
+            /** @var array<string, mixed> $options */
+            $options = $column->getOptions();
+
             $sqls[$i] = $this->processColumnOptions(
                 $this->processExpression($column, $adapterPlatform),
-                $column->getOptions(),
+                $options,
                 $adapterPlatform,
                 $this->resolveAfterOption(...),
             );
@@ -56,7 +63,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
     }
 
     /**
-     * @return array<int, array<int|string, string>>
+     * @return array{0: list<array{string, string}>}
      *
      * @throws Exception\RuntimeException
      */
@@ -69,12 +76,18 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
 
         $sqls = [];
 
-        foreach ($this->changeColumns as $name => $column) {
+        /** @var array<string, ColumnInterface> $changeColumns */
+        $changeColumns = $this->changeColumns;
+
+        foreach ($changeColumns as $name => $column) {
+            /** @var array<string, mixed> $options */
+            $options = $column->getOptions();
+
             $sqls[] = [
                 $adapterPlatform->quoteIdentifier($name),
                 $this->processColumnOptions(
                     $this->processExpression($column, $adapterPlatform),
-                    $column->getOptions(),
+                    $options,
                     $adapterPlatform,
                 ),
             ];
@@ -84,14 +97,14 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
     }
 
     /**
-     * @return array{string, int}|null
+     * @return array{string, int<0, 3>}|null
      */
-    private function resolveAfterOption(string $option, mixed $value, ?PlatformInterface $platform): ?array
+    private function resolveAfterOption(string $option, mixed $value, PlatformInterface $platform): ?array
     {
         if ('after' !== $option) {
             return null;
         }
 
-        return [" AFTER {$platform->quoteIdentifier($value)}", 2];
+        return [" AFTER {$platform->quoteIdentifier((string) $value)}", 2];
     }
 }
