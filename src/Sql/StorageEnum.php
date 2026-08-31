@@ -34,10 +34,12 @@ enum StorageEnum: string
     {
         $keyword = is_string($value) ? strtoupper(trim($value)) : '';
 
-        return self::tryFrom($keyword) ?? throw new InvalidArgumentException(sprintf(
-            'Invalid value for the "storage" column option; expected one of %s, received "%s"',
-            implode(', ', array_map(static fn (self $case): string => $case->value, self::cases())),
-            is_string($value) ? $value : get_debug_type($value)
-        ));
+        return (
+            self::tryFrom($keyword) ?? throw new InvalidArgumentException(sprintf(
+                'Invalid value for the "storage" column option; expected one of %s, received "%s"',
+                implode(', ', array_map(static fn(self $case): string => $case->value, self::cases())),
+                is_string($value) ? $value : get_debug_type($value),
+            ))
+        );
     }
 }

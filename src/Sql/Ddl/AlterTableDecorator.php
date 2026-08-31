@@ -88,8 +88,10 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
      */
     private function resolveAfterOption(string $option, mixed $value, ?PlatformInterface $platform): ?array
     {
-        return $option === 'after'
-            ? [' AFTER ' . $platform->quoteIdentifier($value), 2]
-            : null;
+        return (
+            $option === 'after'
+                ? [' AFTER ' . $platform->quoteIdentifier($value), 2]
+                : null
+        );
     }
 }

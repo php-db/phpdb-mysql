@@ -22,6 +22,18 @@ final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
 
+    /** @return array<string, array{string, string, string}> */
+    public static function unsafeDsnParameterProvider(): array
+    {
+        return [
+            'dbname appends parameter'      => ['dbname', 'foo;host=attacker.example.com', 'dbname'],
+            'host appends parameter'        => ['host', '127.0.0.1;dbname=other', 'host'],
+            'charset appends parameter'     => ['charset', 'utf8;dbname=other', 'charset'],
+            'unix_socket appends parameter' => ['unix_socket', '/tmp/mysql.sock;dbname=other', 'unix_socket'],
+            'newline in host'               => ['host', "127.0.0.1\nhost=attacker.example.com", 'host'],
+        ];
+    }
+
     #[Test]
     #[Group('2622')]
     public function arrayOfConnectionParametersCreatesCorrectDsn(): void
@@ -102,18 +114,6 @@ final class ConnectionTest extends TestCase
             $parameter => $value,
         ]);
         $connection->connect();
-    }
-
-    /** @return array<string, array{string, string, string}> */
-    public static function unsafeDsnParameterProvider(): array
-    {
-        return [
-            'dbname appends parameter'      => ['dbname', 'foo;host=attacker.example.com', 'dbname'],
-            'host appends parameter'        => ['host', '127.0.0.1;dbname=other', 'host'],
-            'charset appends parameter'     => ['charset', 'utf8;dbname=other', 'charset'],
-            'unix_socket appends parameter' => ['unix_socket', '/tmp/mysql.sock;dbname=other', 'unix_socket'],
-            'newline in host'               => ['host', "127.0.0.1\nhost=attacker.example.com", 'host'],
-        ];
     }
 
     /**

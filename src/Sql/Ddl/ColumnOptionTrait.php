@@ -56,86 +56,6 @@ trait ColumnOptionTrait
     ];
 
     /**
-     * Appends each option to $sql at the offset its keyword belongs to.
-     *
-     * @param array<string, mixed> $options
-     * @param (callable(string, mixed, ?PlatformInterface): ?array{string, int})|null $resolveExtra
-     *        Resolver for options only valid in the calling statement, tried before the common ones.
-     */
-    protected function processColumnOptions(
-        string $sql,
-        array $options,
-        ?PlatformInterface $platform = null,
-        ?callable $resolveExtra = null
-    ): string {
-        $insertStart = $this->getSqlInsertOffsets($sql);
-
-        uksort($options, $this->compareColumnOptions(...));
-
-        foreach ($options as $name => $value) {
-            if (! $value) {
-                continue;
-            }
-
-            $option   = $this->normalizeColumnOption($name);
-            $resolved = $resolveExtra !== null ? $resolveExtra($option, $value, $platform) : null;
-            $resolved ??= $this->resolveColumnOption($option, $value, $platform);
-
-            if ($resolved === null) {
-                continue;
-            }
-
-            [$insert, $j] = $resolved;
-
-            $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
-            $insertStartCount = count($insertStart);
-
-            for (; $j < $insertStartCount; ++$j) {
-                $insertStart[$j] += strlen($insert);
-            }
-        }
-
-        return $sql;
-    }
-
-    /**
-     * @return array{string, int}|null The SQL to insert and the offset index it belongs at.
-     * @throws InvalidArgumentException If the option value would not be safe to emit unquoted.
-     */
-    private function resolveColumnOption(string $option, mixed $value, ?PlatformInterface $platform): ?array
-    {
-        return match ($option) {
-            'unsigned' => [' UNSIGNED', 0],
-            'zerofill' => [' ZEROFILL', 0],
-            'charset' => [' CHARACTER SET ' . $this->getColumnOptionName('charset', $value), 0],
-            'collate' => [' COLLATE ' . $this->getColumnOptionName('collate', $value), 0],
-            'identity', 'serial', 'autoincrement' => [' AUTO_INCREMENT', 1],
-            'comment' => [' COMMENT ' . $platform->quoteValue($value), 2],
-            'columnformat', 'format' => [' COLUMN_FORMAT ' . ColumnFormatEnum::getOptionValue($value)->value, 2],
-            'storage' => [' STORAGE ' . StorageEnum::getOptionValue($value)->value, 2],
-            default => null,
-        };
-    }
-
-    /**
-     * @return string The validated name, unchanged.
-     * @throws InvalidArgumentException If the value is not a bare character set or collation name.
-     */
-    private function getColumnOptionName(string $option, mixed $value): string
-    {
-        if (! is_string($value) || preg_match(self::NAME_PATTERN, $value) !== 1) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid value for the "%s" column option; expected an unquoted name matching %s, received "%s"',
-                $option,
-                self::NAME_PATTERN,
-                is_string($value) ? $value : get_debug_type($value)
-            ));
-        }
-
-        return $value;
-    }
-
-    /**
      * Offsets keyed by how late in the definition an option may be inserted.
      *
      * @return array{0: int, 1: int, 2: int, 3: int}
@@ -171,9 +91,47 @@ trait ColumnOptionTrait
         return $insertStart;
     }
 
-    private function normalizeColumnOption(string $name): string
-    {
-        return strtolower(str_replace(['-', '_', ' '], '', $name));
+    /**
+     * Appends each option to $sql at the offset its keyword belongs to.
+     *
+     * @param array<string, mixed> $options
+     * @param (callable(string, mixed, ?PlatformInterface): ?array{string, int})|null $resolveExtra
+     *        Resolver for options only valid in the calling statement, tried before the common ones.
+     */
+    protected function processColumnOptions(
+        string $sql,
+        array $options,
+        ?PlatformInterface $platform = null,
+        ?callable $resolveExtra = null,
+    ): string {
+        $insertStart = $this->getSqlInsertOffsets($sql);
+
+        uksort($options, $this->compareColumnOptions(...));
+
+        foreach ($options as $name => $value) {
+            if (! $value) {
+                continue;
+            }
+
+            $option   = $this->normalizeColumnOption($name);
+            $resolved = $resolveExtra !== null ? $resolveExtra($option, $value, $platform) : null;
+            $resolved ??= $this->resolveColumnOption($option, $value, $platform);
+
+            if ($resolved === null) {
+                continue;
+            }
+
+            [$insert, $j] = $resolved;
+
+            $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
+            $insertStartCount = count($insertStart);
+
+            for (; $j < $insertStartCount; ++$j) {
+                $insertStart[$j] += strlen($insert);
+            }
+        }
+
+        return $sql;
     }
 
     private function compareColumnOptions(string $columnA, string $columnB): int
@@ -185,5 +143,47 @@ trait ColumnOptionTrait
         $columnB = $this->columnOptionSortOrder[$columnB] ?? count($this->columnOptionSortOrder);
 
         return $columnA - $columnB;
+    }
+
+    /**
+     * @return string The validated name, unchanged.
+     * @throws InvalidArgumentException If the value is not a bare character set or collation name.
+     */
+    private function getColumnOptionName(string $option, mixed $value): string
+    {
+        if (! is_string($value) || preg_match(self::NAME_PATTERN, $value) !== 1) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid value for the "%s" column option; expected an unquoted name matching %s, received "%s"',
+                $option,
+                self::NAME_PATTERN,
+                is_string($value) ? $value : get_debug_type($value),
+            ));
+        }
+
+        return $value;
+    }
+
+    private function normalizeColumnOption(string $name): string
+    {
+        return strtolower(str_replace(['-', '_', ' '], '', $name));
+    }
+
+    /**
+     * @return array{string, int}|null The SQL to insert and the offset index it belongs at.
+     * @throws InvalidArgumentException If the option value would not be safe to emit unquoted.
+     */
+    private function resolveColumnOption(string $option, mixed $value, ?PlatformInterface $platform): ?array
+    {
+        return match ($option) {
+            'unsigned'                            => [' UNSIGNED', 0],
+            'zerofill'                            => [' ZEROFILL', 0],
+            'charset' => [' CHARACTER SET ' . $this->getColumnOptionName('charset', $value), 0],
+            'collate'                             => [' COLLATE ' . $this->getColumnOptionName('collate', $value), 0],
+            'identity', 'serial', 'autoincrement' => [' AUTO_INCREMENT', 1],
+            'comment'                             => [' COMMENT ' . $platform->quoteValue($value), 2],
+            'columnformat', 'format' => [' COLUMN_FORMAT ' . ColumnFormatEnum::getOptionValue($value)->value, 2],
+            'storage'                             => [' STORAGE ' . StorageEnum::getOptionValue($value)->value, 2],
+            default                               => null,
+        };
     }
 }
