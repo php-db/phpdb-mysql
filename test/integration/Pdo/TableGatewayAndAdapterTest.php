@@ -9,8 +9,9 @@ use PhpDb\Mysql\Pdo\Connection;
 use PhpDb\ResultSet\AbstractResultSet;
 use PhpDb\TableGateway\TableGateway;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function array_fill;
@@ -21,27 +22,33 @@ use function array_fill;
  * On tear down disconnected from the database and set the driver adapter on null
  * Running many tests ended up in consuming all mysql connections and not releasing them
  */
-#[CoversMethod(Connection::class, 'disconnect')]
+#[CoversClass(Connection::class)]
 final class TableGatewayAndAdapterTest extends TestCase
 {
     use SetupTrait;
 
+    public static function connections(): array
+    {
+        return array_fill(0, count: 200, value: []);
+    }
+
     /**
      * @throws Exception
      */
+    #[Test]
     #[DataProvider('connections')]
-    public function testGetOutOfConnections(): void
+    public function getOutOfConnections(): void
     {
         $adapter = $this->getAdapter();
         $adapter->query('SELECT VERSION();');
-        $table  = new TableGateway(
+        $table = new TableGateway(
             'test',
-            $this->adapter
+            $this->adapter,
         );
         $select = $table->getSql()->select()->where(['name' => 'foo']);
         /** @var AbstractResultSet $result */
         $result = $table->selectWith($select);
-        self::assertCount(3, $result->current());
+        static::assertCount(3, $result->current());
     }
 
     protected function tearDown(): void
@@ -50,10 +57,5 @@ final class TableGatewayAndAdapterTest extends TestCase
             $this->adapter->getDriver()->getConnection()->disconnect();
         }
         $this->adapter = null;
-    }
-
-    public static function connections(): array
-    {
-        return array_fill(0, 200, []);
     }
 }

@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS test;
 CREATE TABLE IF NOT EXISTS test (
     id INT NOT NULL AUTO_INCREMENT,
@@ -53,3 +54,16 @@ CREATE TRIGGER after_test_update
         test_value_old = OLD.value,
         test_value_new = NEW.value,
         changed = NOW();
+
+DROP TABLE IF EXISTS test_enum;
+CREATE TABLE IF NOT EXISTS test_enum (
+    id INT NOT NULL AUTO_INCREMENT,
+    status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
+ALTER TABLE test_audit_trail
+    ADD CONSTRAINT fk_test_audit_trail_test
+    FOREIGN KEY (test_id) REFERENCES test(id);
+
+SET FOREIGN_KEY_CHECKS = 1;

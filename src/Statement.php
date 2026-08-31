@@ -20,6 +20,7 @@ use PhpDb\Adapter\StatementContainerInterface;
 use function array_unshift;
 use function call_user_func_array;
 use function is_array;
+use function sprintf;
 
 final class Statement implements StatementInterface, DriverAwareInterface, ProfilerAwareInterface
 {
@@ -37,110 +38,15 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
     public function __construct(
         protected ParameterContainer $parameterContainer = new ParameterContainer(),
-        protected bool $bufferResults = false
-    ) {
-    }
-
-    #[Override]
-    public function setDriver(DriverInterface $driver): DriverAwareInterface
-    {
-        $this->driver = $driver;
-        return $this;
-    }
-
-    #[Override]
-    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
-    {
-        $this->profiler = $profiler;
-        return $this;
-    }
-
-    public function getProfiler(): ?ProfilerInterface
-    {
-        return $this->profiler;
-    }
-
-    public function initialize(mysqli $mysqli): static
-    {
-        $this->mysqli = $mysqli;
-        return $this;
-    }
-
-    #[Override]
-    public function getSql(): ?string
-    {
-        return $this->sql;
-    }
-
-    #[Override]
-    public function setSql(?string $sql): StatementContainerInterface
-    {
-        $this->sql = $sql;
-        return $this;
-    }
-
-    #[Override]
-    public function setParameterContainer(
-        ParameterContainer $parameterContainer
-    ): StatementContainerInterface {
-        $this->parameterContainer = $parameterContainer;
-        return $this;
-    }
-
-    /**
-     * @phpstan-ignore method.childReturnType
-     */
-    #[Override]
-    public function getResource(): mysqli_stmt
-    {
-        return $this->resource;
-    }
-
-    public function setResource(mysqli_stmt $mysqliStatement): StatementInterface
-    {
-        $this->resource   = $mysqliStatement;
-        $this->isPrepared = true;
-        return $this;
-    }
-
-    #[Override]
-    public function getParameterContainer(): ?ParameterContainer
-    {
-        return $this->parameterContainer;
-    }
-
-    #[Override]
-    public function isPrepared(): bool
-    {
-        return $this->isPrepared;
-    }
-
-    #[Override]
-    public function prepare(?string $sql = null): StatementInterface
-    {
-        if ($this->isPrepared) {
-            throw new Exception\RuntimeException('This statement has already been prepared');
-        }
-
-        $sql = $sql ?: $this->sql;
-
-        $this->resource = $this->mysqli->prepare($sql);
-        if (! $this->resource instanceof mysqli_stmt) {
-            throw new Exception\InvalidQueryException(
-                'Statement couldn\'t be produced with sql: ' . $sql,
-                $this->mysqli->errno,
-                new Exception\ErrorException($this->mysqli->error, $this->mysqli->errno)
-            );
-        }
-
-        $this->isPrepared = true;
-        return $this;
-    }
+        protected bool $bufferResults = false,
+    ) {}
 
     /**
      * Execute
      *
-     * @throws Exception\RuntimeException
+     * @param array<array-key, mixed>|ParameterContainer|null $parameters
+     *
+     * @throws Exception\ExceptionInterface
      */
     #[Override]
     public function execute(ParameterContainer|array|null $parameters = null): ?ResultInterface
@@ -150,13 +56,8 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         }
 
         /** START Standard ParameterContainer Merging Block */
-        if (! $this->parameterContainer instanceof ParameterContainer) {
-            if ($parameters instanceof ParameterContainer) {
-                $this->parameterContainer = $parameters;
-                $parameters               = null;
-            } else {
-                $this->parameterContainer = new ParameterContainer();
-            }
+        if ($parameters instanceof ParameterContainer) {
+            $this->parameterContainer = $parameters;
         }
 
         if (is_array($parameters)) {
@@ -174,19 +75,128 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
 
         $this->profiler?->profilerFinish();
 
-        if ($return === false) {
+        if (! $return) {
             throw new Exception\RuntimeException($this->resource->error);
         }
 
-        if ($this->bufferResults === true) {
+        $buffered = false;
+        if ($this->bufferResults) {
             $this->resource->store_result();
             $this->isPrepared = false;
             $buffered         = true;
-        } else {
-            $buffered = false;
         }
 
         return $this->driver->createResult($this->resource, $buffered);
+    }
+
+    #[Override]
+    public function getParameterContainer(): ?ParameterContainer
+    {
+        return $this->parameterContainer;
+    }
+
+    public function getProfiler(): ?ProfilerInterface
+    {
+        return $this->profiler;
+    }
+
+    /**
+     * @phpstan-ignore method.childReturnType
+     *
+     * @return mysqli_stmt
+     */
+    // @mago-expect analysis:incompatible-return-type - StatementInterface::getResource() declares no
+    // native return type, only a legacy `resource|false|null` docblock; this class's $resource is
+    // always a genuine mysqli_stmt, so the narrower native return type here is a valid PHP covariant
+    // override, not a real incompatibility.
+    #[Override]
+    public function getResource(): mysqli_stmt
+    {
+        return $this->resource;
+    }
+
+    #[Override]
+    public function getSql(): ?string
+    {
+        return $this->sql;
+    }
+
+    public function initialize(mysqli $mysqli): static
+    {
+        $this->mysqli = $mysqli;
+        return $this;
+    }
+
+    #[Override]
+    public function isPrepared(): bool
+    {
+        return $this->isPrepared;
+    }
+
+    /**
+     * @throws Exception\ExceptionInterface
+     */
+    #[Override]
+    public function prepare(?string $sql = null): StatementInterface
+    {
+        if ($this->isPrepared) {
+            throw new Exception\RuntimeException('This statement has already been prepared');
+        }
+
+        $sql = null === $sql || '' === $sql ? $this->sql : $sql;
+
+        $resource = $this->mysqli->prepare($sql);
+        if (! $resource instanceof mysqli_stmt) {
+            throw new Exception\InvalidQueryException(
+                "Statement couldn't be produced with sql: {$sql}",
+                $this->mysqli->errno,
+                new Exception\ErrorException($this->mysqli->error, $this->mysqli->errno),
+            );
+        }
+
+        $this->resource   = $resource;
+        $this->isPrepared = true;
+        return $this;
+    }
+
+    #[Override]
+    public function setDriver(DriverInterface $driver): DriverAwareInterface
+    {
+        if (! $driver instanceof Driver) {
+            throw new Exception\InvalidArgumentException(sprintf('Driver must be an instance of %s', Driver::class));
+        }
+
+        $this->driver = $driver;
+        return $this;
+    }
+
+    #[Override]
+    public function setParameterContainer(
+        ParameterContainer $parameterContainer,
+    ): StatementContainerInterface {
+        $this->parameterContainer = $parameterContainer;
+        return $this;
+    }
+
+    #[Override]
+    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
+    {
+        $this->profiler = $profiler;
+        return $this;
+    }
+
+    public function setResource(mysqli_stmt $mysqliStatement): StatementInterface
+    {
+        $this->resource   = $mysqliStatement;
+        $this->isPrepared = true;
+        return $this;
+    }
+
+    #[Override]
+    public function setSql(?string $sql): StatementContainerInterface
+    {
+        $this->sql = $sql ?? '';
+        return $this;
     }
 
     /**
@@ -214,8 +224,6 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
                         $type .= 's';
                         break;
                 }
-            } else {
-                $type .= 's';
             }
             $args[] = &$value;
         }

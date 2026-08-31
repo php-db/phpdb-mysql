@@ -31,7 +31,7 @@ final class IntegrationTestStartedListener implements StartedSubscriber
             $this->fixtureLoaders[] = new MysqlFixtureLoader();
         }
 
-        if (empty($this->fixtureLoaders)) {
+        if ([] === $this->fixtureLoaders) {
             return;
         }
 

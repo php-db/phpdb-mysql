@@ -33,23 +33,20 @@ trait SetupTrait
 
     protected DriverInterface|string|null $driver = null;
 
-    protected function setUp(): void
-    {
-        $this->getAdapter();
-        parent::setUp();
-    }
-
     protected function getAdapter(array $config = []): AdapterInterface
     {
+        $hostname = (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME');
+        $port     = (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PORT');
+
         $connectionConfig = [
             AdapterInterface::class => [
                 'driver'     => $this->driver ?? Driver::class,
                 'connection' => [
-                    'hostname'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME') ?: 'localhost',
+                    'hostname'       => '' === $hostname ? 'localhost' : $hostname,
                     'username'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
                     'password'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
                     'database'       => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
-                    'port'           => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PORT') ?: '3306',
+                    'port'           => '' === $port ? '3306' : $port,
                     'charset'        => 'utf8',
                     'driver_options' => [],
                 ],
@@ -62,16 +59,16 @@ trait SetupTrait
         // merge service config from both PhpDb and PhpDb\Adapter\Mysql
         $serviceManagerConfig = ArrayUtils::merge(
             (new LaminasDbConfigProvider())()['dependencies'],
-            (new ConfigProvider())()['dependencies']
+            (new ConfigProvider())()['dependencies'],
         );
 
         $serviceManagerConfig = ArrayUtils::merge(
             $serviceManagerConfig,
-            $connectionConfig
+            $connectionConfig,
         );
 
         // prefer passed config over environment variables
-        if ($config !== []) {
+        if ([] !== $config) {
             $serviceManagerConfig = ArrayUtils::merge($serviceManagerConfig, $config);
         }
 
@@ -81,7 +78,7 @@ trait SetupTrait
                 'services' => [
                     'config' => $serviceManagerConfig,
                 ],
-            ]
+            ],
         );
 
         $this->config    = $serviceManagerConfig;
@@ -99,5 +96,11 @@ trait SetupTrait
     protected function getHostname(): string
     {
         return $this->getConfig()[AdapterInterface::class]['connection']['hostname'];
+    }
+
+    protected function setUp(): void
+    {
+        $this->getAdapter();
+        parent::setUp();
     }
 }

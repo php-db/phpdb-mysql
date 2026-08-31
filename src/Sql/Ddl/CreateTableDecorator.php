@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Sql\Ddl;
 
+use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\CreateTable;
+use PhpDb\Sql\Exception;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\PreparableSqlInterface;
 use PhpDb\Sql\SqlInterface;
@@ -20,12 +22,15 @@ use function strtoupper;
 use function substr_replace;
 use function uksort;
 
+// @mago-expect lint:kan-defect
 final class CreateTableDecorator extends CreateTable implements PlatformDecoratorInterface
 {
-    protected SqlInterface|PreparableSqlInterface|null $subject;
+    // @mago-expect analysis:write-only-property - read by the inherited AbstractSql::$subject handling
+    // (get_object_vars($this->subject)), since CreateTable extends AbstractSql
+    protected SqlInterface|PreparableSqlInterface|null $subject = null;
 
-    /** @var int[] */
-    protected $columnOptionSortOrder = [
+    /** @var array<string, int> */
+    protected array $columnOptionSortOrder = [
         'unsigned'      => 0,
         'zerofill'      => 1,
         'charset'       => 2,
@@ -39,8 +44,9 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         'storage'       => 7,
     ];
 
+    #[Override]
     public function setSubject(
-        PreparableSqlInterface|SqlInterface|null $subject
+        PreparableSqlInterface|SqlInterface|null $subject,
     ): PlatformDecoratorInterface {
         $this->subject = $subject;
 
@@ -48,52 +54,62 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
     }
 
     /**
-     * @param string $sql
-     * @return array
+     * @return array{0: int, 1: int, 2: int, 3: int}
      */
-    protected function getSqlInsertOffsets($sql)
+    protected function getSqlInsertOffsets(string $sql): array
     {
         $sqlLength   = strlen($sql);
         $insertStart = [];
 
         foreach (['NOT NULL', 'NULL', 'DEFAULT', 'UNIQUE', 'PRIMARY', 'REFERENCES'] as $needle) {
-            $insertPos = strpos($sql, ' ' . $needle);
+            $insertPos = strpos($sql, " {$needle}");
 
-            if ($insertPos !== false) {
+            if (false !== $insertPos) {
                 switch ($needle) {
                     case 'REFERENCES':
-                        $insertStart[2] = ! isset($insertStart[2]) ? $insertPos : $insertStart[2];
-                        // no break
+                        $insertStart[2] ??= $insertPos;
+                    // no break
                     case 'PRIMARY':
                     case 'UNIQUE':
-                        $insertStart[1] = ! isset($insertStart[1]) ? $insertPos : $insertStart[1];
-                        // no break
+                        $insertStart[1] ??= $insertPos;
+                    // no break
                     default:
-                        $insertStart[0] = ! isset($insertStart[0]) ? $insertPos : $insertStart[0];
+                        $insertStart[0] ??= $insertPos;
                 }
             }
         }
 
-        foreach (range(0, 3) as $i) {
-            $insertStart[$i] = $insertStart[$i] ?? $sqlLength;
+        foreach (range(
+            start: 0,
+            end: 3,
+        ) as $i) {
+            $insertStart[$i] ??= $sqlLength;
         }
 
+        /** @var array{0: int, 1: int, 2: int, 3: int} $insertStart */
         return $insertStart;
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @throws Exception\RuntimeException
      */
-    protected function processColumns(?PlatformInterface $platform = null): ?array
+    #[Override]
+    protected function processColumns(?PlatformInterface $adapterPlatform = null): ?array
     {
         if (! $this->columns) {
             return null;
         }
 
+        if (null === $adapterPlatform) {
+            throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
+        }
+
         $sqls = [];
 
         foreach ($this->columns as $i => $column) {
-            $sql           = $this->processExpression($column, $platform);
+            $sql           = $this->processExpression($column, $adapterPlatform);
             $insertStart   = $this->getSqlInsertOffsets($sql);
             $columnOptions = $column->getOptions();
 
@@ -116,11 +132,11 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                         $j      = 0;
                         break;
                     case 'charset':
-                        $insert = ' CHARACTER SET ' . $coValue;
+                        $insert = " CHARACTER SET {$coValue}";
                         $j      = 0;
                         break;
                     case 'collate':
-                        $insert = ' COLLATE ' . $coValue;
+                        $insert = " COLLATE {$coValue}";
                         $j      = 0;
                         break;
                     case 'identity':
@@ -130,7 +146,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                         $j      = 1;
                         break;
                     case 'comment':
-                        $insert = ' COMMENT ' . $platform->quoteValue($coValue);
+                        $insert = " COMMENT {$adapterPlatform->quoteValue($coValue)}";
                         $j      = 2;
                         break;
                     case 'columnformat':
@@ -145,8 +161,7 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
                 }
 
                 if ($insert) {
-                    $j                = $j ?? 0;
-                    $sql              = substr_replace($sql, $insert, $insertStart[$j], 0);
+                    $sql              = substr_replace($sql, $insert, $insertStart[$j], length: 0);
                     $insertStartCount = count($insertStart);
                     for (; $j < $insertStartCount; ++$j) {
                         $insertStart[$j] += strlen($insert);
@@ -160,22 +175,8 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         return [$sqls];
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    private function normalizeColumnOption($name)
-    {
-        return strtolower(str_replace(['-', '_', ' '], '', $name));
-    }
-
-    /**
-     * @param string $columnA
-     * @param string $columnB
-     * @return int
-     */
     // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod
-    private function compareColumnOptions($columnA, $columnB)
+    private function compareColumnOptions(string $columnA, string $columnB): int
     {
         $columnA = $this->normalizeColumnOption($columnA);
         $columnA = $this->columnOptionSortOrder[$columnA] ?? count($this->columnOptionSortOrder);
@@ -184,5 +185,10 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         $columnB = $this->columnOptionSortOrder[$columnB] ?? count($this->columnOptionSortOrder);
 
         return $columnA - $columnB;
+    }
+
+    private function normalizeColumnOption(string $name): string
+    {
+        return strtolower(str_replace(['-', '_', ' '], replace: '', subject: $name));
     }
 }

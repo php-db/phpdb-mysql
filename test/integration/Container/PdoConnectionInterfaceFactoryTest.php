@@ -13,6 +13,7 @@ use PhpDb\Mysql\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('container')]
@@ -23,27 +24,29 @@ final class PdoConnectionInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
-    public function testInvokeReturnsPdoConnection(): void
+    #[Test]
+    public function invokeReturnsPdoConnection(): void
     {
         $factory  = new PdoConnectionInterfaceFactory();
         $instance = $factory(
             $this->container,
             PdoConnectionInterface::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
-        self::assertInstanceOf(ConnectionInterface::class, $instance);
-        self::assertInstanceOf(PdoConnectionInterface::class, $instance);
-        self::assertInstanceOf(Connection::class, $instance);
+        static::assertInstanceOf(ConnectionInterface::class, $instance);
+        static::assertInstanceOf(PdoConnectionInterface::class, $instance);
+        static::assertInstanceOf(Connection::class, $instance);
     }
 
-    public function testInvokeThrowsExceptionWithoutConnectionConfig(): void
+    #[Test]
+    public function invokeThrowsExceptionWithoutConnectionConfig(): void
     {
         $this->expectException(InvalidConnectionParametersException::class);
 
         $factory = new PdoConnectionInterfaceFactory();
         $factory(
             $this->container,
-            PdoConnectionInterface::class
+            PdoConnectionInterface::class,
         );
     }
 }

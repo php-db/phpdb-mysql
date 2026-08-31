@@ -10,12 +10,11 @@ use PhpDb\Mysql\Driver;
 use PhpDb\ResultSet\AbstractResultSet;
 use PhpDb\TableGateway\TableGateway;
 use PhpDbIntegrationTest\Mysql\Container\TestAsset\SetupTrait;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(AbstractResultSet::class, 'current')]
-#[CoversMethod(AbstractResultSet::class, 'isBuffered')]
-#[CoversMethod(TableGateway::class, 'select')]
+#[CoversNothing]
 final class TableGatewayTest extends TestCase
 {
     use SetupTrait;
@@ -23,11 +22,12 @@ final class TableGatewayTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-db/issues/330
      */
-    public function testSelectWithEmptyCurrentWithBufferResult(): void
+    #[Test]
+    public function selectWithEmptyCurrentWithBufferResult(): void
     {
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
-            'db' => [
+            AdapterInterface::class => [
                 'driver'  => Driver::class,
                 'options' => [
                     'buffer_results' => true,
@@ -39,7 +39,7 @@ final class TableGatewayTest extends TestCase
         /** @var AbstractResultSet $rowset */
         $rowset = $tableGateway->select('id = 0');
 
-        $this->assertNull($rowset->current());
+        static::assertNull($rowset->current());
 
         $adapter->getDriver()->getConnection()->disconnect();
     }
@@ -47,11 +47,12 @@ final class TableGatewayTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-db/issues/330
      */
-    public function testSelectWithEmptyCurrentWithoutBufferResult(): void
+    #[Test]
+    public function selectWithEmptyCurrentWithoutBufferResult(): void
     {
         /** @var AdapterInterface&Adapter $adapter */
-        $adapter      = $this->getAdapter([
-            'db' => [
+        $adapter = $this->getAdapter([
+            AdapterInterface::class => [
                 'driver'  => Driver::class,
                 'options' => [
                     'buffer_results' => false,
@@ -61,9 +62,9 @@ final class TableGatewayTest extends TestCase
         $tableGateway = new TableGateway('test', $adapter);
         /** @var AbstractResultSet $rowset */
         $rowset = $tableGateway->select('id = 0');
-        $this->assertEquals(false, $rowset->isBuffered());
+        static::assertFalse($rowset->isBuffered());
 
-        $this->assertNull($rowset->current());
+        static::assertNull($rowset->current());
 
         $adapter->getDriver()->getConnection()->disconnect();
     }

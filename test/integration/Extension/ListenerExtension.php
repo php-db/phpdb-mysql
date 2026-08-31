@@ -14,7 +14,7 @@ final class ListenerExtension implements Extension
     public function bootstrap(
         Configuration $configuration,
         Facade $facade,
-        ParameterCollection $parameters
+        ParameterCollection $parameters,
     ): void {
         $facade->registerSubscribers(
             new IntegrationTestStartedListener(),
