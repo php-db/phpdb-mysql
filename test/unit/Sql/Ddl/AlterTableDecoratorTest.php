@@ -10,11 +10,13 @@ use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\Mysql\Sql\Ddl\AlterTableDecorator;
+use PhpDb\Mysql\Sql\Ddl\ColumnOptionTrait;
 use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Ddl\Column;
 use PhpDb\Sql\Exception\InvalidArgumentException;
 use PhpDbTest\Mysql\Sql\Ddl\TestAsset\ColumnOptionMatrix;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -24,9 +26,7 @@ use function sprintf;
 #[CoversMethod(AlterTableDecorator::class, 'setSubject')]
 #[CoversMethod(AlterTableDecorator::class, 'processAddColumns')]
 #[CoversMethod(AlterTableDecorator::class, 'processChangeColumns')]
-#[CoversMethod(AlterTableDecorator::class, 'getSqlInsertOffsets')]
-#[CoversMethod(AlterTableDecorator::class, 'compareColumnOptions')]
-#[CoversMethod(AlterTableDecorator::class, 'normalizeColumnOption')]
+#[CoversTrait(ColumnOptionTrait::class)]
 final class AlterTableDecoratorTest extends TestCase
 {
     protected AdapterPlatform $platform;
