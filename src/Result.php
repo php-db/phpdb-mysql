@@ -11,6 +11,8 @@ use mysqli_stmt;
 use Override;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
+use PhpDb\ResultSet\ResultSet;
+use PhpDb\ResultSet\ResultSetInterface;
 // phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
 use ReturnTypeWillChange;
 
@@ -138,6 +140,29 @@ final class Result implements Iterator, ResultInterface
     public function getGeneratedValue(): string|int|false|null
     {
         return $this->generatedValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws Exception\RuntimeException When isQueryResult() is false.
+     * @throws \Exception If the seeded result set rejects this result as its data source.
+     */
+    #[Override]
+    public function getQueryResult(?ResultSetInterface $resultPrototype = null): ResultSetInterface
+    {
+        if (! $this->isQueryResult()) {
+            throw new Exception\RuntimeException(
+                'Cannot produce a query result set from a result that is not a query result;'
+                    . ' check isQueryResult() first',
+            );
+        }
+
+        $resultPrototype ??= new ResultSet();
+        $resultSet       = clone $resultPrototype;
+        $resultSet->initialize($this);
+
+        return $resultSet;
     }
 
     /**
