@@ -10,11 +10,15 @@ use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+use function sprintf;
+
 #[CoversMethod(Connection::class, 'getResource')]
 #[CoversMethod(Connection::class, 'getDsn')]
+#[CoversMethod(Connection::class, 'getDsnParameter')]
 final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
@@ -92,5 +96,35 @@ final class ConnectionTest extends TestCase
             'unix_socket' => '/var/run/mysqld/mysqld.sock',
         ]);
         $connection->connect();
+    }
+
+    #[DataProvider('unsafeDsnParameterProvider')]
+    public function testRejectsConnectionParameterContainingDsnControlCharacters(
+        string $parameter,
+        string $value,
+        string $reportedParameter
+    ): void {
+        $this->expectException(InvalidConnectionParametersException::class);
+        $this->expectExceptionMessage(
+            sprintf('The "%s" connection parameter contains invalid characters', $reportedParameter)
+        );
+
+        $connection = new Connection([
+            'driver'   => 'pdo_mysql',
+            $parameter => $value,
+        ]);
+        $connection->connect();
+    }
+
+    /** @return array<string, array{string, string, string}> */
+    public static function unsafeDsnParameterProvider(): array
+    {
+        return [
+            'dbname appends parameter'      => ['dbname', 'foo;host=attacker.example.com', 'dbname'],
+            'host appends parameter'        => ['host', '127.0.0.1;dbname=other', 'host'],
+            'charset appends parameter'     => ['charset', 'utf8;dbname=other', 'charset'],
+            'unix_socket appends parameter' => ['unix_socket', '/tmp/mysql.sock;dbname=other', 'unix_socket'],
+            'newline in host'               => ['host', "127.0.0.1\nhost=attacker.example.com", 'host'],
+        ];
     }
 }

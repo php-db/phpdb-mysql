@@ -17,6 +17,8 @@ use function implode;
 use function is_array;
 use function is_int;
 use function is_string;
+use function preg_match;
+use function sprintf;
 use function strtolower;
 
 class Connection extends AbstractPdoConnection
@@ -53,6 +55,23 @@ class Connection extends AbstractPdoConnection
         }
 
         return false;
+    }
+
+    /**
+     * Return a value that is safe to interpolate into a generated DSN.
+     *
+     * @throws Exception\InvalidConnectionParametersException If the value contains DSN control characters.
+     */
+    private function getDsnParameter(string $name, string $value): string
+    {
+        if (preg_match('/[;\x00-\x1f]/', $value) === 1) {
+            throw new Exception\InvalidConnectionParametersException(
+                sprintf('The "%s" connection parameter contains invalid characters', $name),
+                $this->connectionParameters
+            );
+        }
+
+        return $value;
     }
 
     /**
@@ -102,22 +121,22 @@ class Connection extends AbstractPdoConnection
         if (! isset($dsn)) {
             $dsn = [];
             if (isset($database)) {
-                $dsn[] = "dbname={$database}";
+                $dsn[] = 'dbname=' . $this->getDsnParameter('dbname', $database);
             }
             if (isset($hostname)) {
-                $dsn[] = "host={$hostname}";
+                $dsn[] = 'host=' . $this->getDsnParameter('host', $hostname);
             }
             if (isset($port)) {
-                $dsn[] = "port={$port}";
+                $dsn[] = 'port=' . $port;
             }
             if (isset($charset)) {
-                $dsn[] = "charset={$charset}";
+                $dsn[] = 'charset=' . $this->getDsnParameter('charset', $charset);
             }
             if (isset($unixSocket)) {
-                $dsn[] = "unix_socket={$unixSocket}";
+                $dsn[] = 'unix_socket=' . $this->getDsnParameter('unix_socket', $unixSocket);
             }
             if (isset($version)) {
-                $dsn[] = "version={$version}";
+                $dsn[] = 'version=' . $this->getDsnParameter('version', $version);
             }
             $dsn = 'mysql:' . implode(';', $dsn);
         }
