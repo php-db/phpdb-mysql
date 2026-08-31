@@ -149,6 +149,19 @@ final class CreateTableDecoratorTest extends TestCase
     }
 
     #[Test]
+    public function columnFormatOptionWithUnderscoreAlias(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption('column_format', 'dynamic');
+        $table->addColumn($col);
+
+        $sql = $this->buildSql($table);
+
+        static::assertStringContainsString('COLUMN_FORMAT DYNAMIC', $sql);
+    }
+
+    #[Test]
     public function commentOption(): void
     {
         $table = new CreateTable('test');
@@ -197,36 +210,14 @@ final class CreateTableDecoratorTest extends TestCase
         static::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL', $sql);
     }
 
-    #[Test]
-    public function storageOption(): void
-    {
-        $table = new CreateTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('storage', 'disk');
-        $table->addColumn($col);
-
-        static::assertStringContainsString('STORAGE DISK', $this->buildSql($table));
-    }
-
-    public function testColumnFormatOption(): void
-    {
-        $table = new CreateTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('column_format', 'dynamic');
-        $table->addColumn($col);
-
-        $sql = $this->buildSql($table);
-
-        self::assertStringContainsString('COLUMN_FORMAT DYNAMIC', $sql);
-    }
-
     /**
      * Pins the exact DDL produced for a matrix of column options.
      *
      * @param array<string, bool|string> $options
      */
+    #[Test]
     #[DataProvider('columnOptionMatrixProvider')]
-    public function testGeneratesExpectedSqlForColumnOptions(array $options, string $expected): void
+    public function generatesExpectedSqlForColumnOptions(array $options, string $expected): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Varchar('name', 255);
@@ -238,11 +229,12 @@ final class CreateTableDecoratorTest extends TestCase
 
         $table->addColumn($col);
 
-        self::assertSame($expected, $this->buildSql($table));
+        static::assertSame($expected, $this->buildSql($table));
     }
 
+    #[Test]
     #[DataProvider('unsafeColumnOptionProvider')]
-    public function testRejectsColumnOptionValueThatWouldInjectSql(
+    public function rejectsColumnOptionValueThatWouldInjectSql(
         string $option,
         string $value,
         string $reportedOption,
@@ -258,16 +250,15 @@ final class CreateTableDecoratorTest extends TestCase
         $this->buildSql($table);
     }
 
-    public function testStorageOption(): void
+    #[Test]
+    public function storageOption(): void
     {
         $table = new CreateTable('test');
         $col   = new Column\Varchar('name', 255);
         $col->setOption('storage', 'disk');
         $table->addColumn($col);
 
-        $sql = $this->buildSql($table);
-
-        self::assertStringContainsString('STORAGE DISK', $sql);
+        static::assertStringContainsString('STORAGE DISK', $this->buildSql($table));
     }
 
     #[Test]

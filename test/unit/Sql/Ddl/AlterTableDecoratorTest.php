@@ -182,6 +182,24 @@ final class AlterTableDecoratorTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('unsafeColumnOptionProvider')]
+    public function addColumnRejectsOptionValueThatWouldInjectSql(
+        string $option,
+        string $value,
+        string $reportedOption,
+    ): void {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, $value);
+        $alter->addColumn($col);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $reportedOption));
+
+        $this->buildSql($alter);
+    }
+
+    #[Test]
     public function addColumnStorage(): void
     {
         $alter = new AlterTable('test');
@@ -307,6 +325,24 @@ final class AlterTableDecoratorTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('unsafeColumnOptionProvider')]
+    public function changeColumnRejectsOptionValueThatWouldInjectSql(
+        string $option,
+        string $value,
+        string $reportedOption,
+    ): void {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, $value);
+        $alter->changeColumn('name', $col);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $reportedOption));
+
+        $this->buildSql($alter);
+    }
+
+    #[Test]
     public function changeColumnStorage(): void
     {
         $alter = new AlterTable('test');
@@ -339,186 +375,19 @@ final class AlterTableDecoratorTest extends TestCase
         static::assertStringContainsString('ZEROFILL', $this->buildSql($alter));
     }
 
-    public function testAddColumnAfter(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('after', 'id');
-        $alter->addColumn($col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('AFTER `id`', $sql);
-    }
-
-    public function testAddColumnCharset(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('charset', 'utf8mb3');
-        $alter->addColumn($col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('CHARACTER SET utf8mb3', $sql);
-    }
-
-    public function testAddColumnCharsetAndCollate(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('charset', 'utf8mb3');
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $alter->addColumn($col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci', $sql);
-    }
-
-    public function testAddColumnCharsetBeforeNotNull(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setNullable(false);
-        $col->setOption('charset', 'utf8mb3');
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $alter->addColumn($col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertMatchesRegularExpression(
-            '/CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL/',
-            $sql,
-        );
-    }
-
-    public function testAddColumnCollate(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $alter->addColumn($col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
-    }
-
-    public function testAddColumnFormatAndStorage(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('column_format', 'fixed');
-        $col->setOption('storage', 'memory');
-        $alter->addColumn($col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('COLUMN_FORMAT FIXED STORAGE MEMORY', $sql);
-    }
-
-    #[DataProvider('unsafeColumnOptionProvider')]
-    public function testAddColumnRejectsOptionValueThatWouldInjectSql(
-        string $option,
-        string $value,
-        string $reportedOption,
-    ): void {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption($option, $value);
-        $alter->addColumn($col);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $reportedOption));
-
-        $this->buildSql($alter);
-    }
-
-    public function testAddColumnUnsigned(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Integer('id');
-        $col->setOption('unsigned', true);
-        $col->setOption('auto_increment', true);
-        $alter->addColumn($col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('UNSIGNED', $sql);
-        self::assertStringContainsString('AUTO_INCREMENT', $sql);
-    }
-
-    public function testChangeColumnCharset(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('charset', 'utf8mb3');
-        $alter->changeColumn('name', $col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('CHARACTER SET utf8mb3', $sql);
-    }
-
-    public function testChangeColumnCharsetAndCollate(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setNullable(false);
-        $col->setOption('charset', 'utf8mb3');
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $alter->changeColumn('name', $col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertMatchesRegularExpression(
-            '/CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL/',
-            $sql,
-        );
-    }
-
-    public function testChangeColumnCollate(): void
-    {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption('collate', 'utf8mb3_unicode_ci');
-        $alter->changeColumn('name', $col);
-
-        $sql = $this->buildSql($alter);
-
-        self::assertStringContainsString('COLLATE utf8mb3_unicode_ci', $sql);
-    }
-
-    #[DataProvider('unsafeColumnOptionProvider')]
-    public function testChangeColumnRejectsOptionValueThatWouldInjectSql(
-        string $option,
-        string $value,
-        string $reportedOption,
-    ): void {
-        $alter = new AlterTable('test');
-        $col   = new Column\Varchar('name', 255);
-        $col->setOption($option, $value);
-        $alter->changeColumn('name', $col);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $reportedOption));
-
-        $this->buildSql($alter);
-    }
-
     /**
      * Pins the exact DDL produced for a matrix of column options on an added column.
      *
      * @param array<string, bool|string> $options
      */
+    #[Test]
     #[DataProvider('addColumnMatrixProvider')]
-    public function testGeneratesExpectedSqlForAddedColumnOptions(array $options, string $expected): void
+    public function generatesExpectedSqlForAddedColumnOptions(array $options, string $expected): void
     {
         $alter = new AlterTable('test');
         $alter->addColumn($this->makeColumn($options));
 
-        self::assertSame($expected, $this->buildSql($alter));
+        static::assertSame($expected, $this->buildSql($alter));
     }
 
     /**
@@ -526,13 +395,14 @@ final class AlterTableDecoratorTest extends TestCase
      *
      * @param array<string, bool|string> $options
      */
+    #[Test]
     #[DataProvider('changeColumnMatrixProvider')]
-    public function testGeneratesExpectedSqlForChangedColumnOptions(array $options, string $expected): void
+    public function generatesExpectedSqlForChangedColumnOptions(array $options, string $expected): void
     {
         $alter = new AlterTable('test');
         $alter->changeColumn('name', $this->makeColumn($options));
 
-        self::assertSame($expected, $this->buildSql($alter));
+        static::assertSame($expected, $this->buildSql($alter));
     }
 
     protected function setUp(): void
