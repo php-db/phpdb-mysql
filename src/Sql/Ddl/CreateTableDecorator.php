@@ -42,9 +42,13 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
             return null;
         }
 
+        // AbstractSql substitutes a default platform before calling, so the guard only narrows
+        // the inherited nullable signature for static analysis.
+        // @codeCoverageIgnoreStart
         if (null === $adapterPlatform) {
             throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
         }
+        // @codeCoverageIgnoreEnd
 
         $sqls = [];
 

@@ -29,6 +29,7 @@ use function sprintf;
 #[CoversMethod(AlterTableDecorator::class, 'setSubject')]
 #[CoversMethod(AlterTableDecorator::class, 'processAddColumns')]
 #[CoversMethod(AlterTableDecorator::class, 'processChangeColumns')]
+#[CoversMethod(AlterTableDecorator::class, 'resolveAfterOption')]
 #[CoversTrait(ColumnOptionTrait::class)]
 #[CoversClass(ColumnFormatEnum::class)]
 #[CoversClass(StorageEnum::class)]

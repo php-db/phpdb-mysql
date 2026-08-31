@@ -41,9 +41,14 @@ final class Driver extends AbstractPdo
         $this->statementPrototype->setDriver($this);
 
         // $features is not constructor promoted because $this->features is defined in the trait
+        // Driver does not implement DriverFeatureProviderInterface yet, so the branch cannot
+        // execute until feature support lands.
+        // @codeCoverageIgnoreStart
         if ([] !== $features && $this instanceof DriverFeatureProviderInterface) {
             $this->addFeatures($features);
         }
+
+        // @codeCoverageIgnoreEnd
     }
 
     /**

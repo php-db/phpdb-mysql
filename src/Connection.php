@@ -186,6 +186,9 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             );
         }
 
+        // real_connect() returning true never leaves connect_error populated; kept as a guard
+        // for exotic driver builds.
+        // @codeCoverageIgnoreStart
         if ($this->resource->connect_error) {
             throw new Exception\RuntimeException(
                 'Connection error',
@@ -193,6 +196,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
                 new Exception\ErrorException($this->resource->connect_error, $this->resource->connect_errno),
             );
         }
+        // @codeCoverageIgnoreEnd
 
         if ('' !== ($p['charset'] ?? '')) {
             $this->resource->set_charset($p['charset']);
@@ -264,9 +268,12 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         }
 
         $r = $result->fetch_row();
+        // fetch_row() only returns false on a server failure between query and fetch.
+        // @codeCoverageIgnoreStart
         if (false === $r) {
             throw new Exception\RuntimeException($this->resource->error);
         }
+        // @codeCoverageIgnoreEnd
 
         /** @var array{0: string|null}|null $r */
         if (null === $r || null === $r[0]) {

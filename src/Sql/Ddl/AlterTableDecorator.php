@@ -38,9 +38,13 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
     #[Override]
     protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
     {
+        // AbstractSql substitutes a default platform before calling, so the guard only narrows
+        // the inherited nullable signature for static analysis.
+        // @codeCoverageIgnoreStart
         if (null === $adapterPlatform) {
             throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
         }
+        // @codeCoverageIgnoreEnd
 
         $sqls = [];
 
@@ -70,9 +74,13 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
     #[Override]
     protected function processChangeColumns(?PlatformInterface $adapterPlatform = null): array
     {
+        // AbstractSql substitutes a default platform before calling, so the guard only narrows
+        // the inherited nullable signature for static analysis.
+        // @codeCoverageIgnoreStart
         if (null === $adapterPlatform) {
             throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
         }
+        // @codeCoverageIgnoreEnd
 
         $sqls = [];
 

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Pdo;
 
 use Override;
+use PDO;
+use PDOException;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Pdo\Connection;
@@ -16,8 +18,11 @@ use PHPUnit\Framework\TestCase;
 
 use function sprintf;
 
+#[CoversMethod(Connection::class, '__construct')]
 #[CoversMethod(Connection::class, 'connect')]
 #[CoversMethod(Connection::class, 'getDsnParameter')]
+#[CoversMethod(Connection::class, 'getCurrentSchema')]
+#[CoversMethod(Connection::class, 'getLastGeneratedValue')]
 final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
@@ -30,6 +35,7 @@ final class ConnectionTest extends TestCase
             'host appends parameter'        => ['host', '127.0.0.1;dbname=other', 'host'],
             'charset appends parameter'     => ['charset', 'utf8;dbname=other', 'charset'],
             'unix_socket appends parameter' => ['unix_socket', '/tmp/mysql.sock;dbname=other', 'unix_socket'],
+            'version appends parameter'     => ['version', '5.7;dbname=other', 'version'],
             'newline in host'               => ['host', "127.0.0.1\nhost=attacker.example.com", 'host'],
         ];
     }
@@ -44,6 +50,7 @@ final class ConnectionTest extends TestCase
             'dbname'      => 'foo',
             'port'        => '3306',
             'unix_socket' => '/var/run/mysqld/mysqld.sock',
+            'version'     => '5.7',
         ]);
         try {
             $connection->connect();
@@ -58,6 +65,31 @@ final class ConnectionTest extends TestCase
         static::assertStringContainsString('dbname=foo', $responseString);
         static::assertStringContainsString('port=3306', $responseString);
         static::assertStringContainsString('unix_socket=/var/run/mysqld/mysqld.sock', $responseString);
+        static::assertStringContainsString('version=5.7', $responseString);
+    }
+
+    #[Test]
+    public function connectReturnsSelfWhenConstructedWithPdoInstance(): void
+    {
+        $pdo = $this->createStub(PDO::class);
+        $pdo->method('getAttribute')->willReturn('mysql');
+
+        $connection = new Connection($pdo);
+
+        static::assertSame($connection, $connection->connect());
+        static::assertSame($pdo, $connection->getResource());
+    }
+
+    #[Test]
+    public function getCurrentSchemaReturnsFalseWhenQueryProducesNoStatement(): void
+    {
+        $pdo = $this->createStub(PDO::class);
+        $pdo->method('getAttribute')->willReturn('mysql');
+        $pdo->method('query')->willReturn(false);
+
+        $connection = new Connection($pdo);
+
+        static::assertFalse($connection->getCurrentSchema());
     }
 
     /**
@@ -77,6 +109,24 @@ final class ConnectionTest extends TestCase
         $responseString = $this->connection->getDsn();
 
         static::assertEquals($dsn, $responseString);
+    }
+
+    #[Test]
+    public function getLastGeneratedValueReturnsFalseWhenDriverThrows(): void
+    {
+        $pdo = $this->createStub(PDO::class);
+        $pdo->method('getAttribute')->willReturn('mysql');
+        $pdo->method('lastInsertId')->willThrowException(new PDOException('driver does not support lastInsertId'));
+
+        $connection = new Connection($pdo);
+
+        static::assertFalse($connection->getLastGeneratedValue());
+    }
+
+    #[Test]
+    public function getLastGeneratedValueReturnsFalseWithoutResource(): void
+    {
+        static::assertFalse($this->connection->getLastGeneratedValue());
     }
 
     #[Test]

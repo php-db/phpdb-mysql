@@ -307,14 +307,13 @@ final class Result implements Iterator, ResultInterface
      */
     protected function loadDataFromMysqliStatement(): bool
     {
-        if (! $this->resource instanceof mysqli_stmt) {
-            throw new Exception\RuntimeException('Expected resource to be an instance of mysqli_stmt');
-        }
+        /** @var mysqli_stmt $statement Guaranteed by the instanceof dispatch in current() and valid(). */
+        $statement = $this->resource;
 
         // build the default reference based bind structure, if it does not already exist
         if (null === $this->statementBindValues['keys']) {
             $this->statementBindValues['keys'] = [];
-            $resultResource                    = $this->resource->result_metadata();
+            $resultResource                    = $statement->result_metadata();
             if (false === $resultResource) {
                 return $resultResource;
             }
@@ -332,18 +331,18 @@ final class Result implements Iterator, ResultInterface
             foreach ($this->statementBindValues['values'] as $i => &$f) {
                 $refs[$i] = &$f;
             }
-            call_user_func_array([$this->resource, 'bind_result'], $this->statementBindValues['values']);
+            call_user_func_array([$statement, 'bind_result'], $this->statementBindValues['values']);
         }
 
-        if (($r = $this->resource->fetch()) === null) {
+        if (($r = $statement->fetch()) === null) {
             if (! $this->isBuffered) {
-                $this->resource->close();
+                $statement->close();
             }
             return false;
         }
 
         if (! $r) {
-            throw new Exception\RuntimeException($this->resource->error);
+            throw new Exception\RuntimeException($statement->error);
         }
 
         // dereference

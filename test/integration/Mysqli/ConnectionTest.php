@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDbIntegrationTest\Mysql\Mysqli;
 
 use mysqli;
+use PhpDb\Adapter\Exception\InvalidQueryException;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
@@ -16,6 +17,13 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function getenv;
+use function mysqli_report;
+use function usleep;
+
+use const MYSQLI_OPT_LOCAL_INFILE;
+use const MYSQLI_REPORT_ERROR;
+use const MYSQLI_REPORT_OFF;
+use const MYSQLI_REPORT_STRICT;
 
 #[Group('integration')]
 #[Group('integration-mysqli')]
@@ -82,9 +90,38 @@ final class ConnectionTest extends TestCase
     }
 
     #[Test]
+    public function connectTwiceReturnsSameInstance(): void
+    {
+        $connection = new Connection($this->connectionParameters());
+        new Driver($connection, new Statement(), new Result());
+
+        $connection->connect();
+
+        static::assertSame($connection, $connection->connect());
+    }
+
+    #[Test]
     public function constructWithMysqliResource(): void
     {
         $connection = new Connection($this->createMysqli());
+
+        static::assertTrue($connection->isConnected());
+    }
+
+    #[Test]
+    public function driverOptionsAreAppliedOnConnect(): void
+    {
+        $parameters                   = $this->connectionParameters();
+        $parameters['driver_options'] = [
+            'MYSQLI_OPT_CONNECT_TIMEOUT' => 10,
+            'NOT_A_MYSQLI_CONSTANT'      => 1,
+            MYSQLI_OPT_LOCAL_INFILE      => 0,
+        ];
+
+        $connection = new Connection($parameters);
+        new Driver($connection, new Statement(), new Result());
+
+        $connection->connect();
 
         static::assertTrue($connection->isConnected());
     }
@@ -109,6 +146,21 @@ final class ConnectionTest extends TestCase
         static::assertIsInt($connection->getLastGeneratedValue());
 
         $connection->execute('DELETE FROM test WHERE name = \'generated\'');
+    }
+
+    #[Test]
+    public function executeInvalidSqlThrowsInvalidQueryException(): void
+    {
+        $connection = $this->createConnection();
+        $connection->connect();
+
+        mysqli_report(MYSQLI_REPORT_OFF);
+        try {
+            $this->expectException(InvalidQueryException::class);
+            $connection->execute('SELECT FROM WHERE');
+        } finally {
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        }
     }
 
     #[Test]
@@ -147,6 +199,46 @@ final class ConnectionTest extends TestCase
             $connection->getCurrentSchema(),
         );
         static::assertTrue($connection->isConnected());
+    }
+
+    #[Test]
+    public function getCurrentSchemaOnKilledConnectionThrows(): void
+    {
+        $victim = $this->createMysqli();
+        $killer = $this->createMysqli();
+
+        $connection = new Connection($victim);
+        new Driver($connection, new Statement(), new Result());
+
+        $killer->query("KILL {$victim->thread_id}");
+        usleep(200_000);
+
+        mysqli_report(MYSQLI_REPORT_OFF);
+        try {
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('Failed to query current schema');
+            $connection->getCurrentSchema();
+        } finally {
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+        }
+    }
+
+    #[Test]
+    public function getCurrentSchemaReturnsFalseWithoutSelectedDatabase(): void
+    {
+        $parameters = $this->connectionParameters();
+        $mysqli     = new mysqli(
+            $parameters['hostname'],
+            $parameters['username'],
+            $parameters['password'],
+            '',
+            $parameters['port'],
+        );
+
+        $connection = new Connection($mysqli);
+        new Driver($connection, new Statement(), new Result());
+
+        static::assertFalse($connection->getCurrentSchema());
     }
 
     #[Test]

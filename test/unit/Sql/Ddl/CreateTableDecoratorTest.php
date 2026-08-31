@@ -238,6 +238,34 @@ final class CreateTableDecoratorTest extends TestCase
     }
 
     #[Test]
+    public function optionInsertsBeforeInlinePrimaryKey(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Integer('id');
+        $col->addConstraint(new Constraint\PrimaryKey());
+        $col->setOption('autoincrement', true);
+        $table->addColumn($col);
+
+        $sql = $this->buildSql($table);
+
+        static::assertStringContainsString('AUTO_INCREMENT PRIMARY KEY', $sql);
+    }
+
+    #[Test]
+    public function optionInsertsBeforeInlineReferences(): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Integer('other_id');
+        $col->addConstraint(new Constraint\ForeignKey('fk_other', 'other_id', 'other', 'id'));
+        $col->setOption('comment', 'linked');
+        $table->addColumn($col);
+
+        $sql = $this->buildSql($table);
+
+        static::assertMatchesRegularExpression("/COMMENT 'linked'.*REFERENCES/s", $sql);
+    }
+
+    #[Test]
     #[DataProvider('unsafeColumnOptionProvider')]
     public function rejectsColumnOptionValueThatWouldInjectSql(
         string $option,
@@ -264,6 +292,14 @@ final class CreateTableDecoratorTest extends TestCase
         $table->addColumn($col);
 
         static::assertStringContainsString('STORAGE DISK', $this->buildSql($table));
+    }
+
+    #[Test]
+    public function tableWithoutColumnsRendersNoColumnDefinitions(): void
+    {
+        $sql = $this->buildSql(new CreateTable('test'));
+
+        static::assertStringContainsString('CREATE TABLE `test`', $sql);
     }
 
     #[Test]

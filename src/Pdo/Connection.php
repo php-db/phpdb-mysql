@@ -134,9 +134,13 @@ final class Connection extends AbstractPdoConnection
             $this->driverName = strtolower((string) $this->resource->getAttribute(PDO::ATTR_DRIVER_NAME));
         } catch (PDOException $e) {
             $code = $e->getCode();
+            // pdo_mysql connect failures carry int codes; the string SQLSTATE form only occurs
+            // on other PDO drivers.
+            // @codeCoverageIgnoreStart
             if (! is_int($code)) {
                 $code = 0;
             }
+            // @codeCoverageIgnoreEnd
             throw new Exception\RuntimeException("Connect Error: {$e->getMessage()}", $code, $e);
         }
 
@@ -156,11 +160,15 @@ final class Connection extends AbstractPdoConnection
             $this->connect();
         }
 
+        // connect() either assigns the resource or throws, so this guard exists to narrow the
+        // nullable property for static analysis.
+        // @codeCoverageIgnoreStart
         if (null === $this->resource) {
             throw new Exception\RuntimeException(
                 'Cannot query current schema without a connected resource; call connect() first.',
             );
         }
+        // @codeCoverageIgnoreEnd
 
         $result = $this->resource->query('SELECT DATABASE()');
         if (! $result instanceof PDOStatement) {
