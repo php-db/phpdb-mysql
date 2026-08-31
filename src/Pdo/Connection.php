@@ -60,6 +60,10 @@ class Connection extends AbstractPdoConnection
     /**
      * Return a value that is safe to interpolate into a generated DSN.
      *
+     * @todo Promote to AbstractPdoConnection in php-db/phpdb as a protected method once a second
+     *       PDO driver package needs it — the validation is generic to all semicolon-delimited
+     *       PDO DSN formats and has no MySQL-specific dependencies.
+     *
      * @throws Exception\InvalidConnectionParametersException If the value contains DSN control characters.
      */
     private function getDsnParameter(string $name, string $value): string
