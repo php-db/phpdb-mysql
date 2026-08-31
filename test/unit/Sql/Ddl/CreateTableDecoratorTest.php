@@ -9,13 +9,16 @@ use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
+use PhpDb\Mysql\Sql\ColumnFormatEnum;
 use PhpDb\Mysql\Sql\Ddl\ColumnOptionTrait;
 use PhpDb\Mysql\Sql\Ddl\CreateTableDecorator;
+use PhpDb\Mysql\Sql\StorageEnum;
 use PhpDb\Sql\Ddl\Column;
 use PhpDb\Sql\Ddl\Constraint;
 use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Exception\InvalidArgumentException;
 use PhpDbTest\Mysql\Sql\Ddl\TestAsset\ColumnOptionMatrix;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -27,6 +30,8 @@ use function sprintf;
 #[CoversMethod(CreateTableDecorator::class, 'setSubject')]
 #[CoversMethod(CreateTableDecorator::class, 'processColumns')]
 #[CoversTrait(ColumnOptionTrait::class)]
+#[CoversClass(ColumnFormatEnum::class)]
+#[CoversClass(StorageEnum::class)]
 final class CreateTableDecoratorTest extends TestCase
 {
     protected AdapterPlatform $platform;
