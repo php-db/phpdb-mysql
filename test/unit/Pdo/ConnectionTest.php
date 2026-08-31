@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Mysql\Pdo;
 
-use Exception;
 use Override;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Adapter\Exception\RuntimeException;
@@ -12,54 +11,20 @@ use PhpDb\Mysql\Pdo\Connection;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 use function sprintf;
 
-#[CoversMethod(Connection::class, 'getResource')]
-#[CoversMethod(Connection::class, 'getDsn')]
+#[CoversMethod(Connection::class, 'connect')]
 #[CoversMethod(Connection::class, 'getDsnParameter')]
 final class ConnectionTest extends TestCase
 {
     protected Connection $connection;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->connection = new Connection([]);
-    }
-
-    /**
-     * Test getResource method tries to connect to  the database, it should never return null
-     */
-    public function testResource(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->connection->getResource();
-    }
-
-    /**
-     * Test getConnectedDsn returns a DSN string if it has been set
-     */
-    public function testGetDsn(): void
-    {
-        $dsn = "mysql:";
-        $this->connection->setConnectionParameters(['dsn' => $dsn]);
-        try {
-            $this->connection->connect();
-        } catch (Exception) {
-        }
-        $responseString = $this->connection->getDsn();
-
-        self::assertEquals($dsn, $responseString);
-    }
-
+    #[Test]
     #[Group('2622')]
-    public function testArrayOfConnectionParametersCreatesCorrectDsn(): void
+    public function arrayOfConnectionParametersCreatesCorrectDsn(): void
     {
         $connection = new Connection([
             'driver'      => 'pdo_mysql',
@@ -70,22 +35,44 @@ final class ConnectionTest extends TestCase
         ]);
         try {
             $connection->connect();
-        } catch (Exception) {
+        } catch (InvalidConnectionParametersException|RuntimeException) {
+            // connection failure is expected/ignored here; only dsn construction is under test
+            // @mago-expect lint:no-empty-catch-clause
         }
         $responseString = $connection->getDsn();
 
-        self::assertStringStartsWith('mysql:', $responseString);
-        self::assertStringContainsString('charset=utf8', $responseString);
-        self::assertStringContainsString('dbname=foo', $responseString);
-        self::assertStringContainsString('port=3306', $responseString);
-        self::assertStringContainsString('unix_socket=/var/run/mysqld/mysqld.sock', $responseString);
+        static::assertStringStartsWith('mysql:', $responseString);
+        static::assertStringContainsString('charset=utf8', $responseString);
+        static::assertStringContainsString('dbname=foo', $responseString);
+        static::assertStringContainsString('port=3306', $responseString);
+        static::assertStringContainsString('unix_socket=/var/run/mysqld/mysqld.sock', $responseString);
     }
 
-    public function testHostnameAndUnixSocketThrowsInvalidConnectionParametersException(): void
+    /**
+     * Test getConnectedDsn returns a DSN string if it has been set
+     */
+    #[Test]
+    public function getDsn(): void
+    {
+        $dsn = 'mysql:';
+        $this->connection->setConnectionParameters(['dsn' => $dsn]);
+        try {
+            $this->connection->connect();
+        } catch (InvalidConnectionParametersException|RuntimeException) {
+            // connection failure is expected/ignored here; only dsn construction is under test
+            // @mago-expect lint:no-empty-catch-clause
+        }
+        $responseString = $this->connection->getDsn();
+
+        static::assertEquals($dsn, $responseString);
+    }
+
+    #[Test]
+    public function hostnameAndUnixSocketThrowsInvalidConnectionParametersException(): void
     {
         $this->expectException(InvalidConnectionParametersException::class);
         $this->expectExceptionMessage(
-            'Ambiguous connection parameters, both hostname and unix_socket parameters were set'
+            'Ambiguous connection parameters, both hostname and unix_socket parameters were set',
         );
 
         $connection = new Connection([
@@ -98,15 +85,16 @@ final class ConnectionTest extends TestCase
         $connection->connect();
     }
 
+    #[Test]
     #[DataProvider('unsafeDsnParameterProvider')]
-    public function testRejectsConnectionParameterContainingDsnControlCharacters(
+    public function rejectsConnectionParameterContainingDsnControlCharacters(
         string $parameter,
         string $value,
-        string $reportedParameter
+        string $reportedParameter,
     ): void {
         $this->expectException(InvalidConnectionParametersException::class);
         $this->expectExceptionMessage(
-            sprintf('The "%s" connection parameter contains invalid characters', $reportedParameter)
+            sprintf('The "%s" connection parameter contains invalid characters', $reportedParameter),
         );
 
         $connection = new Connection([
@@ -126,5 +114,25 @@ final class ConnectionTest extends TestCase
             'unix_socket appends parameter' => ['unix_socket', '/tmp/mysql.sock;dbname=other', 'unix_socket'],
             'newline in host'               => ['host', "127.0.0.1\nhost=attacker.example.com", 'host'],
         ];
+    }
+
+    /**
+     * Test getResource method tries to connect to  the database, it should never return null
+     */
+    #[Test]
+    public function resource(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->connection->getResource();
+    }
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    #[Override]
+    protected function setUp(): void
+    {
+        $this->connection = new Connection([]);
     }
 }

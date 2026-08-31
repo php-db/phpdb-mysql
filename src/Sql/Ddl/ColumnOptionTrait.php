@@ -135,34 +135,39 @@ trait ColumnOptionTrait
         return $value;
     }
 
-    /** @return array<int, int> Offsets keyed by how late in the definition an option may be inserted. */
+    /**
+     * Offsets keyed by how late in the definition an option may be inserted.
+     *
+     * @return array{0: int, 1: int, 2: int, 3: int}
+     */
     protected function getSqlInsertOffsets(string $sql): array
     {
         $sqlLength   = strlen($sql);
         $insertStart = [];
 
         foreach (['NOT NULL', 'NULL', 'DEFAULT', 'UNIQUE', 'PRIMARY', 'REFERENCES'] as $needle) {
-            $insertPos = strpos($sql, ' ' . $needle);
+            $insertPos = strpos($sql, " {$needle}");
 
-            if ($insertPos !== false) {
+            if (false !== $insertPos) {
                 switch ($needle) {
                     case 'REFERENCES':
-                        $insertStart[2] = ! isset($insertStart[2]) ? $insertPos : $insertStart[2];
-                        // no break
+                        $insertStart[2] ??= $insertPos;
+                    // no break
                     case 'PRIMARY':
                     case 'UNIQUE':
-                        $insertStart[1] = ! isset($insertStart[1]) ? $insertPos : $insertStart[1];
-                        // no break
+                        $insertStart[1] ??= $insertPos;
+                    // no break
                     default:
-                        $insertStart[0] = ! isset($insertStart[0]) ? $insertPos : $insertStart[0];
+                        $insertStart[0] ??= $insertPos;
                 }
             }
         }
 
         foreach (range(0, 3) as $i) {
-            $insertStart[$i] = $insertStart[$i] ?? $sqlLength;
+            $insertStart[$i] ??= $sqlLength;
         }
 
+        /** @var array{0: int, 1: int, 2: int, 3: int} $insertStart */
         return $insertStart;
     }
 

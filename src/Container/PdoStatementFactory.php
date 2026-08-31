@@ -10,10 +10,15 @@ use Psr\Container\ContainerInterface;
 
 final class PdoStatementFactory
 {
+    /**
+     * @param array<string, mixed>|null $options
+     *
+     * @mago-expect analysis:unused-parameter
+     */
     public function __invoke(
         ContainerInterface $container,
         string $requestedName,
-        ?array $options = null
+        ?array $options = null,
     ): StatementInterface&Statement {
         return new Statement(options: $options);
     }

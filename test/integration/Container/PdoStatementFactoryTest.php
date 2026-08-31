@@ -11,6 +11,7 @@ use PhpDb\Mysql\Container\PdoStatementFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('container')]
@@ -21,15 +22,16 @@ final class PdoStatementFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
-    public function testInvokeReturnsPdoStatement(): void
+    #[Test]
+    public function invokeReturnsPdoStatement(): void
     {
         $factory   = new PdoStatementFactory();
         $statement = $factory(
             $this->container,
             StatementInterface::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
-        self::assertInstanceOf(StatementInterface::class, $statement);
-        self::assertInstanceOf(Statement::class, $statement);
+        static::assertInstanceOf(StatementInterface::class, $statement);
+        static::assertInstanceOf(Statement::class, $statement);
     }
 }

@@ -5,9 +5,17 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Pdo\TestAsset;
 
 use PDO;
+use SensitiveParameter;
 
 final class PdoStubDriver extends PDO
 {
+    /**
+     * @param string $user
+     * @param string $password
+     * @phpstan-ignore constructor.unusedParameter, constructor.unusedParameter, constructor.unusedParameter
+     */
+    public function __construct(string $dsn, $user, #[SensitiveParameter] $password) {}
+
     public function beginTransaction(): bool
     {
         return true;
@@ -16,15 +24,6 @@ final class PdoStubDriver extends PDO
     public function commit(): bool
     {
         return true;
-    }
-
-    /**
-     * @param string $user
-     * @param string $password
-     * @phpstan-ignore constructor.unusedParameter, constructor.unusedParameter, constructor.unusedParameter
-     */
-    public function __construct(string $dsn, $user, $password)
-    {
     }
 
     public function rollBack(): bool

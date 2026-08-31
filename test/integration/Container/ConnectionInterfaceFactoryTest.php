@@ -10,6 +10,7 @@ use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Container\ConnectionInterfaceFactory;
 use PHPUnit\Framework\Attributes;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Attributes\CoversClass(ConnectionInterfaceFactory::class)]
@@ -21,27 +22,29 @@ final class ConnectionInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
-    public function testInvokeReturnsMysqliConnection(): void
+    #[Test]
+    public function invokeReturnsMysqliConnection(): void
     {
         $factory    = new ConnectionInterfaceFactory();
         $connection = $factory(
             $this->container,
             Connection::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
 
-        self::assertInstanceOf(ConnectionInterface::class, $connection);
-        self::assertInstanceOf(Connection::class, $connection);
+        static::assertInstanceOf(ConnectionInterface::class, $connection);
+        static::assertInstanceOf(Connection::class, $connection);
     }
 
-    public function testInvokeThrowsExceptionWithoutConnectionConfig(): void
+    #[Test]
+    public function invokeThrowsExceptionWithoutConnectionConfig(): void
     {
         $this->expectException(InvalidConnectionParametersException::class);
 
         $factory = new ConnectionInterfaceFactory();
         $factory(
             $this->container,
-            Connection::class
+            Connection::class,
         );
     }
 }

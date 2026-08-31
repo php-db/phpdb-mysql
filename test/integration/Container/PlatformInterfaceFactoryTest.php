@@ -6,12 +6,14 @@ namespace PhpDbIntegrationTest\Mysql\Container;
 
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Exception\ContainerException;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Container\PlatformInterfaceFactory;
 use PhpDb\Mysql\Pdo\Driver as PdoDriver;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Group('integration')]
@@ -22,7 +24,8 @@ final class PlatformInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
-    public function testInvokeReturnsPlatformInterfaceWhenDbDriverIsPdo(): void
+    #[Test]
+    public function invokeReturnsPlatformInterfaceWhenDbDriverIsPdo(): void
     {
         $adapter = $this->getAdapter(['driver' => PdoDriver::class]);
 
@@ -32,10 +35,19 @@ final class PlatformInterfaceFactoryTest extends TestCase
         $instance = $factory(
             $this->container,
             PlatformInterface::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
 
-        self::assertInstanceOf(PlatformInterface::class, $instance);
-        self::assertInstanceOf(AdapterPlatform::class, $instance);
+        static::assertInstanceOf(PlatformInterface::class, $instance);
+        static::assertInstanceOf(AdapterPlatform::class, $instance);
+    }
+
+    #[Test]
+    public function invokeThrowsForInvalidDriver(): void
+    {
+        $factory = new PlatformInterfaceFactory();
+
+        $this->expectException(ContainerException::class);
+        $factory($this->container, PlatformInterface::class, ['driver' => 'not-a-driver']);
     }
 }

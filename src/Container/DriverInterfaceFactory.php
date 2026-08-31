@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace PhpDb\Mysql\Container;
 
 use Laminas\ServiceManager\ServiceManager;
-use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
-use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Exception\ContainerException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
@@ -16,28 +14,38 @@ use PhpDb\Mysql\Result;
 use PhpDb\Mysql\Statement;
 use Psr\Container\ContainerInterface;
 
+use function array_key_exists;
+
 final class DriverInterfaceFactory
 {
+    /**
+     * @param array<string, mixed>|null $options
+     *
+     * @throws \Laminas\ServiceManager\Exception\ExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
+     *
+     * @mago-expect analysis:unused-parameter
+     */
     public function __invoke(
         ContainerInterface&ServiceManager $container,
         string $requestedName,
-        ?array $options = null
+        ?array $options = null,
     ): DriverInterface&Driver {
-        if (! isset($options['connection'])) {
+        if (null === $options || ! array_key_exists('connection', $options)) {
             throw ContainerException::forService(
                 Driver::class,
                 self::class,
-                '$options["connection"] must contain an array of connection configuration.'
+                '$options["connection"] must contain an array of connection configuration.',
             );
         }
 
-        /** @var ConnectionInterface&Connection $connectionInstance */
         $connectionInstance = $container->build(Connection::class, $options);
 
-        /** @var StatementInterface&Statement $statementInstance */
         $statementInstance = $container->build(
             Statement::class,
-            $options['options'] ?? []
+            $options['options'] ?? [],
         );
 
         /** @var ResultInterface&Result $resultInstance */
@@ -49,7 +57,7 @@ final class DriverInterfaceFactory
             $connectionInstance,
             $statementInstance,
             $resultInstance,
-            $options
+            $options,
         );
     }
 }

@@ -27,14 +27,14 @@ final class MysqlFixtureLoader implements FixtureLoaderInterface
 
         if (
             false === $this->pdo->exec(sprintf(
-                "CREATE DATABASE IF NOT EXISTS %s",
-                getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE')
+                'CREATE DATABASE IF NOT EXISTS %s',
+                getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
             ))
         ) {
             throw new Exception(sprintf(
-                "I cannot create the MySQL %s test database: %s",
+                'I cannot create the MySQL %s test database: %s',
                 getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
-                print_r($this->pdo->errorInfo(), true)
+                print_r($this->pdo->errorInfo(), return: true),
             ));
         }
 
@@ -42,10 +42,10 @@ final class MysqlFixtureLoader implements FixtureLoaderInterface
 
         if (false === $this->pdo->exec(file_get_contents($this->fixtureFile))) {
             throw new Exception(sprintf(
-                "I cannot create the table for %s database. Check the %s file. %s ",
+                'I cannot create the table for %s database. Check the %s file. %s ',
                 getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
                 $this->fixtureFile,
-                print_r($this->pdo->errorInfo(), true)
+                print_r($this->pdo->errorInfo(), return: true),
             ));
         }
 
@@ -57,8 +57,8 @@ final class MysqlFixtureLoader implements FixtureLoaderInterface
         $this->connect();
 
         $this->pdo->exec(sprintf(
-            "DROP DATABASE IF EXISTS %s",
-            getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE')
+            'DROP DATABASE IF EXISTS %s',
+            getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
         ));
 
         $this->disconnect();
@@ -74,7 +74,7 @@ final class MysqlFixtureLoader implements FixtureLoaderInterface
         $this->pdo = new PDO(
             $dsn,
             getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
-            getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD')
+            getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
         );
     }
 

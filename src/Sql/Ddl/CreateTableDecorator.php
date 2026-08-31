@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Sql\Ddl;
 
+use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Sql\Ddl\CreateTable;
+use PhpDb\Sql\Exception;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PhpDb\Sql\PreparableSqlInterface;
 use PhpDb\Sql\SqlInterface;
@@ -14,10 +16,13 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
 {
     use ColumnOptionTrait;
 
-    protected SqlInterface|PreparableSqlInterface|null $subject;
+    // @mago-expect analysis:write-only-property - read by the inherited AbstractSql::$subject handling
+    // (get_object_vars($this->subject)), since CreateTable extends AbstractSql
+    protected SqlInterface|PreparableSqlInterface|null $subject = null;
 
+    #[Override]
     public function setSubject(
-        PreparableSqlInterface|SqlInterface|null $subject
+        PreparableSqlInterface|SqlInterface|null $subject,
     ): PlatformDecoratorInterface {
         $this->subject = $subject;
 
@@ -26,20 +31,27 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
 
     /**
      * {@inheritDoc}
+     *
+     * @throws Exception\RuntimeException
      */
-    protected function processColumns(?PlatformInterface $platform = null): ?array
+    #[Override]
+    protected function processColumns(?PlatformInterface $adapterPlatform = null): ?array
     {
         if (! $this->columns) {
             return null;
+        }
+
+        if (null === $adapterPlatform) {
+            throw new Exception\RuntimeException('Cannot build column SQL without a platform.');
         }
 
         $sqls = [];
 
         foreach ($this->columns as $i => $column) {
             $sqls[$i] = $this->processColumnOptions(
-                $this->processExpression($column, $platform),
+                $this->processExpression($column, $adapterPlatform),
                 $column->getOptions(),
-                $platform
+                $adapterPlatform,
             );
         }
 

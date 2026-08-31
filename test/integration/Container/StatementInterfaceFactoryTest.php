@@ -9,6 +9,7 @@ use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Mysql\Container\StatementInterfaceFactory;
 use PhpDb\Mysql\Statement;
 use PHPUnit\Framework\Attributes;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[Attributes\CoversClass(StatementInterfaceFactory::class)]
@@ -20,10 +21,11 @@ final class StatementInterfaceFactoryTest extends TestCase
 {
     use TestAsset\SetupTrait;
 
-    public function testInvokeReturnsMysqliStatement(): void
+    #[Test]
+    public function invokeReturnsMysqliStatement(): void
     {
         $this->getAdapter([
-            'db' => [
+            AdapterInterface::class => [
                 'driver'  => 'Mysqli',
                 'options' => [
                     'buffer_results' => false,
@@ -35,10 +37,10 @@ final class StatementInterfaceFactoryTest extends TestCase
         $statement = $factory(
             $this->container,
             StatementInterface::class,
-            $this->config[AdapterInterface::class]
+            $this->config[AdapterInterface::class],
         );
 
-        self::assertInstanceOf(StatementInterface::class, $statement);
-        self::assertInstanceOf(Statement::class, $statement);
+        static::assertInstanceOf(StatementInterface::class, $statement);
+        static::assertInstanceOf(Statement::class, $statement);
     }
 }

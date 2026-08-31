@@ -8,19 +8,76 @@ use Override;
 use PDO;
 use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\Statement;
-use PhpDb\Mysql\Pdo\Driver as PdoDriver;
-use PhpDbTest\Mysql\Pdo\TestAsset;
-use PHPUnit\Framework\Attributes\CoversMethod;
+use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(Statement::class, 'execute')]
+#[CoversNothing]
 final class StatementIntegrationTest extends TestCase
 {
     protected Statement $statement;
 
     /** @var MockObject */
     protected PDOStatement|MockObject $pdoStatementMock;
+
+    #[Test]
+    public function statementExecuteWillConvertPhpBoolToPdoBoolWhenBinding(): void
+    {
+        $this->pdoStatementMock
+            ->expects($this->any())
+            ->method('bindParam')
+            ->with(
+                static::equalTo(':foo'),
+                static::equalTo(false),
+                static::equalTo(PDO::PARAM_BOOL),
+            );
+        $this->statement->execute(['foo' => false]);
+    }
+
+    #[Test]
+    public function statementExecuteWillUsePdoIntForIntWhenBinding(): void
+    {
+        $this->pdoStatementMock
+            ->expects($this->any())
+            ->method('bindParam')
+            ->with(
+                static::equalTo(':foo'),
+                static::equalTo(123),
+                static::equalTo(PDO::PARAM_INT),
+            );
+        $this->statement->execute(['foo' => 123]);
+    }
+
+    #[Test]
+    public function statementExecuteWillUsePdoStrByDefaultWhenBinding(): void
+    {
+        $this->pdoStatementMock
+            ->expects($this->any())
+            ->method('bindParam')
+            ->with(
+                static::equalTo(':foo'),
+                static::equalTo('bar'),
+                static::equalTo(PDO::PARAM_STR),
+            );
+        $this->statement->execute(['foo' => 'bar']);
+    }
+
+    #[Test]
+    public function statementExecuteWillUsePdoStrForStringIntegerWhenBinding(): void
+    {
+        $this->pdoStatementMock
+            ->expects($this->any())
+            ->method('bindParam')
+            ->with(
+                static::equalTo(':foo'),
+                static::equalTo('123'),
+                static::equalTo(PDO::PARAM_STR),
+            );
+        $this->statement->execute(['foo' => '123']);
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -29,65 +86,21 @@ final class StatementIntegrationTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $driver = $this->getMockBuilder(PdoDriver::class)
-            ->onlyMethods(['createResult'])
-            ->disableOriginalConstructor()
+        $driver = $this->createStub(PdoDriverInterface::class);
+        $driver->method('createResult')->willReturn($this->createStub(ResultInterface::class));
+
+        $this->pdoStatementMock = $this->getMockBuilder(PDOStatement::class)
+            ->onlyMethods(['execute', 'bindParam'])
             ->getMock();
 
         $this->statement = new Statement();
         $this->statement->setDriver($driver);
-        $this->statement->initialize(new TestAsset\CtorlessPdo(
-            $this->pdoStatementMock = $this->getMockBuilder(PDOStatement::class)
-                ->onlyMethods(['execute', 'bindParam'])
-                ->getMock()
-        ));
+        $this->statement->initialize(new TestAsset\CtorlessPdo($this->pdoStatementMock));
     }
 
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown(): void
-    {
-    }
-
-    public function testStatementExecuteWillConvertPhpBoolToPdoBoolWhenBinding(): void
-    {
-        $this->pdoStatementMock->expects($this->any())->method('bindParam')->with(
-            $this->equalTo(':foo'),
-            $this->equalTo(false),
-            $this->equalTo(PDO::PARAM_BOOL)
-        );
-        $this->statement->execute(['foo' => false]);
-    }
-
-    public function testStatementExecuteWillUsePdoStrByDefaultWhenBinding(): void
-    {
-        $this->pdoStatementMock->expects($this->any())->method('bindParam')->with(
-            $this->equalTo(':foo'),
-            $this->equalTo('bar'),
-            $this->equalTo(PDO::PARAM_STR)
-        );
-        $this->statement->execute(['foo' => 'bar']);
-    }
-
-    public function testStatementExecuteWillUsePdoStrForStringIntegerWhenBinding(): void
-    {
-        $this->pdoStatementMock->expects($this->any())->method('bindParam')->with(
-            $this->equalTo(':foo'),
-            $this->equalTo('123'),
-            $this->equalTo(PDO::PARAM_STR)
-        );
-        $this->statement->execute(['foo' => '123']);
-    }
-
-    public function testStatementExecuteWillUsePdoIntForIntWhenBinding(): void
-    {
-        $this->pdoStatementMock->expects($this->any())->method('bindParam')->with(
-            $this->equalTo(':foo'),
-            $this->equalTo(123),
-            $this->equalTo(PDO::PARAM_INT)
-        );
-        $this->statement->execute(['foo' => 123]);
-    }
+    protected function tearDown(): void {}
 }
