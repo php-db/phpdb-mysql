@@ -89,15 +89,12 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         return [$sqls];
     }
 
-    /**
-     * @return array{string, int<0, 3>}|null
-     */
-    private function resolveAfterOption(string $option, mixed $value, PlatformInterface $platform): ?array
+    private function resolveAfterOption(string $option, mixed $value, PlatformInterface $platform): ?string
     {
         if ('after' !== $option) {
             return null;
         }
 
-        return [" AFTER {$platform->quoteIdentifier((string) $value)}", 2];
+        return $platform->quoteIdentifier((string) $value);
     }
 }

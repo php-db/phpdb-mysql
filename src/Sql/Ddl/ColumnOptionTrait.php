@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Sql\Ddl;
 
+use BackedEnum;
+use Closure;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Mysql\Sql\ColumnFormatEnum;
 use PhpDb\Mysql\Sql\StorageEnum;
 use PhpDb\Sql\Exception\InvalidArgumentException;
+use ValueError;
 
+use function array_flip;
+use function array_key_exists;
+use function array_keys;
 use function count;
 use function get_debug_type;
 use function is_string;
@@ -19,7 +25,9 @@ use function str_replace;
 use function strlen;
 use function strpos;
 use function strtolower;
+use function strtoupper;
 use function substr_replace;
+use function trim;
 use function uksort;
 
 /**
@@ -41,20 +49,29 @@ trait ColumnOptionTrait
 {
     private const string NAME_PATTERN = '/^[A-Za-z0-9_]+$/';
 
-    /** @var array<string, int> $columnOptionSortOrder Order options are emitted in, lowest first. */
-    protected array $columnOptionSortOrder = [
-        'unsigned'      => 0,
-        'zerofill'      => 1,
-        'charset'       => 2,
-        'collate'       => 3,
-        'identity'      => 4,
-        'serial'        => 4,
-        'autoincrement' => 4,
-        'comment'       => 5,
-        'columnformat'  => 6,
-        'format'        => 6,
-        'storage'       => 7,
-        'after'         => 8,
+    /**
+     * Column options in emission order, each mapped to its insert slot and SQL template.
+     *
+     * The slot indexes the array returned by {@see getSqlInsertOffsets()}, so an option's
+     * position here decides both where it lands in the definition and its order among
+     * the options sharing that slot. The template receives the resolved value as its
+     * sole sprintf argument, which flag options simply ignore.
+     *
+     * @var array<string, array{int<0, 3>, string}>
+     */
+    private const array COLUMN_OPTIONS = [
+        'unsigned'      => [0, ' UNSIGNED'],
+        'zerofill'      => [0, ' ZEROFILL'],
+        'charset'       => [0, ' CHARACTER SET %s'],
+        'collate'       => [0, ' COLLATE %s'],
+        'identity'      => [1, ' AUTO_INCREMENT'],
+        'serial'        => [1, ' AUTO_INCREMENT'],
+        'autoincrement' => [1, ' AUTO_INCREMENT'],
+        'comment'       => [2, ' COMMENT %s'],
+        'columnformat'  => [2, ' COLUMN_FORMAT %s'],
+        'format'        => [2, ' COLUMN_FORMAT %s'],
+        'storage'       => [2, ' STORAGE %s'],
+        'after'         => [2, ' AFTER %s'],
     ];
 
     /**
@@ -100,8 +117,10 @@ trait ColumnOptionTrait
      * Appends each option to $sql at the offset its keyword belongs to.
      *
      * @param array<string, mixed> $options
-     * @param (callable(string, mixed, PlatformInterface): ?array{string, int<0, 3>})|null $resolveExtra
-     *        Resolver for options only valid in the calling statement, tried before the common ones.
+     * @param (callable(string, mixed, PlatformInterface): ?string)|null $resolveExtra
+     *        Value resolver for options only valid in the calling statement, tried before the common one.
+     * @throws InvalidArgumentException If an option value would not be safe to emit unquoted.
+     * @throws ValueError If a COLUMN_FORMAT or STORAGE value is not a keyword its enum declares.
      */
     protected function processColumnOptions(
         string $sql,
@@ -119,15 +138,22 @@ trait ColumnOptionTrait
                 continue;
             }
 
-            $option   = $this->normalizeColumnOption($name);
+            $option = $this->normalizeColumnOption($name);
+
+            if (! array_key_exists($option, self::COLUMN_OPTIONS)) {
+                continue;
+            }
+
             $resolved = null === $resolveExtra ? null : $resolveExtra($option, $value, $platform);
-            $resolved ??= $this->resolveColumnOption($option, $value, $platform);
+            $resolved ??= $this->resolveColumnOptionValue($option, $value, $platform);
 
             if (null === $resolved) {
                 continue;
             }
 
-            [$insert, $j] = $resolved;
+            [$j, $template] = self::COLUMN_OPTIONS[$option];
+
+            $insert = sprintf($template, $resolved);
             $length = strlen($insert);
 
             foreach ($insertStart as $slot => $offset) {
@@ -148,13 +174,34 @@ trait ColumnOptionTrait
 
     private function compareColumnOptions(string $columnA, string $columnB): int
     {
-        $columnA = $this->normalizeColumnOption($columnA);
-        $columnA = $this->columnOptionSortOrder[$columnA] ?? count($this->columnOptionSortOrder);
+        $sortOrder = array_flip(array_keys(self::COLUMN_OPTIONS));
+        $unknown   = count($sortOrder);
 
-        $columnB = $this->normalizeColumnOption($columnB);
-        $columnB = $this->columnOptionSortOrder[$columnB] ?? count($this->columnOptionSortOrder);
+        $columnA = $sortOrder[$this->normalizeColumnOption($columnA)] ?? $unknown;
+        $columnB = $sortOrder[$this->normalizeColumnOption($columnB)] ?? $unknown;
 
         return $columnA - $columnB;
+    }
+
+    /**
+     * Backed enums match case-sensitively, so the value is upper-cased before it is handed to the enum.
+     *
+     * @param Closure(string): BackedEnum $from The enum's from() method, which validates the keyword.
+     * @return string The keyword to emit, as declared by the matching enum case.
+     * @throws InvalidArgumentException If the value is not a string.
+     * @throws ValueError If the value is not one of the declared keywords.
+     */
+    private function getColumnOptionKeyword(string $option, Closure $from, mixed $value): string
+    {
+        if (! is_string($value)) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid value for the "%s" column option; expected a keyword string, received "%s"',
+                $option,
+                get_debug_type($value),
+            ));
+        }
+
+        return (string) $from(strtoupper(trim($value)))->value;
     }
 
     /**
@@ -181,21 +228,20 @@ trait ColumnOptionTrait
     }
 
     /**
-     * @return array{string, int<0, 3>}|null The SQL to insert and the offset index it belongs at.
-     * @throws InvalidArgumentException If the option value would not be safe to emit unquoted.
+     * @return string|null The value to substitute into the option's SQL template, empty for flags,
+     *                     or null when the option is only valid in a statement with its own resolver.
+     * @throws InvalidArgumentException If the value would not be safe to emit unquoted.
+     * @throws ValueError If a COLUMN_FORMAT or STORAGE value is not a keyword its enum declares.
      */
-    private function resolveColumnOption(string $option, mixed $value, PlatformInterface $platform): ?array
+    private function resolveColumnOptionValue(string $option, mixed $value, PlatformInterface $platform): ?string
     {
         return match ($option) {
-            'unsigned'                            => [' UNSIGNED', 0],
-            'zerofill'                            => [' ZEROFILL', 0],
-            'charset' => [" CHARACTER SET {$this->getColumnOptionName('charset', $value)}", 0],
-            'collate'                             => [" COLLATE {$this->getColumnOptionName('collate', $value)}", 0],
-            'identity', 'serial', 'autoincrement' => [' AUTO_INCREMENT', 1],
-            'comment'                             => [" COMMENT {$platform->quoteValue((string) $value)}", 2],
-            'columnformat', 'format' => [' COLUMN_FORMAT ' . ColumnFormatEnum::getOptionValue($value)->value, 2],
-            'storage'                             => [' STORAGE ' . StorageEnum::getOptionValue($value)->value, 2],
-            default                               => null,
+            'after'                  => null,
+            'charset', 'collate'     => $this->getColumnOptionName($option, $value),
+            'comment'                => $platform->quoteValue((string) $value),
+            'columnformat', 'format' => $this->getColumnOptionKeyword($option, ColumnFormatEnum::from(...), $value),
+            'storage'                => $this->getColumnOptionKeyword($option, StorageEnum::from(...), $value),
+            default                  => '',
         };
     }
 }

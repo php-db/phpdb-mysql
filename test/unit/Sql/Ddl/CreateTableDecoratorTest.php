@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Mysql\Sql\Ddl;
 
+use BackedEnum;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
@@ -18,20 +19,19 @@ use PhpDb\Sql\Ddl\Constraint;
 use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Exception\InvalidArgumentException;
 use PhpDbTest\Mysql\Sql\Ddl\TestAsset\ColumnOptionMatrix;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ValueError;
 
 use function sprintf;
+use function strtoupper;
 
 #[CoversMethod(CreateTableDecorator::class, 'setSubject')]
 #[CoversMethod(CreateTableDecorator::class, 'processColumns')]
 #[CoversTrait(ColumnOptionTrait::class)]
-#[CoversClass(ColumnFormatEnum::class)]
-#[CoversClass(StorageEnum::class)]
 final class CreateTableDecoratorTest extends TestCase
 {
     protected AdapterPlatform $platform;
@@ -50,23 +50,43 @@ final class CreateTableDecoratorTest extends TestCase
         ]);
     }
 
+    /** @return array<string, array{string}> */
+    public static function keywordOptionProvider(): array
+    {
+        return [
+            'columnformat' => ['columnformat'],
+            'storage'      => ['storage'],
+        ];
+    }
+
     /** @return array<string, array{string, string, string}> */
     public static function unsafeColumnOptionProvider(): array
     {
         return [
-            'charset statement terminator'      => ['charset', 'utf8mb3; DROP TABLE users; --', 'charset'],
-            'charset quoted value'              => ['charset', "'utf8mb3'", 'charset'],
-            'charset backtick'                  => ['charset', 'utf8mb3` DEFAULT `', 'charset'],
-            'collate statement terminator'      => [
+            'charset statement terminator' => ['charset', 'utf8mb3; DROP TABLE users; --', 'charset'],
+            'charset quoted value'         => ['charset', "'utf8mb3'", 'charset'],
+            'charset backtick'             => ['charset', 'utf8mb3` DEFAULT `', 'charset'],
+            'collate statement terminator' => [
                 'collate',
                 'utf8mb3_unicode_ci; DROP TABLE users; --',
                 'collate',
             ],
-            'collate trailing clause'           => ['collate', 'utf8mb3_unicode_ci COMMENT "x"', 'collate'],
-            'columnformat statement terminator' => ['column_format', 'FIXED; DROP TABLE users; --', 'columnformat'],
-            'columnformat unknown keyword'      => ['column_format', 'COMPRESSED', 'columnformat'],
-            'storage statement terminator'      => ['storage', 'DISK; DROP TABLE users; --', 'storage'],
-            'storage unknown keyword'           => ['storage', 'TAPE', 'storage'],
+            'collate trailing clause'      => ['collate', 'utf8mb3_unicode_ci COMMENT "x"', 'collate'],
+        ];
+    }
+
+    /** @return array<string, array{string, string, class-string<BackedEnum>}> */
+    public static function unsafeKeywordOptionProvider(): array
+    {
+        return [
+            'columnformat statement terminator' => [
+                'column_format',
+                'FIXED; DROP TABLE users; --',
+                ColumnFormatEnum::class,
+            ],
+            'columnformat unknown keyword'      => ['column_format', 'COMPRESSED', ColumnFormatEnum::class],
+            'storage statement terminator'      => ['storage', 'DISK; DROP TABLE users; --', StorageEnum::class],
+            'storage unknown keyword'           => ['storage', 'TAPE', StorageEnum::class],
         ];
     }
 
@@ -279,6 +299,41 @@ final class CreateTableDecoratorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $reportedOption));
+
+        $this->buildSql($table);
+    }
+
+    #[Test]
+    #[DataProvider('unsafeKeywordOptionProvider')]
+    public function rejectsKeywordOptionValueThatWouldInjectSql(string $option, string $value, string $enum): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, $value);
+        $table->addColumn($col);
+
+        $this->expectException(ValueError::class);
+        $this->expectExceptionMessage(sprintf(
+            '"%s" is not a valid backing value for enum %s',
+            strtoupper($value),
+            $enum,
+        ));
+
+        $this->buildSql($table);
+    }
+
+    #[Test]
+    #[DataProvider('keywordOptionProvider')]
+    public function rejectsNonStringKeywordOptionValue(string $option): void
+    {
+        $table = new CreateTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, true);
+        $table->addColumn($col);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $option));
+        $this->expectExceptionMessage('received "bool"');
 
         $this->buildSql($table);
     }

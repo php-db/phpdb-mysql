@@ -4,16 +4,6 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Sql;
 
-use PhpDb\Sql\Exception\InvalidArgumentException;
-
-use function array_map;
-use function get_debug_type;
-use function implode;
-use function is_string;
-use function sprintf;
-use function strtoupper;
-use function trim;
-
 /**
  * Keywords accepted by the STORAGE column option.
  *
@@ -23,26 +13,4 @@ enum StorageEnum: string
 {
     case Disk   = 'DISK';
     case Memory = 'MEMORY';
-
-    /**
-     * Backed enums match case-sensitively, so the option value is upper-cased before lookup.
-     *
-     * @return self The case whose value is emitted as the STORAGE keyword.
-     * @throws InvalidArgumentException If the value is not one of the declared keywords.
-     */
-    public static function getOptionValue(mixed $value): self
-    {
-        $keyword = is_string($value) ? strtoupper(trim($value)) : '';
-        $storage = self::tryFrom($keyword);
-
-        if (null === $storage) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid value for the "storage" column option; expected one of %s, received "%s"',
-                implode(', ', array_map(static fn(self $case): string => $case->value, self::cases())),
-                is_string($value) ? $value : get_debug_type($value),
-            ));
-        }
-
-        return $storage;
-    }
 }
