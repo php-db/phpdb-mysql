@@ -7,6 +7,7 @@ namespace PhpDbTest\Mysql;
 use Exception;
 use mysqli;
 use Override;
+use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
 use PhpDb\Mysql\Result;
@@ -24,6 +25,8 @@ use const MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
 #[RequiresPhpExtension('mysqli')]
 #[CoversMethod(Connection::class, 'setDriver')]
 #[CoversMethod(Connection::class, 'connect')]
+#[CoversMethod(Connection::class, 'execute')]
+#[CoversMethod(Connection::class, 'rollback')]
 final class ConnectionTest extends TestCase
 {
     // fake test-only credential, not a real secret
@@ -50,6 +53,19 @@ final class ConnectionTest extends TestCase
     }
 
     #[Test]
+    public function executeWithoutDriverThrows(): void
+    {
+        $mysqli = $this->createStub(mysqli::class);
+        $mysqli->method('query')->willReturn(true);
+
+        $connection = new Connection($mysqli);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot execute without a driver; call setDriver() first.');
+        $connection->execute('SELECT 1');
+    }
+
+    #[Test]
     public function getConnectionParameters(): void
     {
         $this->connection->setConnectionParameters(['foo' => 'bar']);
@@ -73,6 +89,14 @@ final class ConnectionTest extends TestCase
         );
 
         $connection->connect();
+    }
+
+    #[Test]
+    public function rollbackWithoutConnectionThrows(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Must be connected before you can rollback.');
+        $this->connection->rollback();
     }
 
     #[Test]

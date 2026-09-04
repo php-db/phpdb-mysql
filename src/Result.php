@@ -11,9 +11,12 @@ use mysqli_stmt;
 use Override;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
+use PhpDb\ResultSet\ResultSet;
+use PhpDb\ResultSet\ResultSetInterface;
 // phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
 use ReturnTypeWillChange;
 
+use function array_combine;
 use function array_fill;
 use function call_user_func_array;
 use function count;
@@ -138,6 +141,29 @@ final class Result implements Iterator, ResultInterface
     public function getGeneratedValue(): string|int|false|null
     {
         return $this->generatedValue;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws Exception\RuntimeException When isQueryResult() is false.
+     * @throws \Exception If the seeded result set rejects this result as its data source.
+     */
+    #[Override]
+    public function getQueryResult(?ResultSetInterface $resultPrototype = null): ResultSetInterface
+    {
+        if (! $this->isQueryResult()) {
+            throw new Exception\RuntimeException(
+                'Cannot produce a query result set from a result that is not a query result;'
+                    . ' check isQueryResult() first',
+            );
+        }
+
+        $resultPrototype ??= new ResultSet();
+        $resultSet       = clone $resultPrototype;
+        $resultSet->initialize($this);
+
+        return $resultSet;
     }
 
     /**
@@ -282,14 +308,13 @@ final class Result implements Iterator, ResultInterface
      */
     protected function loadDataFromMysqliStatement(): bool
     {
-        if (! $this->resource instanceof mysqli_stmt) {
-            throw new Exception\RuntimeException('Expected resource to be an instance of mysqli_stmt');
-        }
+        /** @var mysqli_stmt $statement */
+        $statement = $this->resource;
 
         // build the default reference based bind structure, if it does not already exist
         if (null === $this->statementBindValues['keys']) {
             $this->statementBindValues['keys'] = [];
-            $resultResource                    = $this->resource->result_metadata();
+            $resultResource                    = $statement->result_metadata();
             if (false === $resultResource) {
                 return $resultResource;
             }
@@ -307,24 +332,23 @@ final class Result implements Iterator, ResultInterface
             foreach ($this->statementBindValues['values'] as $i => &$f) {
                 $refs[$i] = &$f;
             }
-            call_user_func_array([$this->resource, 'bind_result'], $this->statementBindValues['values']);
+            call_user_func_array([$statement, 'bind_result'], $this->statementBindValues['values']);
         }
 
-        if (($r = $this->resource->fetch()) === null) {
+        if (($r = $statement->fetch()) === null) {
             if (! $this->isBuffered) {
-                $this->resource->close();
+                $statement->close();
             }
             return false;
         }
 
         if (! $r) {
-            throw new Exception\RuntimeException($this->resource->error);
+            throw new Exception\RuntimeException($statement->error);
         }
 
-        // dereference
-        for ($i = 0, $count = count($this->statementBindValues['keys']); $i < $count; $i++) {
-            $this->currentData[$this->statementBindValues['keys'][$i]] = $this->statementBindValues['values'][$i];
-        }
+        // dereference: values was filled to the same length as keys when the bindings were built
+        $this->currentData = array_combine($this->statementBindValues['keys'], $this->statementBindValues['values']);
+
         $this->currentComplete = true;
         $this->nextComplete    = true;
         $this->position++;

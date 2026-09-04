@@ -4,27 +4,104 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Mysql\Sql\Ddl;
 
+use BackedEnum;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
+use PhpDb\Mysql\Sql\ColumnFormatEnum;
 use PhpDb\Mysql\Sql\Ddl\AlterTableDecorator;
+use PhpDb\Mysql\Sql\Ddl\ColumnOptionTrait;
+use PhpDb\Mysql\Sql\StorageEnum;
 use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Ddl\Column;
+use PhpDb\Sql\Exception\InvalidArgumentException;
+use PhpDbTest\Mysql\Sql\Ddl\TestAsset\ColumnOptionMatrix;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ValueError;
+
+use function sprintf;
+use function strtoupper;
 
 #[CoversMethod(AlterTableDecorator::class, 'setSubject')]
 #[CoversMethod(AlterTableDecorator::class, 'processAddColumns')]
 #[CoversMethod(AlterTableDecorator::class, 'processChangeColumns')]
-#[CoversMethod(AlterTableDecorator::class, 'getSqlInsertOffsets')]
-#[CoversMethod(AlterTableDecorator::class, 'compareColumnOptions')]
-#[CoversMethod(AlterTableDecorator::class, 'normalizeColumnOption')]
+#[CoversMethod(AlterTableDecorator::class, 'resolveAfterOption')]
+#[CoversTrait(ColumnOptionTrait::class)]
 final class AlterTableDecoratorTest extends TestCase
 {
     protected AdapterPlatform $platform;
+
+    /** @return array<string, array{array<string, bool|string>, string}> */
+    public static function addColumnMatrixProvider(): array
+    {
+        return ColumnOptionMatrix::pairedWith([
+            'all options' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY AFTER `id`",
+            'charset collate' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
+            'format storage' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
+            'reverse declared' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) UNSIGNED CHARACTER SET latin1 NOT NULL COMMENT 'c' STORAGE DISK",
+            'unknown option' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
+            'after only' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL AFTER `other_col`",
+            'falsy skipped' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
+        ]);
+    }
+
+    /** @return array<string, array{array<string, bool|string>, string}> */
+    public static function changeColumnMatrixProvider(): array
+    {
+        return ColumnOptionMatrix::pairedWith([
+            'all options' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY",
+            'charset collate' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
+            'format storage' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
+            'reverse declared' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) UNSIGNED CHARACTER SET latin1 NOT NULL COMMENT 'c' STORAGE DISK",
+            'unknown option' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
+            'after only' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL",
+            'falsy skipped' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
+        ]);
+    }
+
+    /** @return array<string, array{string}> */
+    public static function keywordOptionProvider(): array
+    {
+        return [
+            'columnformat' => ['columnformat'],
+            'storage'      => ['storage'],
+        ];
+    }
+
+    /** @return array<string, array{string, string, string}> */
+    public static function unsafeColumnOptionProvider(): array
+    {
+        return [
+            'charset statement terminator' => ['charset', 'utf8mb3; DROP TABLE users; --', 'charset'],
+            'charset quoted value'         => ['charset', "'utf8mb3'", 'charset'],
+            'collate statement terminator' => [
+                'collate',
+                'utf8mb3_unicode_ci; DROP TABLE users; --',
+                'collate',
+            ],
+        ];
+    }
+
+    /** @return array<string, array{string, string, class-string<BackedEnum>}> */
+    public static function unsafeKeywordOptionProvider(): array
+    {
+        return [
+            'columnformat statement terminator' => [
+                'column_format',
+                'FIXED; DROP TABLE users; --',
+                ColumnFormatEnum::class,
+            ],
+            'columnformat unknown keyword'      => ['column_format', 'COMPRESSED', ColumnFormatEnum::class],
+            'storage statement terminator'      => ['storage', 'DISK; DROP TABLE users; --', StorageEnum::class],
+            'storage unknown keyword'           => ['storage', 'TAPE', StorageEnum::class],
+        ];
+    }
 
     #[Test]
     public function addColumnAfter(): void
@@ -128,6 +205,62 @@ final class AlterTableDecoratorTest extends TestCase
         $alter->addColumn($col);
 
         static::assertStringContainsString('COLUMN_FORMAT FIXED', $this->buildSql($alter));
+    }
+
+    #[Test]
+    #[DataProvider('unsafeKeywordOptionProvider')]
+    public function addColumnRejectsKeywordOptionValueThatWouldInjectSql(
+        string $option,
+        string $value,
+        string $enum,
+    ): void {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, $value);
+        $alter->addColumn($col);
+
+        $this->expectException(ValueError::class);
+        $this->expectExceptionMessage(sprintf(
+            '"%s" is not a valid backing value for enum %s',
+            strtoupper($value),
+            $enum,
+        ));
+
+        $this->buildSql($alter);
+    }
+
+    #[Test]
+    #[DataProvider('keywordOptionProvider')]
+    public function addColumnRejectsNonStringKeywordOptionValue(string $option): void
+    {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, true);
+        $alter->addColumn($col);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $option));
+        $this->expectExceptionMessage('received "bool"');
+
+        $this->buildSql($alter);
+    }
+
+    #[Test]
+    #[DataProvider('unsafeColumnOptionProvider')]
+    public function addColumnRejectsOptionValueThatWouldInjectSql(
+        string $option,
+        string $value,
+        string $reportedOption,
+    ): void {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, $value);
+        $alter->addColumn($col);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $reportedOption));
+
+        $this->buildSql($alter);
     }
 
     #[Test]
@@ -256,6 +389,62 @@ final class AlterTableDecoratorTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('unsafeKeywordOptionProvider')]
+    public function changeColumnRejectsKeywordOptionValueThatWouldInjectSql(
+        string $option,
+        string $value,
+        string $enum,
+    ): void {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, $value);
+        $alter->changeColumn('name', $col);
+
+        $this->expectException(ValueError::class);
+        $this->expectExceptionMessage(sprintf(
+            '"%s" is not a valid backing value for enum %s',
+            strtoupper($value),
+            $enum,
+        ));
+
+        $this->buildSql($alter);
+    }
+
+    #[Test]
+    #[DataProvider('keywordOptionProvider')]
+    public function changeColumnRejectsNonStringKeywordOptionValue(string $option): void
+    {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, true);
+        $alter->changeColumn('name', $col);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $option));
+        $this->expectExceptionMessage('received "bool"');
+
+        $this->buildSql($alter);
+    }
+
+    #[Test]
+    #[DataProvider('unsafeColumnOptionProvider')]
+    public function changeColumnRejectsOptionValueThatWouldInjectSql(
+        string $option,
+        string $value,
+        string $reportedOption,
+    ): void {
+        $alter = new AlterTable('test');
+        $col   = new Column\Varchar('name', 255);
+        $col->setOption($option, $value);
+        $alter->changeColumn('name', $col);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Invalid value for the "%s" column option', $reportedOption));
+
+        $this->buildSql($alter);
+    }
+
+    #[Test]
     public function changeColumnStorage(): void
     {
         $alter = new AlterTable('test');
@@ -288,6 +477,36 @@ final class AlterTableDecoratorTest extends TestCase
         static::assertStringContainsString('ZEROFILL', $this->buildSql($alter));
     }
 
+    /**
+     * Pins the exact DDL produced for a matrix of column options on an added column.
+     *
+     * @param array<string, bool|string> $options
+     */
+    #[Test]
+    #[DataProvider('addColumnMatrixProvider')]
+    public function generatesExpectedSqlForAddedColumnOptions(array $options, string $expected): void
+    {
+        $alter = new AlterTable('test');
+        $alter->addColumn($this->makeColumn($options));
+
+        static::assertSame($expected, $this->buildSql($alter));
+    }
+
+    /**
+     * Pins the exact DDL produced for a matrix of column options on a changed column.
+     *
+     * @param array<string, bool|string> $options
+     */
+    #[Test]
+    #[DataProvider('changeColumnMatrixProvider')]
+    public function generatesExpectedSqlForChangedColumnOptions(array $options, string $expected): void
+    {
+        $alter = new AlterTable('test');
+        $alter->changeColumn('name', $this->makeColumn($options));
+
+        static::assertSame($expected, $this->buildSql($alter));
+    }
+
     protected function setUp(): void
     {
         $driver = new Driver(
@@ -304,5 +523,18 @@ final class AlterTableDecoratorTest extends TestCase
         $decorator->setSubject($table);
 
         return $decorator->getSqlString($this->platform);
+    }
+
+    /** @param array<string, bool|string> $options */
+    private function makeColumn(array $options): Column\Varchar
+    {
+        $col = new Column\Varchar('name', 255);
+        $col->setNullable(false);
+
+        foreach ($options as $name => $value) {
+            $col->setOption($name, $value);
+        }
+
+        return $col;
     }
 }
