@@ -16,6 +16,7 @@ use PhpDb\ResultSet\ResultSetInterface;
 // phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
 use ReturnTypeWillChange;
 
+use function array_combine;
 use function array_fill;
 use function call_user_func_array;
 use function count;
@@ -345,10 +346,11 @@ final class Result implements Iterator, ResultInterface
             throw new Exception\RuntimeException($statement->error);
         }
 
-        // dereference
-        for ($i = 0, $count = count($this->statementBindValues['keys']); $i < $count; $i++) {
-            $this->currentData[$this->statementBindValues['keys'][$i]] = $this->statementBindValues['values'][$i];
-        }
+        // dereference: values was filled to the same length as keys when the bindings were built
+        $this->currentData     = array_combine(
+            $this->statementBindValues['keys'],
+            $this->statementBindValues['values'],
+        );
         $this->currentComplete = true;
         $this->nextComplete    = true;
         $this->position++;

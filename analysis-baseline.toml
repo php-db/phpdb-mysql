@@ -470,36 +470,6 @@ count = 1
 
 [[issues]]
 file = "src/Result.php"
-code = "possibly-null-array-index"
-message = "Possibly using `null` as an array index to access element."
-count = 1
-
-[[issues]]
-file = "src/Result.php"
-code = "possibly-undefined-int-array-index"
-message = "Possibly undefined array index accessed on `list<null>`."
-count = 1
-
-[[issues]]
-file = "src/Result.php"
-code = "possibly-undefined-int-array-index"
-message = "Possibly undefined array index accessed on `list<string>`."
-count = 1
-
-[[issues]]
-file = "src/Result.php"
-code = "possibly-undefined-int-array-index"
-message = "Possibly undefined array key `non-negative-int` accessed on `array<array-key, string>`."
-count = 1
-
-[[issues]]
-file = "src/Result.php"
-code = "possibly-undefined-int-array-index"
-message = "Possibly undefined array key `non-negative-int` accessed on `array<int, mixed>`."
-count = 1
-
-[[issues]]
-file = "src/Result.php"
 code = "unused-property"
 message = "Property `$numberOfRows` is never used."
 count = 1
