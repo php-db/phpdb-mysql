@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Sql\Ddl;
 
-use BackedEnum;
 use Closure;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Mysql\Sql\ColumnFormatEnum;
@@ -186,7 +185,7 @@ trait ColumnOptionTrait
     /**
      * Backed enums match case-sensitively, so the value is upper-cased before it is handed to the enum.
      *
-     * @param Closure(string): BackedEnum $from The enum's from() method, which validates the keyword.
+     * @param Closure(string): (ColumnFormatEnum|StorageEnum) $from The enum's from() method, which validates the keyword.
      * @return string The keyword to emit, as declared by the matching enum case.
      * @throws InvalidArgumentException If the value is not a string.
      * @throws ValueError If the value is not one of the declared keywords.
@@ -201,7 +200,7 @@ trait ColumnOptionTrait
             ));
         }
 
-        return (string) $from(strtoupper(trim($value)))->value;
+        return $from(strtoupper(trim($value)))->value;
     }
 
     /**
