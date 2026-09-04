@@ -347,10 +347,8 @@ final class Result implements Iterator, ResultInterface
         }
 
         // dereference: values was filled to the same length as keys when the bindings were built
-        $this->currentData     = array_combine(
-            $this->statementBindValues['keys'],
-            $this->statementBindValues['values'],
-        );
+        $this->currentData = array_combine($this->statementBindValues['keys'], $this->statementBindValues['values']);
+
         $this->currentComplete = true;
         $this->nextComplete    = true;
         $this->position++;
