@@ -262,30 +262,29 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
-                "reference": "e037464a435005e04a3fde3c113324c26406ce7e"
+                "reference": "b57f549b411d0b4fe46de8a469983816395be850"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-db/phpdb/zipball/e037464a435005e04a3fde3c113324c26406ce7e",
-                "reference": "e037464a435005e04a3fde3c113324c26406ce7e",
+                "url": "https://api.github.com/repos/php-db/phpdb/zipball/b57f549b411d0b4fe46de8a469983816395be850",
+                "reference": "b57f549b411d0b4fe46de8a469983816395be850",
                 "shasum": ""
             },
             "require": {
                 "laminas/laminas-servicemanager": "^3.0.0 || ^4.0.0",
                 "laminas/laminas-stdlib": "^3.20.0",
-                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
+                "php": "~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "conflict": {
                 "laminas/laminas-db": "*",
                 "zendframework/zend-db": "*"
             },
             "require-dev": {
-                "laminas/laminas-coding-standard": "^3.0.1",
+                "infection/infection": "^0.34.1",
                 "laminas/laminas-eventmanager": "^3.14.0",
                 "laminas/laminas-hydrator": "^4.6.0",
+                "php-db/phpdb-qa-tools": "0.1.x-dev",
                 "phpbench/phpbench": "^1.4",
-                "phpstan/phpstan": "^2.1",
-                "phpstan/phpstan-phpunit": "^2.0",
                 "phpunit/phpunit": "^11.5.42",
                 "rector/rector": "^2.0"
             },
@@ -323,7 +322,7 @@
                 "issues": "https://github.com/php-db/phpdb/issues",
                 "source": "https://github.com/php-db/phpdb"
             },
-            "time": "2026-07-08T05:31:35+00:00"
+            "time": "2026-08-24T01:49:39+00:00"
         },
         {
             "name": "psr/container",
@@ -4500,5 +4499,5 @@
     "platform-overrides": {
         "php": "8.3.99"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

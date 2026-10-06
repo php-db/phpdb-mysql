@@ -158,6 +158,23 @@ final class ConnectionTest extends TestCase
     }
 
     #[Test]
+    public function getCurrentSchemaAutoConnects(): void
+    {
+        $connection = new Connection([
+            'hostname' => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_HOSTNAME'),
+            'username' => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_USERNAME'),
+            'password' => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PASSWORD'),
+            'dbname'   => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
+            'port'     => (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_PORT'),
+        ]);
+
+        static::assertSame(
+            (string) getenv('TESTS_PHPDB_ADAPTER_MYSQL_DATABASE'),
+            $connection->getCurrentSchema(),
+        );
+    }
+
+    #[Test]
     public function getLastGeneratedValue(): void
     {
         /** @var ConnectionInterface&PdoConnectionInterface&AbstractConnection&AbstractPdoConnection&Connection $connection */

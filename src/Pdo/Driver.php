@@ -7,7 +7,6 @@ namespace PhpDb\Mysql\Pdo;
 use Override;
 use PDO;
 use PDOStatement;
-use PhpDb\Adapter\Driver\Feature\DriverFeatureProviderInterface;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdo;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
@@ -24,6 +23,7 @@ final class Driver extends AbstractPdo
     /**
      * @param array<string, mixed> $features
      */
+    // @mago-expect analysis:unused-parameter
     public function __construct(
         (PdoConnectionInterface&PdoDriverAwareInterface)|PDO $connection,
         StatementInterface&PdoDriverAwareInterface $statementPrototype = new Statement(),
@@ -39,11 +39,6 @@ final class Driver extends AbstractPdo
         }
 
         $this->statementPrototype->setDriver($this);
-
-        // $features is not constructor promoted because $this->features is defined in the trait
-        if ([] !== $features && $this instanceof DriverFeatureProviderInterface) {
-            $this->addFeatures($features);
-        }
     }
 
     /**

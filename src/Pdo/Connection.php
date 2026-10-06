@@ -17,10 +17,11 @@ use function implode;
 use function is_array;
 use function is_int;
 use function is_string;
+use function preg_match;
+use function sprintf;
 use function strtolower;
 
 // @mago-expect lint:cyclomatic-complexity
-// @mago-expect lint:kan-defect
 final class Connection extends AbstractPdoConnection
 {
     // @mago-expect analysis:write-only-property - read by the parent's final AbstractPdoConnection::getDsn()
@@ -104,22 +105,22 @@ final class Connection extends AbstractPdoConnection
         if (null === $dsn) {
             $dsn = [];
             if (null !== $database) {
-                $dsn[] = "dbname={$database}";
+                $dsn[] = "dbname={$this->getDsnParameter('dbname', $database)}";
             }
             if (null !== $hostname) {
-                $dsn[] = "host={$hostname}";
+                $dsn[] = "host={$this->getDsnParameter('host', $hostname)}";
             }
             if (null !== $port) {
                 $dsn[] = "port={$port}";
             }
             if (null !== $charset) {
-                $dsn[] = "charset={$charset}";
+                $dsn[] = "charset={$this->getDsnParameter('charset', $charset)}";
             }
             if (null !== $unixSocket) {
-                $dsn[] = "unix_socket={$unixSocket}";
+                $dsn[] = "unix_socket={$this->getDsnParameter('unix_socket', $unixSocket)}";
             }
             if (null !== $version) {
-                $dsn[] = "version={$version}";
+                $dsn[] = "version={$this->getDsnParameter('version', $version)}";
             }
             $dsn = 'mysql:' . implode(';', $dsn);
         }
@@ -132,9 +133,7 @@ final class Connection extends AbstractPdoConnection
             $this->driverName = strtolower((string) $this->resource->getAttribute(PDO::ATTR_DRIVER_NAME));
         } catch (PDOException $e) {
             $code = $e->getCode();
-            if (! is_int($code)) {
-                $code = 0;
-            }
+            $code = is_int($code) ? $code : 0;
             throw new Exception\RuntimeException("Connect Error: {$e->getMessage()}", $code, $e);
         }
 
@@ -154,13 +153,10 @@ final class Connection extends AbstractPdoConnection
             $this->connect();
         }
 
-        if (null === $this->resource) {
-            throw new Exception\RuntimeException(
-                'Cannot query current schema without a connected resource; call connect() first.',
-            );
-        }
+        /** @var PDO $resource */
+        $resource = $this->resource;
 
-        $result = $this->resource->query('SELECT DATABASE()');
+        $result = $resource->query('SELECT DATABASE()');
         if (! $result instanceof PDOStatement) {
             return false;
         }
@@ -185,5 +181,26 @@ final class Connection extends AbstractPdoConnection
         }
 
         return false;
+    }
+
+    /**
+     * Return a value that is safe to interpolate into a generated DSN.
+     *
+     * @todo Promote to AbstractPdoConnection in php-db/phpdb as a protected method once a second
+     *       PDO driver package needs it — the validation is generic to all semicolon-delimited
+     *       PDO DSN formats and has no MySQL-specific dependencies.
+     *
+     * @throws Exception\InvalidConnectionParametersException If the value contains DSN control characters.
+     */
+    private function getDsnParameter(string $name, string $value): string
+    {
+        if (preg_match('/[;\x00-\x1f]/', $value) === 1) {
+            throw new Exception\InvalidConnectionParametersException(
+                sprintf('The "%s" connection parameter contains invalid characters', $name),
+                $this->connectionParameters,
+            );
+        }
+
+        return $value;
     }
 }
