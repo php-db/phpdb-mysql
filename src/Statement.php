@@ -209,23 +209,27 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         $args       = [];
 
         foreach ($parameters as $name => &$value) {
-            if ($this->parameterContainer->offsetHasErrata($name)) {
-                switch ($this->parameterContainer->offsetGetErrata($name)) {
-                    case ParameterContainer::TYPE_DOUBLE:
-                        $type .= 'd';
-                        break;
-                    case ParameterContainer::TYPE_NULL:
-                        $value = null; // as per @see http://www.php.net/manual/en/mysqli-stmt.bind-param.php#96148
-                    case ParameterContainer::TYPE_INTEGER:
-                        $type .= 'i';
-                        break;
-                    case ParameterContainer::TYPE_STRING:
-                    default:
-                        $type .= 's';
-                        break;
-                }
-            }
             $args[] = &$value;
+
+            if (! $this->parameterContainer->offsetHasErrata($name)) {
+                $type .= 's';
+                continue;
+            }
+
+            switch ($this->parameterContainer->offsetGetErrata($name)) {
+                case ParameterContainer::TYPE_DOUBLE:
+                    $type .= 'd';
+                    break;
+                case ParameterContainer::TYPE_NULL:
+                    $value = null; // as per @see http://www.php.net/manual/en/mysqli-stmt.bind-param.php#96148
+                case ParameterContainer::TYPE_INTEGER:
+                    $type .= 'i';
+                    break;
+                case ParameterContainer::TYPE_STRING:
+                default:
+                    $type .= 's';
+                    break;
+            }
         }
 
         if ($args) {
@@ -234,14 +238,10 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
         }
     }
 
-    public function __clone()
+    /** Perform a deep clone */
+    public function __clone(): void
     {
         $this->isPrepared         = false;
         $this->parameterContainer = clone $this->parameterContainer;
-
-        /**
-         * TODO: @tyrsson @simon-mundy
-         * Track down when this was dropped and why.
-         */
     }
 }
