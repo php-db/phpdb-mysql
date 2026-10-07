@@ -24,8 +24,8 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
 {
     protected ?ProfilerInterface $profiler = null;
 
-    /** @var array */
-    protected $options = [
+    /** @var array $options */
+    protected array $options = [
         'buffer_results' => false,
     ];
 

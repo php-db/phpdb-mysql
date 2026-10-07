@@ -277,12 +277,6 @@ message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()`
 count = 1
 
 [[issues]]
-file = "src/Driver.php"
-code = "missing-property-type"
-message = "Property `$options` is missing a type hint."
-count = 1
-
-[[issues]]
 file = "src/Metadata/Source.php"
 code = "impossible-condition"
 message = "This condition (type `false`) will always evaluate to false."
