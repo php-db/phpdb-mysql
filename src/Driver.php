@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDb\Mysql;
 
 use mysqli;
+use mysqli_result;
 use mysqli_stmt;
 use Override;
 use PhpDb\Adapter\Driver\ConnectionInterface;
