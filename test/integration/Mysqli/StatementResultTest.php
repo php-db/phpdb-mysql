@@ -54,6 +54,36 @@ final class StatementResultTest extends TestCase
     }
 
     #[Test]
+    public function bindsMixedTypedAndUntypedParameters(): void
+    {
+        $container = new ParameterContainer();
+        $container->offsetSet('id', 1, ParameterContainer::TYPE_INTEGER);
+        $container->offsetSet('value', 'bar');
+
+        $result = $this->createDriver(false)
+            ->createStatement('SELECT * FROM test WHERE id = ? AND value = ?')
+            ->execute($container);
+
+        static::assertNotNull($result);
+        static::assertSame(['id' => 1, 'name' => 'foo', 'value' => 'bar'], $result->current());
+    }
+
+    #[Test]
+    public function bindsUntypedParametersAsStrings(): void
+    {
+        $container = new ParameterContainer();
+        $container->offsetSet('id', '1');
+        $container->offsetSet('value', 'bar');
+
+        $result = $this->createDriver(false)
+            ->createStatement('SELECT * FROM test WHERE id = ? AND value = ?')
+            ->execute($container);
+
+        static::assertNotNull($result);
+        static::assertSame(['id' => 1, 'name' => 'foo', 'value' => 'bar'], $result->current());
+    }
+
+    #[Test]
     public function bufferAfterIterationStartedThrows(): void
     {
         $result = $this->createDriver(false)
