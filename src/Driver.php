@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpDb\Mysql;
 
 use mysqli;
+use mysqli_result;
 use mysqli_stmt;
 use Override;
 use PhpDb\Adapter\Driver\ConnectionInterface;
@@ -23,8 +24,8 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
 {
     protected ?ProfilerInterface $profiler = null;
 
-    /** @var array */
-    protected $options = [
+    /** @var array $options */
+    protected array $options = [
         'buffer_results' => false,
     ];
 

@@ -267,31 +267,13 @@ count = 1
 [[issues]]
 file = "src/Driver.php"
 code = "incompatible-parameter-type"
-message = 'Parameter `$resource` of `PhpDb\Mysql\Driver::createresult()` expects type `mysqli|mysqli_stmt|unknown-ref(PhpDb\Mysql\mysqli_result)` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `resource`'
+message = 'Parameter `$resource` of `PhpDb\Mysql\Driver::createresult()` expects type `mysqli|mysqli_result|mysqli_stmt` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `resource`'
 count = 1
 
 [[issues]]
 file = "src/Driver.php"
 code = "incompatible-parameter-type"
 message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli|mysqli_stmt|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `resource|string`'
-count = 1
-
-[[issues]]
-file = "src/Driver.php"
-code = "missing-property-type"
-message = "Property `$options` is missing a type hint."
-count = 1
-
-[[issues]]
-file = "src/Driver.php"
-code = "non-existent-class-like"
-message = 'Cannot find class, interface, enum, or type alias `PhpDb\Mysql\mysqli_result`.'
-count = 1
-
-[[issues]]
-file = "src/Driver.php"
-code = "possibly-invalid-argument"
-message = 'Possible argument type mismatch for argument #1 of `PhpDb\Mysql\Result::initialize`: expected `mysqli|mysqli_result|mysqli_stmt`, but possibly received `mysqli|mysqli_stmt|unknown-ref(PhpDb\Mysql\mysqli_result)`.'
 count = 1
 
 [[issues]]
