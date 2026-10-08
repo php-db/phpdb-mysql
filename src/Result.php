@@ -91,7 +91,7 @@ final class Result implements Iterator, ResultInterface
     /**
      * Current
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      *
      * @return array<array-key, mixed>|null
      */
@@ -277,7 +277,7 @@ final class Result implements Iterator, ResultInterface
     /**
      * Valid
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      *
      * @return bool
      */

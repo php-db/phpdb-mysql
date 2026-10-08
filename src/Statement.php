@@ -46,7 +46,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
      *
      * @param array<array-key, mixed>|ParameterContainer|null $parameters
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     #[Override]
     public function execute(ParameterContainer|array|null $parameters = null): ?ResultInterface
@@ -134,7 +134,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
     }
 
     /**
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     #[Override]
     public function prepare(?string $sql = null): StatementInterface

@@ -143,7 +143,7 @@ final class Connection extends AbstractPdoConnection
     /**
      * {@inheritDoc}
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      * @throws PDOException
      */
     #[Override]

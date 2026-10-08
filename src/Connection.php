@@ -64,7 +64,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     #[Override]
     public function beginTransaction(): ConnectionInterface
@@ -82,7 +82,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     #[Override]
     public function commit(): ConnectionInterface
@@ -101,7 +101,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     // @mago-expect lint:halstead
     #[Override]
@@ -207,7 +207,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * {@inheritDoc}
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     #[Override]
     public function execute(string $sql): ?ResultInterface
@@ -241,7 +241,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     #[Override]
     public function getCurrentSchema(): string|false
@@ -287,7 +287,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     #[Override]
     public function rollback(): ConnectionInterface

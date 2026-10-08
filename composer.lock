@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "66c86539851d7b014c3a1346f3152db0",
+    "content-hash": "c0726ac42b2f776c7c819829fcfd6ca9",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -262,12 +262,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
-                "reference": "b57f549b411d0b4fe46de8a469983816395be850"
+                "reference": "0c4ed091d5895168d80faa34f851b4dbc295dc4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-db/phpdb/zipball/b57f549b411d0b4fe46de8a469983816395be850",
-                "reference": "b57f549b411d0b4fe46de8a469983816395be850",
+                "url": "https://api.github.com/repos/php-db/phpdb/zipball/0c4ed091d5895168d80faa34f851b4dbc295dc4f",
+                "reference": "0c4ed091d5895168d80faa34f851b4dbc295dc4f",
                 "shasum": ""
             },
             "require": {
@@ -276,7 +276,6 @@
                 "php": "~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "conflict": {
-                "laminas/laminas-db": "*",
                 "zendframework/zend-db": "*"
             },
             "require-dev": {
@@ -322,7 +321,7 @@
                 "issues": "https://github.com/php-db/phpdb/issues",
                 "source": "https://github.com/php-db/phpdb"
             },
-            "time": "2026-08-24T01:49:39+00:00"
+            "time": "2026-10-08T01:29:57+00:00"
         },
         {
             "name": "psr/container",
@@ -4485,6 +4484,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "php-db/phpdb": 20,
         "php-db/phpdb-qa-tools": 20
     },
     "prefer-stable": true,
@@ -4499,5 +4499,5 @@
     "platform-overrides": {
         "php": "8.3.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

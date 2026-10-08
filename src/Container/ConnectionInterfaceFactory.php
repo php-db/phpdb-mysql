@@ -16,7 +16,7 @@ final class ConnectionInterfaceFactory
     /**
      * @param array<string, mixed>|null $options
      *
-     * @throws \PhpDb\Adapter\Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      *
      * @mago-expect analysis:unused-parameter
      */

@@ -8,12 +8,6 @@ count = 1
 
 [[issues]]
 file = "src/AdapterPlatform.php"
-code = "impossible-condition"
-message = "This condition (type `false`) will always evaluate to false."
-count = 1
-
-[[issues]]
-file = "src/AdapterPlatform.php"
 code = "invalid-return-statement"
 message = 'Invalid return type for function `PhpDb\Mysql\AdapterPlatform::quoteViaDriver`: expected `null|string`, but found `false|string`.'
 count = 1
@@ -28,12 +22,6 @@ count = 1
 file = "src/AdapterPlatform.php"
 code = "possibly-invalid-argument"
 message = 'Possible argument type mismatch for argument #1 of `PhpDb\Mysql\AdapterPlatform::quoteViaDriver`: expected `string`, but possibly received `bool|float|int|string`.'
-count = 1
-
-[[issues]]
-file = "src/Connection.php"
-code = "incompatible-property-type"
-message = 'Property `PhpDb\Mysql\Connection::$resource` has an incompatible type declaration from docblock.'
 count = 1
 
 [[issues]]
@@ -260,12 +248,6 @@ count = 1
 
 [[issues]]
 file = "src/Driver.php"
-code = "docblock-type-mismatch"
-message = "Docblock type mismatch for variable `$resource`."
-count = 1
-
-[[issues]]
-file = "src/Driver.php"
 code = "incompatible-parameter-type"
 message = 'Parameter `$resource` of `PhpDb\Mysql\Driver::createresult()` expects type `mysqli|mysqli_result|mysqli_stmt` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `resource`'
 count = 1
@@ -455,42 +437,6 @@ file = "src/Result.php"
 code = "unused-property"
 message = "Property `$numberOfRows` is never used."
 count = 1
-
-[[issues]]
-file = "src/Sql/SelectDecorator.php"
-code = "invalid-property-assignment-value"
-message = "Invalid type for property `$specifications`: expected `array<array-key, array<array-key, mixed>>|array<array-key, string>`, but got `array{'limit': string('LIMIT 18446744073709551615'), ...<array-key, array<array-key, mixed>>}|array{'limit': string('LIMIT 18446744073709551615'), ...<array-key, string>}`."
-count = 1
-
-[[issues]]
-file = "src/Sql/SelectDecorator.php"
-code = "invalid-return-statement"
-message = 'Invalid return type for function `PhpDb\Mysql\Sql\SelectDecorator::processLimit`: expected `array<array-key, string>|null`, but found `list{int|string}`.'
-count = 1
-
-[[issues]]
-file = "src/Sql/SelectDecorator.php"
-code = "invalid-return-statement"
-message = 'Invalid return type for function `PhpDb\Mysql\Sql\SelectDecorator::processOffset`: expected `array<array-key, string>|null`, but found `list{int|string}`.'
-count = 1
-
-[[issues]]
-file = "src/Sql/SelectDecorator.php"
-code = "less-specific-nested-return-statement"
-message = '''Returned type `list{mixed}` is less specific than the declared return type `array<array-key, string>|null` for function `PhpDb\Mysql\Sql\SelectDecorator::processLimit` due to nested 'mixed'.'''
-count = 1
-
-[[issues]]
-file = "src/Sql/SelectDecorator.php"
-code = "less-specific-nested-return-statement"
-message = '''Returned type `list{mixed}` is less specific than the declared return type `array<array-key, string>|null` for function `PhpDb\Mysql\Sql\SelectDecorator::processOffset` due to nested 'mixed'.'''
-count = 1
-
-[[issues]]
-file = "src/Sql/SelectDecorator.php"
-code = "possible-method-access-on-null"
-message = "Attempting to call a method on `null`."
-count = 2
 
 [[issues]]
 file = "src/Sql/SelectDecorator.php"

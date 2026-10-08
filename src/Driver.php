@@ -79,7 +79,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
      *
      * @param mysqli|mysqli_stmt|string $sqlOrResource
      *
-     * @throws Exception\ExceptionInterface
+     * @throws \PhpDb\Exception\ExceptionInterface
      */
     #[Override]
     public function createStatement($sqlOrResource = null): StatementInterface&Statement

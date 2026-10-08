@@ -48,7 +48,6 @@ final class CreateTableDecorator extends CreateTable implements PlatformDecorato
         $columns = $this->columns;
 
         foreach ($columns as $i => $column) {
-            /** @var array<string, mixed> $options */
             $options = $column->getOptions();
 
             $sqls[$i] = $this->processColumnOptions(
