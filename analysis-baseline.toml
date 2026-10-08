@@ -123,7 +123,7 @@ count = 1
 [[issues]]
 file = "src/Connection.php"
 code = "mixed-return-statement"
-message = "Could not infer a precise return type for function `{closure:src/Connection.php:118:31}`. Saw type `nonnull`."
+message = "Could not infer a precise return type for function `{closure:src/Connection.php:119:31}`. Saw type `nonnull`."
 count = 1
 
 [[issues]]

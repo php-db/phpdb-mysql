@@ -15,6 +15,7 @@ use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Exception;
 use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
+use PhpDb\Exception\ExceptionInterface as PhpDbExceptionInterface;
 
 use function array_intersect_key;
 use function extension_loaded;
@@ -32,7 +33,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * @param array<string, mixed> $options
      *
-     * @throws \PhpDb\Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     public function __construct(
         protected readonly ConnectionInterface&Connection $connection,
@@ -79,7 +80,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
      *
      * @param mysqli|mysqli_stmt|string $sqlOrResource
      *
-     * @throws \PhpDb\Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     #[Override]
     public function createStatement($sqlOrResource = null): StatementInterface&Statement
