@@ -79,11 +79,18 @@ final class SelectDecoratorTest extends TestCase
 
         $parameterContainer = new ParameterContainer();
 
+        $sql                = '';
         $statementContainer = $this->createMock(StatementContainerInterface::class);
         $statementContainer->method('getParameterContainer')->willReturn($parameterContainer);
         $statementContainer->expects($this->once())
             ->method('setSql')
-            ->with($this->isString());
+            ->willReturnCallback(
+                static function (?string $sqlString) use (&$sql, $statementContainer): StatementContainerInterface {
+                    $sql = (string) $sqlString;
+
+                    return $statementContainer;
+                },
+            );
 
         $driver = $this->createStub(DriverInterface::class);
         $driver->method('formatParameterName')
@@ -98,6 +105,8 @@ final class SelectDecoratorTest extends TestCase
         static::assertSame($statementContainer, $result);
         static::assertSame(10, $parameterContainer->offsetGet('limit'));
         static::assertSame(5, $parameterContainer->offsetGet('offset'));
+        static::assertStringContainsString('LIMIT :limit', $sql);
+        static::assertStringContainsString('OFFSET :offset', $sql);
     }
 
     #[Test]
