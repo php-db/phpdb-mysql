@@ -8,6 +8,7 @@ use Laminas\ServiceManager\ServiceManager;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Exception\ContainerException;
+use PhpDb\Exception\ExceptionInterface as PhpDbExceptionInterface;
 use PhpDb\Mysql\Connection;
 use PhpDb\Mysql\Driver;
 use PhpDb\Mysql\Result;
@@ -24,7 +25,7 @@ final class DriverInterfaceFactory
      * @throws \Laminas\ServiceManager\Exception\ExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \PhpDb\Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      *
      * @mago-expect analysis:unused-parameter
      */

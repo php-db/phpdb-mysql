@@ -11,6 +11,7 @@ use mysqli_stmt;
 use Override;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
+use PhpDb\Exception\ExceptionInterface as PhpDbExceptionInterface;
 use PhpDb\ResultSet\ResultSet;
 use PhpDb\ResultSet\ResultSetInterface;
 // phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
@@ -91,7 +92,7 @@ final class Result implements Iterator, ResultInterface
     /**
      * Current
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      *
      * @return array<array-key, mixed>|null
      */
@@ -277,7 +278,7 @@ final class Result implements Iterator, ResultInterface
     /**
      * Valid
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      *
      * @return bool
      */

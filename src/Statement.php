@@ -16,6 +16,7 @@ use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 use PhpDb\Adapter\StatementContainerInterface;
+use PhpDb\Exception\ExceptionInterface as PhpDbExceptionInterface;
 
 use function array_unshift;
 use function call_user_func_array;
@@ -46,7 +47,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
      *
      * @param array<array-key, mixed>|ParameterContainer|null $parameters
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     #[Override]
     public function execute(ParameterContainer|array|null $parameters = null): ?ResultInterface
@@ -134,7 +135,7 @@ final class Statement implements StatementInterface, DriverAwareInterface, Profi
     }
 
     /**
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     #[Override]
     public function prepare(?string $sql = null): StatementInterface

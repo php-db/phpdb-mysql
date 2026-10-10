@@ -15,6 +15,7 @@ use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
 use PhpDb\Adapter\Exception\InvalidArgumentException;
+use PhpDb\Exception\ExceptionInterface as PhpDbExceptionInterface;
 
 use function constant;
 use function defined;
@@ -64,7 +65,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     #[Override]
     public function beginTransaction(): ConnectionInterface
@@ -82,7 +83,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     #[Override]
     public function commit(): ConnectionInterface
@@ -101,7 +102,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     // @mago-expect lint:halstead
     #[Override]
@@ -207,7 +208,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * {@inheritDoc}
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     #[Override]
     public function execute(string $sql): ?ResultInterface
@@ -241,7 +242,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     #[Override]
     public function getCurrentSchema(): string|false
@@ -287,7 +288,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * @inheritDoc
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      */
     #[Override]
     public function rollback(): ConnectionInterface

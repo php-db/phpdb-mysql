@@ -11,6 +11,7 @@ use PDOStatement;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Exception;
+use PhpDb\Exception\ExceptionInterface as PhpDbExceptionInterface;
 
 use function array_diff_key;
 use function implode;
@@ -143,7 +144,7 @@ final class Connection extends AbstractPdoConnection
     /**
      * {@inheritDoc}
      *
-     * @throws Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      * @throws PDOException
      */
     #[Override]
@@ -187,7 +188,7 @@ final class Connection extends AbstractPdoConnection
      * Return a value that is safe to interpolate into a generated DSN.
      *
      * @todo Promote to AbstractPdoConnection in php-db/phpdb as a protected method once a second
-     *       PDO driver package needs it — the validation is generic to all semicolon-delimited
+     *       PDO driver package needs it; the validation is generic to all semicolon-delimited
      *       PDO DSN formats and has no MySQL-specific dependencies.
      *
      * @throws Exception\InvalidConnectionParametersException If the value contains DSN control characters.

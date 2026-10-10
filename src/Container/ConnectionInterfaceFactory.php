@@ -6,6 +6,7 @@ namespace PhpDb\Mysql\Container;
 
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
+use PhpDb\Exception\ExceptionInterface as PhpDbExceptionInterface;
 use PhpDb\Mysql\Connection;
 use Psr\Container\ContainerInterface;
 
@@ -16,7 +17,7 @@ final class ConnectionInterfaceFactory
     /**
      * @param array<string, mixed>|null $options
      *
-     * @throws \PhpDb\Adapter\Exception\ExceptionInterface
+     * @throws PhpDbExceptionInterface
      *
      * @mago-expect analysis:unused-parameter
      */

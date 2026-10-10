@@ -30,7 +30,7 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
     }
 
     /**
-     * @return array<int, array<int|string, string>>
+     * @return array{0: list<string>}
      */
     #[Override]
     protected function processAddColumns(?PlatformInterface $adapterPlatform = null): array
@@ -43,11 +43,10 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
         /** @var array<array-key, ColumnInterface> $addColumns */
         $addColumns = $this->addColumns;
 
-        foreach ($addColumns as $i => $column) {
-            /** @var array<string, mixed> $options */
+        foreach ($addColumns as $column) {
             $options = $column->getOptions();
 
-            $sqls[$i] = $this->processColumnOptions(
+            $sqls[] = $this->processColumnOptions(
                 $this->processExpression($column, $platform),
                 $options,
                 $platform,
@@ -69,11 +68,9 @@ final class AlterTableDecorator extends AlterTable implements PlatformDecoratorI
 
         $sqls = [];
 
-        /** @var array<string, ColumnInterface> $changeColumns */
         $changeColumns = $this->changeColumns;
 
         foreach ($changeColumns as $name => $column) {
-            /** @var array<string, mixed> $options */
             $options = $column->getOptions();
 
             $sqls[] = [
