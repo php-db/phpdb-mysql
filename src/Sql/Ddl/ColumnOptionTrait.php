@@ -90,11 +90,11 @@ trait ColumnOptionTrait
                 switch ($needle) {
                     case 'REFERENCES':
                         $insertStart[2] ??= $insertPos;
-                    // no break
+                        // no break
                     case 'PRIMARY':
                     case 'UNIQUE':
                         $insertStart[1] ??= $insertPos;
-                    // no break
+                        // no break
                     default:
                         $insertStart[0] ??= $insertPos;
                 }
