@@ -255,7 +255,7 @@ count = 1
 [[issues]]
 file = "src/Driver.php"
 code = "incompatible-parameter-type"
-message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli|mysqli_stmt|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `resource|string`'
+message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli_stmt|null|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `null|resource|string`'
 count = 1
 
 [[issues]]
