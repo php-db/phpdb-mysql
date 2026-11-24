@@ -253,6 +253,12 @@ message = 'Parameter `$resource` of `PhpDb\Mysql\Driver::createresult()` expects
 count = 1
 
 [[issues]]
+file = "src/Driver.php"
+code = "incompatible-parameter-type"
+message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli_stmt|null|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `null|resource|string`'
+count = 1
+
+[[issues]]
 file = "src/Metadata/Source.php"
 code = "impossible-condition"
 message = "This condition (type `false`) will always evaluate to false."

@@ -78,7 +78,7 @@ final class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Create statement
      *
-     * @param mixed $sqlOrResource A prepared mysqli_stmt to wrap, or the SQL to prepare
+     * @param mysqli_stmt|string|null $sqlOrResource A prepared mysqli_stmt to wrap, or the SQL to prepare
      *
      * @throws PhpDbExceptionInterface
      */
