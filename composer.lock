@@ -262,12 +262,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
-                "reference": "954de7a316b0d193edc67843095631bf6110874b"
+                "reference": "0210163c91de6ab4ac8e4512b474e82cc20b55f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-db/phpdb/zipball/954de7a316b0d193edc67843095631bf6110874b",
-                "reference": "954de7a316b0d193edc67843095631bf6110874b",
+                "url": "https://api.github.com/repos/php-db/phpdb/zipball/0210163c91de6ab4ac8e4512b474e82cc20b55f6",
+                "reference": "0210163c91de6ab4ac8e4512b474e82cc20b55f6",
                 "shasum": ""
             },
             "require": {
@@ -359,7 +359,7 @@
                 "issues": "https://github.com/php-db/phpdb/issues",
                 "source": "https://github.com/php-db/phpdb"
             },
-            "time": "2026-11-27T05:31:33+00:00"
+            "time": "2026-11-27T05:41:02+00:00"
         },
         {
             "name": "psr/container",
