@@ -40,13 +40,13 @@ final class CreateTableDecoratorTest extends TestCase
     public static function columnOptionMatrixProvider(): array
     {
         return ColumnOptionMatrix::pairedWith([
-            'all options' => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY \n)",
-            'charset collate' => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL \n)",
-            'format storage' => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK \n)",
+            'all options'      => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY \n)",
+            'charset collate'  => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL \n)",
+            'format storage'   => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK \n)",
             'reverse declared' => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) UNSIGNED CHARACTER SET latin1 NOT NULL COMMENT 'c' STORAGE DISK \n)",
-            'unknown option' => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL \n)",
-            'after only' => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) NOT NULL \n)",
-            'falsy skipped' => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL \n)",
+            'unknown option'   => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL \n)",
+            'after only'       => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) NOT NULL \n)",
+            'falsy skipped'    => "CREATE TABLE `test` ( \n    `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL \n)",
         ]);
     }
 

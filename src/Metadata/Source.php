@@ -12,7 +12,7 @@ use PhpDb\Metadata\Source\AbstractSource;
 use PhpDb\ResultSet\ResultSetInterface;
 
 use function array_change_key_case;
-use function array_walk;
+use function array_map;
 use function implode;
 use function preg_match;
 use function preg_match_all;
@@ -49,9 +49,7 @@ final class Source extends AbstractSource
             ['C', 'COLUMN_TYPE'],
         ];
 
-        array_walk($isColumns, static function (&$c) use ($p) {
-            $c = $p->quoteIdentifierChain($c);
-        });
+        $isColumns = array_map($p->quoteIdentifierChain(...), $isColumns);
 
         $sql =
             'SELECT '
@@ -97,7 +95,7 @@ final class Source extends AbstractSource
                     $matches,
                     PREG_PATTERN_ORDER,
                 )
-                    ? str_replace("''", replace: "'", subject: $matches[1])
+                    ? str_replace("''", replace: "'", subject: $matches[1] ?? '')
                     : [$permittedValues];
                 $erratas['permitted_values'] = $permittedValues;
             }
@@ -144,9 +142,7 @@ final class Source extends AbstractSource
 
         $p = $this->adapter->getPlatform();
 
-        array_walk($isColumns, static function (&$c) use ($p) {
-            $c = $p->quoteIdentifierChain($c);
-        });
+        $isColumns = array_map($p->quoteIdentifierChain(...), $isColumns);
 
         $sql =
             'SELECT '
@@ -266,9 +262,7 @@ final class Source extends AbstractSource
             ['KCU', 'ORDINAL_POSITION'],
         ];
 
-        array_walk($isColumns, static function (&$c) use ($p) {
-            $c = $p->quoteIdentifierChain($c);
-        });
+        $isColumns = array_map($p->quoteIdentifierChain(...), $isColumns);
 
         $sql =
             'SELECT '
@@ -323,9 +317,7 @@ final class Source extends AbstractSource
             ['TC', 'CONSTRAINT_TYPE'],
         ];
 
-        array_walk($isColumns, static function (&$c) use ($p) {
-            $c = $p->quoteIdentifierChain($c);
-        });
+        $isColumns = array_map($p->quoteIdentifierChain(...), $isColumns);
 
         $sql =
             'SELECT '
@@ -381,9 +373,7 @@ final class Source extends AbstractSource
             ['KCU', 'REFERENCED_COLUMN_NAME'],
         ];
 
-        array_walk($isColumns, static function (&$c) use ($p) {
-            $c = $p->quoteIdentifierChain($c);
-        });
+        $isColumns = array_map($p->quoteIdentifierChain(...), $isColumns);
 
         $sql =
             'SELECT '
@@ -486,9 +476,7 @@ final class Source extends AbstractSource
             ['V', 'IS_UPDATABLE'],
         ];
 
-        array_walk($isColumns, static function (&$c) use ($p) {
-            $c = $p->quoteIdentifierChain($c);
-        });
+        $isColumns = array_map($p->quoteIdentifierChain(...), $isColumns);
 
         $sql =
             'SELECT '
@@ -563,9 +551,7 @@ final class Source extends AbstractSource
             'CREATED',
         ];
 
-        array_walk($isColumns, static function (&$c) use ($p) {
-            $c = $p->quoteIdentifier($c);
-        });
+        $isColumns = array_map($p->quoteIdentifier(...), $isColumns);
 
         $sql =
             'SELECT '

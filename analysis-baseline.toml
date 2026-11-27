@@ -63,32 +63,14 @@ count = 1
 [[issues]]
 file = "src/Connection.php"
 code = "mixed-argument"
-message = "Invalid argument type for argument #2 of `mysqli::real_connect`: expected `null|string`, but found `mixed`."
-count = 2
-
-[[issues]]
-file = "src/Connection.php"
-code = "mixed-argument"
 message = "Invalid argument type for argument #2 of `mysqli::ssl_set`: expected `null|string`, but found `nonnull`."
 count = 1
 
 [[issues]]
 file = "src/Connection.php"
 code = "mixed-argument"
-message = "Invalid argument type for argument #3 of `mysqli::real_connect`: expected `null|string`, but found `mixed`."
-count = 2
-
-[[issues]]
-file = "src/Connection.php"
-code = "mixed-argument"
 message = "Invalid argument type for argument #3 of `mysqli::ssl_set`: expected `null|string`, but found `nonnull`."
 count = 1
-
-[[issues]]
-file = "src/Connection.php"
-code = "mixed-argument"
-message = "Invalid argument type for argument #4 of `mysqli::real_connect`: expected `null|string`, but found `mixed`."
-count = 2
 
 [[issues]]
 file = "src/Connection.php"
@@ -106,7 +88,7 @@ count = 1
 file = "src/Connection.php"
 code = "mixed-assignment"
 message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
-count = 7
+count = 4
 
 [[issues]]
 file = "src/Connection.php"
@@ -248,6 +230,12 @@ count = 1
 
 [[issues]]
 file = "src/Driver.php"
+code = "docblock-type-mismatch"
+message = "Docblock type mismatch for variable `$resource`."
+count = 1
+
+[[issues]]
+file = "src/Driver.php"
 code = "incompatible-parameter-type"
 message = 'Parameter `$resource` of `PhpDb\Mysql\Driver::createresult()` expects type `mysqli|mysqli_result|mysqli_stmt` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `resource`'
 count = 1
@@ -255,7 +243,7 @@ count = 1
 [[issues]]
 file = "src/Driver.php"
 code = "incompatible-parameter-type"
-message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli|mysqli_stmt|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `resource|string`'
+message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli_stmt|null|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `null|resource|string`'
 count = 1
 
 [[issues]]
@@ -302,20 +290,8 @@ count = 1
 
 [[issues]]
 file = "src/Metadata/Source.php"
-code = "possibly-invalid-argument"
-message = "Possible argument type mismatch for argument #2 of `implode`: expected `array<array-key, Stringable|null|scalar>|null`, but possibly received `non-empty-list<void>`."
-count = 7
-
-[[issues]]
-file = "src/Metadata/Source.php"
 code = "possibly-null-argument"
 message = "Argument #2 of function `preg_match_all` is possibly `null`, but parameter type `string` does not accept it."
-count = 1
-
-[[issues]]
-file = "src/Metadata/Source.php"
-code = "possibly-null-argument"
-message = "Argument #3 of function `str_replace` is possibly `null`, but parameter type `array<array-key, string>|string` does not accept it."
 count = 1
 
 [[issues]]
@@ -328,12 +304,6 @@ count = 1
 file = "src/Metadata/Source.php"
 code = "possibly-null-operand"
 message = "Possibly null right operand used in string concatenation (type `null|string`)."
-count = 1
-
-[[issues]]
-file = "src/Metadata/Source.php"
-code = "possibly-undefined-int-array-index"
-message = "Possibly undefined array index accessed on `list<array<array-key, string>>`."
 count = 1
 
 [[issues]]
@@ -365,12 +335,6 @@ file = "src/Metadata/Source.php"
 code = "redundant-null-coalesce"
 message = "Redundant null coalesce: left-hand side is always `null`."
 count = 1
-
-[[issues]]
-file = "src/Metadata/Source.php"
-code = "reference-constraint-violation"
-message = "Invalid assignment to by-reference parameter `$c`."
-count = 7
 
 [[issues]]
 file = "src/Metadata/Source.php"

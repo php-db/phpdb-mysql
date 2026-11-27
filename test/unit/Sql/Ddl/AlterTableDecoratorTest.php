@@ -41,13 +41,13 @@ final class AlterTableDecoratorTest extends TestCase
     public static function addColumnMatrixProvider(): array
     {
         return ColumnOptionMatrix::pairedWith([
-            'all options' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY AFTER `id`",
-            'charset collate' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
-            'format storage' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
+            'all options'      => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY AFTER `id`",
+            'charset collate'  => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
+            'format storage'   => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
             'reverse declared' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) UNSIGNED CHARACTER SET latin1 NOT NULL COMMENT 'c' STORAGE DISK",
-            'unknown option' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
-            'after only' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL AFTER `other_col`",
-            'falsy skipped' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
+            'unknown option'   => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
+            'after only'       => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL AFTER `other_col`",
+            'falsy skipped'    => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
         ]);
     }
 
@@ -55,13 +55,13 @@ final class AlterTableDecoratorTest extends TestCase
     public static function changeColumnMatrixProvider(): array
     {
         return ColumnOptionMatrix::pairedWith([
-            'all options' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY",
-            'charset collate' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
-            'format storage' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
+            'all options'      => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY",
+            'charset collate'  => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
+            'format storage'   => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
             'reverse declared' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) UNSIGNED CHARACTER SET latin1 NOT NULL COMMENT 'c' STORAGE DISK",
-            'unknown option' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
-            'after only' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL",
-            'falsy skipped' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
+            'unknown option'   => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
+            'after only'       => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL",
+            'falsy skipped'    => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
         ]);
     }
 

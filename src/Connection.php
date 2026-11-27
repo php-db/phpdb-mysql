@@ -126,7 +126,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             return null;
         };
 
-        /** @var string|null $hostname */
         $hostname = $findParameterValue(['hostname', 'host']);
         $username = $findParameterValue(['username', 'user']);
         $password = $findParameterValue(['password', 'passwd', 'pw']);
