@@ -11,10 +11,9 @@ use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\Mysql\Sql\ColumnFormatEnum;
-use PhpDb\Mysql\Sql\Ddl\AlterTableDecorator;
+use PhpDb\Mysql\Sql\Ddl\AlterTable;
 use PhpDb\Mysql\Sql\Ddl\ColumnOptionTrait;
 use PhpDb\Mysql\Sql\StorageEnum;
-use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Ddl\Column;
 use PhpDb\Sql\Exception\InvalidArgumentException;
 use PhpDbTest\Mysql\Sql\Ddl\TestAsset\ColumnOptionMatrix;
@@ -28,12 +27,11 @@ use ValueError;
 use function sprintf;
 use function strtoupper;
 
-#[CoversMethod(AlterTableDecorator::class, 'setSubject')]
-#[CoversMethod(AlterTableDecorator::class, 'processAddColumns')]
-#[CoversMethod(AlterTableDecorator::class, 'processChangeColumns')]
-#[CoversMethod(AlterTableDecorator::class, 'resolveAfterOption')]
+#[CoversMethod(AlterTable::class, 'processAddColumns')]
+#[CoversMethod(AlterTable::class, 'processChangeColumns')]
+#[CoversMethod(AlterTable::class, 'resolveAfterOption')]
 #[CoversTrait(ColumnOptionTrait::class)]
-final class AlterTableDecoratorTest extends TestCase
+final class AlterTableTest extends TestCase
 {
     protected AdapterPlatform $platform;
 
@@ -41,13 +39,13 @@ final class AlterTableDecoratorTest extends TestCase
     public static function addColumnMatrixProvider(): array
     {
         return ColumnOptionMatrix::pairedWith([
-            'all options' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY AFTER `id`",
-            'charset collate' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
-            'format storage' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
+            'all options'      => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY AFTER `id`",
+            'charset collate'  => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
+            'format storage'   => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
             'reverse declared' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) UNSIGNED CHARACTER SET latin1 NOT NULL COMMENT 'c' STORAGE DISK",
-            'unknown option' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
-            'after only' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL AFTER `other_col`",
-            'falsy skipped' => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
+            'unknown option'   => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
+            'after only'       => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) NOT NULL AFTER `other_col`",
+            'falsy skipped'    => "ALTER TABLE `test`\n ADD COLUMN `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
         ]);
     }
 
@@ -55,13 +53,13 @@ final class AlterTableDecoratorTest extends TestCase
     public static function changeColumnMatrixProvider(): array
     {
         return ColumnOptionMatrix::pairedWith([
-            'all options' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY",
-            'charset collate' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
-            'format storage' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
+            'all options'      => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) UNSIGNED ZEROFILL CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL AUTO_INCREMENT COMMENT 'here' COLUMN_FORMAT DYNAMIC STORAGE MEMORY",
+            'charset collate'  => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL",
+            'format storage'   => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL COLUMN_FORMAT FIXED STORAGE DISK",
             'reverse declared' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) UNSIGNED CHARACTER SET latin1 NOT NULL COMMENT 'c' STORAGE DISK",
-            'unknown option' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
-            'after only' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL",
-            'falsy skipped' => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
+            'unknown option'   => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL",
+            'after only'       => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) NOT NULL",
+            'falsy skipped'    => "ALTER TABLE `test`\n  CHANGE COLUMN `name` `name` VARCHAR(255) COLLATE utf8mb4_bin NOT NULL",
         ]);
     }
 
@@ -519,10 +517,7 @@ final class AlterTableDecoratorTest extends TestCase
 
     private function buildSql(AlterTable $table): string
     {
-        $decorator = new AlterTableDecorator();
-        $decorator->setSubject($table);
-
-        return $decorator->getSqlString($this->platform);
+        return $table->getSqlString($this->platform);
     }
 
     /** @param array<string, bool|string> $options */

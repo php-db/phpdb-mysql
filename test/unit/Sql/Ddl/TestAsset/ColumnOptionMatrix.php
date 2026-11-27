@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Sql\Ddl\TestAsset;
 
 /**
- * Column option sets shared by the decorator characterisation tests.
+ * Column option sets shared by the CreateTable and AlterTable characterisation tests.
  *
  * Each set is paired with the exact SQL it produces in the test that uses it,
  * pinning option ordering, spacing and insert offsets so that a change in

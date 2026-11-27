@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 #[CoversMethod(AdapterPlatform::class, '__construct')]
 #[CoversMethod(AdapterPlatform::class, 'getName')]
-#[CoversMethod(AdapterPlatform::class, 'getSqlPlatformDecorator')]
+#[CoversMethod(AdapterPlatform::class, 'getStatementFactory')]
 #[CoversMethod(AdapterPlatform::class, 'quoteIdentifierChain')]
 #[CoversMethod(AdapterPlatform::class, 'quoteValue')]
 #[CoversMethod(AdapterPlatform::class, 'quoteTrustedValue')]
@@ -53,9 +53,9 @@ final class AdapterPlatformTest extends TestCase
     }
 
     #[Test]
-    public function getSqlPlatformDecorator(): void
+    public function getStatementFactory(): void
     {
-        static::assertInstanceOf(Platform::class, $this->platform->getSqlPlatformDecorator());
+        static::assertInstanceOf(Platform::class, $this->platform->getStatementFactory());
     }
 
     #[Test]

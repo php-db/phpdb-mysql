@@ -196,7 +196,7 @@ final class Result implements Iterator, ResultInterface
                 || $resource instanceof mysqli_result
                 || 0 !== $resource->num_rows
                 => true,
-            default => $this->isBuffered,
+            default              => $this->isBuffered,
         };
 
         $this->resource       = $resource;

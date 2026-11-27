@@ -4,17 +4,28 @@ declare(strict_types=1);
 
 namespace PhpDb\Mysql\Sql;
 
-use PhpDb\Sql\Ddl\AlterTable;
-use PhpDb\Sql\Ddl\CreateTable;
+use Override;
 use PhpDb\Sql\Platform\AbstractPlatform;
-use PhpDb\Sql\Select;
+use PhpDb\Sql\TableIdentifier;
 
 final class Platform extends AbstractPlatform
 {
-    public function __construct()
+    #[Override]
+    public function alterTable(string|TableIdentifier $table = ''): Ddl\AlterTable
     {
-        $this->setTypeDecorator(Select::class, new SelectDecorator());
-        $this->setTypeDecorator(CreateTable::class, new Ddl\CreateTableDecorator());
-        $this->setTypeDecorator(AlterTable::class, new Ddl\AlterTableDecorator());
+        return new Ddl\AlterTable($table);
+    }
+
+    #[Override]
+    public function createTable(string|TableIdentifier $table = ''): Ddl\CreateTable
+    {
+        return new Ddl\CreateTable($table);
+    }
+
+    /** @param TableIdentifier|string|array<string, string|TableIdentifier>|null $table */
+    #[Override]
+    public function select(array|string|TableIdentifier|null $table = null): Select
+    {
+        return new Select($table);
     }
 }

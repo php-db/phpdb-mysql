@@ -14,17 +14,15 @@ use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Adapter\StatementContainerInterface;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
-use PhpDb\Mysql\Sql\SelectDecorator;
-use PhpDb\Sql\Select;
+use PhpDb\Mysql\Sql\Select;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[CoversMethod(SelectDecorator::class, 'setSubject')]
-#[CoversMethod(SelectDecorator::class, 'localizeVariables')]
-#[CoversMethod(SelectDecorator::class, 'processLimit')]
-#[CoversMethod(SelectDecorator::class, 'processOffset')]
-final class SelectDecoratorTest extends TestCase
+#[CoversMethod(Select::class, 'prepareSpecifications')]
+#[CoversMethod(Select::class, 'processLimit')]
+#[CoversMethod(Select::class, 'processOffset')]
+final class SelectTest extends TestCase
 {
     protected AdapterPlatform $platform;
 
@@ -33,7 +31,7 @@ final class SelectDecoratorTest extends TestCase
     {
         $select = (new Select('test'))->limit(10)
             ->offset(5);
-        $sql = $this->decorate($select)->getSqlString($this->platform);
+        $sql = $select->getSqlString($this->platform);
 
         static::assertStringContainsString('LIMIT 10', $sql);
         static::assertStringContainsString('OFFSET 5', $sql);
@@ -43,7 +41,7 @@ final class SelectDecoratorTest extends TestCase
     public function limitOnly(): void
     {
         $select = (new Select('test'))->limit(10);
-        $sql    = $this->decorate($select)->getSqlString($this->platform);
+        $sql    = $select->getSqlString($this->platform);
 
         static::assertStringContainsString('LIMIT 10', $sql);
         static::assertStringNotContainsString('OFFSET', $sql);
@@ -52,8 +50,7 @@ final class SelectDecoratorTest extends TestCase
     #[Test]
     public function noLimitOrOffset(): void
     {
-        $select = new Select('test');
-        $sql    = $this->decorate($select)->getSqlString($this->platform);
+        $sql = (new Select('test'))->getSqlString($this->platform);
 
         static::assertStringNotContainsString('LIMIT', $sql);
         static::assertStringNotContainsString('OFFSET', $sql);
@@ -63,7 +60,7 @@ final class SelectDecoratorTest extends TestCase
     public function offsetWithoutLimit(): void
     {
         $select = (new Select('test'))->offset(5);
-        $sql    = $this->decorate($select)->getSqlString($this->platform);
+        $sql    = $select->getSqlString($this->platform);
 
         static::assertStringContainsString('LIMIT 18446744073709551615', $sql);
         static::assertStringContainsString('OFFSET 5', $sql);
@@ -72,10 +69,8 @@ final class SelectDecoratorTest extends TestCase
     #[Test]
     public function prepareStatementBindsLimitAndOffsetParameters(): void
     {
-        $decorator = $this->decorate(
-            (new Select('test'))->limit(10)
-                ->offset(5),
-        );
+        $select = (new Select('test'))->limit(10)
+            ->offset(5);
 
         $parameterContainer = new ParameterContainer();
 
@@ -100,22 +95,13 @@ final class SelectDecoratorTest extends TestCase
         $adapter->method('getPlatform')->willReturn($this->platform);
         $adapter->method('getDriver')->willReturn($driver);
 
-        $result = $decorator->prepareStatement($adapter, $statementContainer);
+        $result = $select->prepareStatement($adapter, $statementContainer);
 
         static::assertSame($statementContainer, $result);
         static::assertSame(10, $parameterContainer->offsetGet('limit'));
         static::assertSame(5, $parameterContainer->offsetGet('offset'));
         static::assertStringContainsString('LIMIT :limit', $sql);
         static::assertStringContainsString('OFFSET :offset', $sql);
-    }
-
-    #[Test]
-    public function setSubjectReturnsSelf(): void
-    {
-        $decorator = new SelectDecorator();
-
-        static::assertSame($decorator, $decorator->setSubject(new Select('test')));
-        static::assertSame($decorator, $decorator->setSubject(null));
     }
 
     #[Override]
@@ -127,13 +113,5 @@ final class SelectDecoratorTest extends TestCase
             $this->createStub(Result::class),
         );
         $this->platform = new AdapterPlatform($driver);
-    }
-
-    private function decorate(Select $select): SelectDecorator
-    {
-        $decorator = new SelectDecorator();
-        $decorator->setSubject($select);
-
-        return $decorator;
     }
 }

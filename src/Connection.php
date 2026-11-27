@@ -36,8 +36,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     protected ?string $driverName = null;
 
-    /** @var mysqli */
-    protected $resource;
+    protected mixed $resource = null;
 
     /**
      * Constructor
@@ -126,7 +125,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             return null;
         };
 
-        /** @var string|null $hostname */
         $hostname = $findParameterValue(['hostname', 'host']);
         $username = $findParameterValue(['username', 'user']);
         $password = $findParameterValue(['password', 'passwd', 'pw']);
