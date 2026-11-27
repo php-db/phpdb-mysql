@@ -36,8 +36,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     protected ?string $driverName = null;
 
-    /** @var mysqli */
-    protected $resource;
+    protected mixed $resource = null;
 
     /**
      * Constructor

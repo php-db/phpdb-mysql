@@ -11,10 +11,9 @@ use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\Mysql\Sql\ColumnFormatEnum;
-use PhpDb\Mysql\Sql\Ddl\AlterTableDecorator;
+use PhpDb\Mysql\Sql\Ddl\AlterTable;
 use PhpDb\Mysql\Sql\Ddl\ColumnOptionTrait;
 use PhpDb\Mysql\Sql\StorageEnum;
-use PhpDb\Sql\Ddl\AlterTable;
 use PhpDb\Sql\Ddl\Column;
 use PhpDb\Sql\Exception\InvalidArgumentException;
 use PhpDbTest\Mysql\Sql\Ddl\TestAsset\ColumnOptionMatrix;
@@ -28,12 +27,11 @@ use ValueError;
 use function sprintf;
 use function strtoupper;
 
-#[CoversMethod(AlterTableDecorator::class, 'setSubject')]
-#[CoversMethod(AlterTableDecorator::class, 'processAddColumns')]
-#[CoversMethod(AlterTableDecorator::class, 'processChangeColumns')]
-#[CoversMethod(AlterTableDecorator::class, 'resolveAfterOption')]
+#[CoversMethod(AlterTable::class, 'processAddColumns')]
+#[CoversMethod(AlterTable::class, 'processChangeColumns')]
+#[CoversMethod(AlterTable::class, 'resolveAfterOption')]
 #[CoversTrait(ColumnOptionTrait::class)]
-final class AlterTableDecoratorTest extends TestCase
+final class AlterTableTest extends TestCase
 {
     protected AdapterPlatform $platform;
 
@@ -519,10 +517,7 @@ final class AlterTableDecoratorTest extends TestCase
 
     private function buildSql(AlterTable $table): string
     {
-        $decorator = new AlterTableDecorator();
-        $decorator->setSubject($table);
-
-        return $decorator->getSqlString($this->platform);
+        return $table->getSqlString($this->platform);
     }
 
     /** @param array<string, bool|string> $options */

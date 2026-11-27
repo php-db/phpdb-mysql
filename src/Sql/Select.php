@@ -8,27 +8,17 @@ use Override;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\ParameterContainer;
 use PhpDb\Adapter\Platform\PlatformInterface;
-use PhpDb\Sql\Platform\PlatformDecoratorInterface;
-use PhpDb\Sql\PreparableSqlInterface;
-use PhpDb\Sql\Select;
-use PhpDb\Sql\SqlInterface;
+use PhpDb\Sql\Select as StandardSelect;
 
-final class SelectDecorator extends Select implements PlatformDecoratorInterface
+/**
+ * MySQL has no OFFSET clause of its own, so an offset without a limit names the maximum unsigned
+ * bigint as the limit.
+ */
+final class Select extends StandardSelect
 {
-    protected SqlInterface|PreparableSqlInterface|null $subject = null;
-
     #[Override]
-    public function setSubject(
-        SqlInterface|PreparableSqlInterface|null $subject,
-    ): PlatformDecoratorInterface {
-        $this->subject = $subject;
-        return $this;
-    }
-
-    #[Override]
-    protected function localizeVariables(): void
+    protected function prepareSpecifications(): void
     {
-        parent::localizeVariables();
         if (null === $this->limit && null !== $this->offset) {
             $this->specifications[self::LIMIT] = 'LIMIT 18446744073709551615';
         }

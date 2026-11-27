@@ -6,28 +6,16 @@ namespace PhpDb\Mysql\Sql\Ddl;
 
 use Override;
 use PhpDb\Adapter\Platform\PlatformInterface;
-use PhpDb\Sql\Ddl\AlterTable;
+use PhpDb\Sql\Ddl\AlterTable as StandardAlterTable;
 use PhpDb\Sql\Ddl\Column\ColumnInterface;
-use PhpDb\Sql\Platform\PlatformDecoratorInterface;
-use PhpDb\Sql\PreparableSqlInterface;
-use PhpDb\Sql\SqlInterface;
 
-final class AlterTableDecorator extends AlterTable implements PlatformDecoratorInterface
+/**
+ * MySQL renders each added or changed column with the storage and format options it accepts after
+ * the type.
+ */
+final class AlterTable extends StandardAlterTable
 {
     use ColumnOptionTrait;
-
-    // @mago-expect analysis:write-only-property - read by the inherited AbstractSql::$subject handling
-    // (get_object_vars($this->subject)), since AlterTable extends AbstractSql
-    protected SqlInterface|PreparableSqlInterface|null $subject = null;
-
-    #[Override]
-    public function setSubject(
-        SqlInterface|PreparableSqlInterface|null $subject,
-    ): PlatformDecoratorInterface {
-        $this->subject = $subject;
-
-        return $this;
-    }
 
     /**
      * @return array{0: list<string>}

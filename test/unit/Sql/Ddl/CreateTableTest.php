@@ -12,11 +12,10 @@ use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\Mysql\Sql\ColumnFormatEnum;
 use PhpDb\Mysql\Sql\Ddl\ColumnOptionTrait;
-use PhpDb\Mysql\Sql\Ddl\CreateTableDecorator;
+use PhpDb\Mysql\Sql\Ddl\CreateTable;
 use PhpDb\Mysql\Sql\StorageEnum;
 use PhpDb\Sql\Ddl\Column;
 use PhpDb\Sql\Ddl\Constraint;
-use PhpDb\Sql\Ddl\CreateTable;
 use PhpDb\Sql\Exception\InvalidArgumentException;
 use PhpDbTest\Mysql\Sql\Ddl\TestAsset\ColumnOptionMatrix;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -29,10 +28,9 @@ use ValueError;
 use function sprintf;
 use function strtoupper;
 
-#[CoversMethod(CreateTableDecorator::class, 'setSubject')]
-#[CoversMethod(CreateTableDecorator::class, 'processColumns')]
+#[CoversMethod(CreateTable::class, 'processColumns')]
 #[CoversTrait(ColumnOptionTrait::class)]
-final class CreateTableDecoratorTest extends TestCase
+final class CreateTableTest extends TestCase
 {
     protected AdapterPlatform $platform;
 
@@ -395,9 +393,6 @@ final class CreateTableDecoratorTest extends TestCase
 
     private function buildSql(CreateTable $table): string
     {
-        $decorator = new CreateTableDecorator();
-        $decorator->setSubject($table);
-
-        return $decorator->getSqlString($this->platform);
+        return $table->getSqlString($this->platform);
     }
 }

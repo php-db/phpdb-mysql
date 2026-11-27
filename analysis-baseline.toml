@@ -26,14 +26,68 @@ count = 1
 
 [[issues]]
 file = "src/Connection.php"
+code = "ambiguous-object-method-access"
+message = "Cannot statically verify method call on a generic `object` type."
+count = 7
+
+[[issues]]
+file = "src/Connection.php"
+code = "ambiguous-object-property-access"
+message = "Cannot statically verify property access on a generic `object` type."
+count = 3
+
+[[issues]]
+file = "src/Connection.php"
 code = "invalid-iterator"
 message = "The expression provided to `foreach` is not iterable. It resolved to type `mixed`, which is not iterable."
 count = 1
 
 [[issues]]
 file = "src/Connection.php"
-code = "invalid-property-assignment-value"
-message = "Invalid type for property `$resource`: expected `mysqli`, but got `null`."
+code = "invalid-method-access"
+message = "Attempting to call method `autocommit()` on type `null|object|resource`, which can be `resource`."
+count = 3
+
+[[issues]]
+file = "src/Connection.php"
+code = "invalid-method-access"
+message = "Attempting to call method `commit()` on type `null|object|resource`, which can be `resource`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "invalid-method-access"
+message = "Attempting to call method `query()` on type `null|object|resource`, which can be `resource`."
+count = 2
+
+[[issues]]
+file = "src/Connection.php"
+code = "invalid-method-access"
+message = "Attempting to call method `rollback()` on type `null|object|resource`, which can be `resource`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "invalid-property-access"
+message = "Attempting to access property `$error` on type `null|object|resource`, which can be `resource`."
+count = 2
+
+[[issues]]
+file = "src/Connection.php"
+code = "invalid-property-access"
+message = "Attempting to access property `$insert_id` on type `null|object|resource`, which can be `resource`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `Exception::__construct`: expected `string`, but found `mixed`."
+count = 2
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `PhpDb\Adapter\Driver\DriverInterface::createResult`: expected `object|resource`, but found `mixed`.'
 count = 1
 
 [[issues]]
@@ -88,7 +142,7 @@ count = 1
 file = "src/Connection.php"
 code = "mixed-assignment"
 message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
-count = 4
+count = 6
 
 [[issues]]
 file = "src/Connection.php"
@@ -105,8 +159,20 @@ count = 1
 [[issues]]
 file = "src/Connection.php"
 code = "mixed-return-statement"
-message = "Could not infer a precise return type for function `{closure:src/Connection.php:119:31}`. Saw type `nonnull`."
+message = 'Could not infer a precise return type for function `PhpDb\Mysql\Connection::getLastGeneratedValue`. Saw type `mixed`.'
 count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "mixed-return-statement"
+message = "Could not infer a precise return type for function `{closure:src/Connection.php:118:31}`. Saw type `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Connection.php"
+code = "possible-method-access-on-null"
+message = "Attempting to call a method on `null`."
+count = 7
 
 [[issues]]
 file = "src/Connection.php"
@@ -116,21 +182,27 @@ count = 1
 
 [[issues]]
 file = "src/Connection.php"
+code = "possibly-null-property-access"
+message = "Attempting to access a property on a possibly `null` value."
+count = 3
+
+[[issues]]
+file = "src/Connection.php"
 code = "possibly-undefined-string-array-index"
-message = "Possibly undefined array key `string('charset')` accessed on `array<array-key, mixed>`."
+message = "Possibly undefined array key `string('charset')` accessed on `array<string, mixed>`."
 count = 1
 
 [[issues]]
 file = "src/Connection.php"
 code = "possibly-undefined-string-array-index"
-message = "Possibly undefined array key `string('driver_options')` accessed on `array<array-key, mixed>`."
+message = "Possibly undefined array key `string('driver_options')` accessed on `array<string, mixed>`."
 count = 1
 
 [[issues]]
 file = "src/Connection.php"
-code = "redundant-condition"
-message = "This condition (type `true`) will always evaluate to true."
-count = 2
+code = "unfulfilled-expect"
+message = "This pragma was not used and may be removed."
+count = 1
 
 [[issues]]
 file = "src/Container/ConnectionInterfaceFactory.php"
@@ -230,20 +302,14 @@ count = 1
 
 [[issues]]
 file = "src/Driver.php"
-code = "docblock-type-mismatch"
-message = "Docblock type mismatch for variable `$resource`."
+code = "incompatible-parameter-type"
+message = 'Parameter `$resource` of `PhpDb\Mysql\Driver::createresult()` expects type `mysqli|mysqli_result|mysqli_stmt` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `object|resource`'
 count = 1
 
 [[issues]]
 file = "src/Driver.php"
 code = "incompatible-parameter-type"
-message = 'Parameter `$resource` of `PhpDb\Mysql\Driver::createresult()` expects type `mysqli|mysqli_result|mysqli_stmt` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `resource`'
-count = 1
-
-[[issues]]
-file = "src/Driver.php"
-code = "incompatible-parameter-type"
-message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli_stmt|null|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `null|resource|string`'
+message = 'Parameter `$sqlOrResource` of `PhpDb\Mysql\Driver::createstatement()` expects type `mysqli_stmt|null|string` but parent `PhpDb\Adapter\Driver\DriverInterface::createstatement()` expects type `null|object|resource|string`'
 count = 1
 
 [[issues]]
@@ -350,12 +416,6 @@ count = 1
 
 [[issues]]
 file = "src/Pdo/Connection.php"
-code = "less-specific-argument"
-message = "Argument type mismatch for argument #1 of `strtolower`: expected `string`, but provided type `array-key` is less specific."
-count = 1
-
-[[issues]]
-file = "src/Pdo/Connection.php"
 code = "mixed-argument"
 message = "Invalid argument type for argument #1 of `array_diff_key`: expected `array<('K.array_diff_key() extends array-key), ('V.array_diff_key() extends mixed)>`, but found `mixed`."
 count = 1
@@ -379,15 +439,21 @@ message = "Assigning `mixed` type to a variable may lead to unexpected behavior.
 count = 3
 
 [[issues]]
-file = "src/Pdo/Driver.php"
-code = "incompatible-parameter-type"
-message = 'Parameter `$resource` of `PhpDb\Mysql\Pdo\Driver::createresult()` expects type `PDOStatement` but parent `PhpDb\Adapter\Driver\DriverInterface::createresult()` expects type `resource`'
+file = "src/Pdo/Connection.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PDOException` in `PhpDb\Mysql\Pdo\Connection::__construct`.'
 count = 1
 
 [[issues]]
 file = "src/Pdo/Driver.php"
 code = "invalid-property-assignment-value"
 message = 'Invalid type for property `$connection`: expected `(PhpDb\Adapter\Driver\PdoConnectionInterface&PhpDb\Adapter\Driver\AbstractConnection&PhpDb\Adapter\Driver\PdoDriverAwareInterface)|PDO`, but got `(PhpDb\Adapter\Driver\PdoConnectionInterface&PhpDb\Adapter\Driver\PdoDriverAwareInterface)|PDO`.'
+count = 1
+
+[[issues]]
+file = "src/Pdo/Driver.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PhpDb\Adapter\Exception\RuntimeException` in `PhpDb\Mysql\Pdo\Driver::createResult`.'
 count = 1
 
 [[issues]]
@@ -403,15 +469,15 @@ message = "Property `$numberOfRows` is never used."
 count = 1
 
 [[issues]]
-file = "src/Sql/SelectDecorator.php"
-code = "write-only-property"
-message = "Property `$subject` is written to but never read."
+file = "src/Statement.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
 count = 1
 
 [[issues]]
 file = "src/Statement.php"
-code = "mixed-assignment"
-message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+code = "unfulfilled-expect"
+message = "This pragma was not used and may be removed."
 count = 1
 
 [[issues]]
