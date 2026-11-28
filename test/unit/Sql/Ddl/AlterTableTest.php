@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace PhpDbTest\Mysql\Sql\Ddl;
 
 use BackedEnum;
-use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
-use PhpDb\Adapter\Driver\Pdo\Result;
-use PhpDb\Adapter\Driver\Pdo\Statement;
+use PDO;
 use PhpDb\Mysql\AdapterPlatform;
-use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\Mysql\Sql\ColumnFormatEnum;
 use PhpDb\Mysql\Sql\Ddl\AlterTable;
 use PhpDb\Mysql\Sql\Ddl\ColumnOptionTrait;
@@ -507,12 +504,7 @@ final class AlterTableTest extends TestCase
 
     protected function setUp(): void
     {
-        $driver = new Driver(
-            $this->createStub(AbstractPdoConnection::class),
-            $this->createStub(Statement::class),
-            $this->createStub(Result::class),
-        );
-        $this->platform = new AdapterPlatform($driver);
+        $this->platform = new AdapterPlatform(new PDO('sqlite::memory:'));
     }
 
     private function buildSql(AlterTable $table): string

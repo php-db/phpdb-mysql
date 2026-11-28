@@ -10,12 +10,15 @@ use PDO;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdoConnection;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Mysql\AdapterPlatform;
 use PhpDb\Mysql\Pdo\Driver;
 use PhpDb\Mysql\Sql\Platform;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+
+use function sprintf;
 
 #[CoversMethod(AdapterPlatform::class, '__construct')]
 #[CoversMethod(AdapterPlatform::class, 'getName')]
@@ -187,51 +190,24 @@ final class AdapterPlatformTest extends TestCase
     }
 
     #[Test]
-    public function quoteValue(): void
+    public function quoteValueListThrowsWhenTheDriverCannotQuote(): void
     {
-        static::assertSame("'value'", $this->platform->quoteValue('value'));
-        static::assertSame("'Foo O\\'Bar'", $this->platform->quoteValue("Foo O'Bar"));
-        static::assertSame(
-            '\'\\\'; DELETE FROM some_table; -- \'',
-            $this->platform->quoteValue('\'; DELETE FROM some_table; -- '),
-        );
-        static::assertSame(
-            "'\\\\\\'; DELETE FROM some_table; -- '",
-            $this->platform->quoteValue('\\\'; DELETE FROM some_table; -- '),
-        );
+        $this->expectException(RuntimeException::class);
+
+        $this->platform->quoteValueList("Foo O'Bar");
     }
 
     #[Test]
-    public function quoteValueList(): void
+    public function quoteValueThrowsWhenTheDriverCannotQuote(): void
     {
-        /**
-         * @todo Determine if vulnerability warning is required during unit testing
-         */
-        //$this->expectError();
-        //$this->expectExceptionMessage(
-        //    'Attempting to quote a value in PhpDb\Adapter\Platform\Mysql without extension/driver support can '
-        //    . 'introduce security vulnerabilities in a production environment'
-        //);
-        static::assertSame("'Foo O\\'Bar'", $this->platform->quoteValueList("Foo O'Bar"));
-    }
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf(
+            RuntimeException::VULNERABLE_PLATFORM_QUOTE,
+            AdapterPlatform::class,
+            AdapterPlatform::class . '::quoteValue',
+        ));
 
-    #[Test]
-    public function quoteValueRaisesNoticeWithoutPlatformSupport(): void
-    {
-        /**
-         * todo(@tyrsson): Determine if vulnerability warning is required during unit testing
-         *
-         * todo(@tyrsson): This testing needs expanded to cover all possible driver types
-         * since using \PDO currently causes a TypeError to be raised due to the
-         * underlying quoteViaDriver method returning false instead of ?string
-         */
-        //$this->expectNotice();
-        //$this->expectExceptionMessage(
-        //    'Attempting to quote a value in PhpDb\Adapter\Platform\Mysql without extension/driver support can '
-        //    . 'introduce security vulnerabilities in a production environment'
-        //);
-        $this->expectNotToPerformAssertions();
-        $this->platform->quoteValue('value');
+        $this->platform->quoteValue("Foo O'Bar");
     }
 
     #[Test]
