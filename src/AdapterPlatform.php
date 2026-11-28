@@ -8,6 +8,7 @@ use mysqli;
 use Override;
 use PDO;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Exception;
 use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\StatementFactoryInterface;
 
@@ -81,9 +82,10 @@ final class AdapterPlatform extends AbstractPlatform
     #[Override]
     public function quoteValue(string $value): string
     {
-        $quotedViaDriverValue = $this->quoteViaDriver($value);
-
-        return $quotedViaDriverValue ?? parent::quoteValue($value);
+        return (
+            $this->quoteViaDriver($value)
+                ?? throw Exception\RuntimeException::forVulnerablePlatformQuote(static::class, __METHOD__)
+        );
     }
 
     protected function quoteViaDriver(string $value): ?string
